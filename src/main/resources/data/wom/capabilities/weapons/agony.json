@@ -1,0 +1,11 @@
+{
+	"attributes":
+	{
+		"two_hand":
+		{
+			"impact":1.9,
+			"max_strikes":3
+		}
+	},
+	"type":"agony"
+}

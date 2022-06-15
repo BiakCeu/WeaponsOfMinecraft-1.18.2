@@ -1,0 +1,52 @@
+{
+	"loader": "forge:separate-perspective",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "epicfight:models/item/obj/ruine.obj",
+  		"flip-v": true,
+		"display":
+  		{
+    		"thirdperson_righthand":
+    		{
+      			"translation": [6, -7.5, 6],
+      			"rotation": [95, 0, 0],
+      			"scale": [0.75, 0.75, 0.75]
+    		},
+    		"firstperson_righthand":
+    		{
+      			"translation": [13,-6,-0],
+      			"rotation": [75,0,0],
+      			"scale": [0.7, 0.7, 0.7]
+    		}
+  		}
+	},
+	"perspectives":
+	{
+		"ground":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/ruine"
+			}
+		},
+		"gui":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/ruine"
+			},
+			"gui_light": "front"
+		},
+		"fixed":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/ruine"
+			}
+		}
+	}
+}
