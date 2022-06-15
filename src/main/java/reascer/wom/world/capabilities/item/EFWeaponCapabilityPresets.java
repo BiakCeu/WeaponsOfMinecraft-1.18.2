@@ -1,10 +1,12 @@
 package reascer.wom.world.capabilities.item;
 
-import java.util.UUID;
 import java.util.function.Function;
 
-import net.minecraft.network.chat.TextComponent;
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.TieredItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -19,16 +21,42 @@ import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.gameasset.Skills;
-import yesman.epicfight.skill.KatanaPassive;
 import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategory;
+import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFWeaponCapabilityPresets {
+	public static final Function<Item, CapabilityItem> SWORD = (item) -> {
+		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
+			.category(WeaponCategory.SWORD)
+			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategory.SWORD ? Styles.TWO_HAND : Styles.ONE_HAND)
+			.collider(ColliderPreset.SWORD)
+			.hitSound(EpicFightSounds.BLADE_HIT)
+			.newStyleCombo(Styles.ONE_HAND, EFAnimations.SWORD_ONEHAND_AUTO_1, EFAnimations.SWORD_ONEHAND_AUTO_2, EFAnimations.SWORD_ONEHAND_AUTO_3, EFAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
+			.specialAttack(Styles.ONE_HAND, Skills.SWEEPING_EDGE)
+			.specialAttack(Styles.TWO_HAND, Skills.DANCING_EDGE)
+			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
+			.weaponCombinationPredicator((itemstack) -> EpicFightCapabilities.getItemStackCapability(itemstack).getWeaponCategory() == WeaponCategory.SWORD)
+		);
+		
+		if (item instanceof TieredItem) {
+			int harvestLevel = ((TieredItem)item).getTier().getLevel();
+			cap.addStyleAttibute(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.IMPACT.get(), EpicFightAttributes.getImpactModifier(0.5D + 0.2D * harvestLevel)));
+			cap.addStyleAttibute(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.MAX_STRIKES.get(), EpicFightAttributes.getMaxStrikesModifier(1)));
+		}
+		
+		return cap;
+	};
+	
 	public static final Function<Item, CapabilityItem> AGONY = (item) -> {
 		EFWeaponCapability cap = new EFWeaponCapability(WeaponCapability.builder()
 				.category(WeaponCategory.SPEAR)
@@ -158,12 +186,33 @@ public class EFWeaponCapabilityPresets {
 		return cap;
 	};
 	
+	public static final Function<Item, CapabilityItem> ENDER_BLASTER = (item) -> {
+		WeaponCapability weaponCapability = new WeaponCapability(WeaponCapability.builder()
+			.category(WeaponCategory.RANGED)
+			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategory.RANGED ? Styles.TWO_HAND : Styles.ONE_HAND)
+			.hitSound(EpicFightSounds.BLADE_HIT)
+			.collider(EFColliders.ENDER_BLASTER)
+			.newStyleCombo(Styles.ONE_HAND, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_1, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_2, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_3, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_4, EFAnimations.RUINE_DASH, Animations.LONGSWORD_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
+			.specialAttack(Styles.ONE_HAND, EFSkills.TRUE_BERSERK)
+			.specialAttack(Styles.TWO_HAND, EFSkills.TRUE_BERSERK)
+			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.IDLE, EFAnimations.ENDERBLASTER_ONEHAND_IDLE)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.ENDERBLASTER_ONEHAND_IDLE)
+			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
+		);
+		return weaponCapability;
+	};
+	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
 	  event.getTypeEntry().put("agony", AGONY);
 	  event.getTypeEntry().put("torment", TORMENT);
 	  event.getTypeEntry().put("ruine", RUINE);
 	  event.getTypeEntry().put("katana", EFKATANA);
+	  event.getTypeEntry().put("ender_blaster", ENDER_BLASTER);
+	  event.getTypeEntry().put("sword", SWORD);
 	}
 	
 }

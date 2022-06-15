@@ -17,4 +17,10 @@ public class EFColliders {
 	public static final Collider KATANA = new MultiOBBCollider(3, 0.4D, 0.4D, 1.0D, 0D, 0D, -1.0D);
 	public static final Collider FATAL_DRAW = new OBBCollider(1.75D, 0.7D, 1.35D, 0D, 1.0D, -1.0D);
 	public static final Collider FATAL_DRAW_DASH = new OBBCollider(0.7D, 0.7D, 1.75D, 0D, 1.0D, -0.8D);
+	
+	public static final Collider ENDER_BLASTER = new MultiOBBCollider(4, 0.4D, 0.6D, 0.4D, 0D, 0D, 0D);
+	public static final Collider ENDER_BLASTER_CROSS = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0D, 0.6D);
+	public static final Collider KICK = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.8D, 0D);
+	public static final Collider KNEE = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.4D, 0D);
+	
 }

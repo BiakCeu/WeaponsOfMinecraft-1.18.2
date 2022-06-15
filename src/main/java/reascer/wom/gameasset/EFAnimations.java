@@ -34,6 +34,7 @@ import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.api.model.Model;
 import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
 import yesman.epicfight.api.utils.math.ValueCorrector;
+import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.gameasset.Models;
 import yesman.epicfight.particle.EpicFightParticles;
@@ -49,6 +50,11 @@ public class EFAnimations {
 	public static StaticAnimation ENDERSTEP_BACKWARD;
 	public static StaticAnimation ENDERSTEP_LEFT;
 	public static StaticAnimation ENDERSTEP_RIGHT;
+	
+	public static StaticAnimation SWORD_ONEHAND_AUTO_1;
+	public static StaticAnimation SWORD_ONEHAND_AUTO_2;
+	public static StaticAnimation SWORD_ONEHAND_AUTO_3;
+	public static StaticAnimation SWORD_ONEHAND_AUTO_4;
 	
 	public static StaticAnimation AGONY_AUTO_1;
 	public static StaticAnimation AGONY_AUTO_2;
@@ -69,7 +75,6 @@ public class EFAnimations {
 	public static StaticAnimation RUINE_AUTO_1;
 	public static StaticAnimation RUINE_AUTO_2;
 	public static StaticAnimation RUINE_AUTO_3;
-	public static StaticAnimation RUINE_AUTO_4;
 	public static StaticAnimation RUINE_AIR_SLASH;
 	public static StaticAnimation RUINE_DASH;
 	public static StaticAnimation RUINE_IDLE;
@@ -108,6 +113,12 @@ public class EFAnimations {
 	public static StaticAnimation KATANA_FATAL_DRAW;
 	public static StaticAnimation KATANA_FATAL_DRAW_SECOND;
 	public static StaticAnimation KATANA_FATAL_DRAW_DASH;
+	
+	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_1;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_2;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_3;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_4;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_IDLE;
 	
 	@SubscribeEvent
 	public static void registerAnimations(AnimationRegistryEvent event) {
@@ -200,6 +211,16 @@ public class EFAnimations {
 					entity.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					}, Side.CLIENT)});
+		
+		SWORD_ONEHAND_AUTO_1 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/sword_onehand_auto_1", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		SWORD_ONEHAND_AUTO_2 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/sword_onehand_auto_2", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		SWORD_ONEHAND_AUTO_3 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/sword_onehand_auto_3", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		SWORD_ONEHAND_AUTO_4 = new BasicAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/sword_onehand_auto_4", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		
 		
 		AGONY_AUTO_1 = new BasicAttackAnimation(0.1F, 0.12F, 0.25F, 0.33F, null, "Tool_R", "biped/combat/agony_auto_1", biped);
 		AGONY_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/agony_auto_2", biped,
@@ -494,6 +515,56 @@ public class EFAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT)});
+		
+		
+		ENDERBLASTER_ONEHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, "biped/combat/enderblaster_onehand_auto_1", biped,
+				new Phase(0.1F, 0.1F, 0.2F, 0.2F, "Leg_L", EFColliders.KICK),
+				new Phase(0.3F, 0.3F, 0.4F, 0.45F, "Leg_L", EFColliders.KICK))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.45F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		
+		ENDERBLASTER_ONEHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_auto_2", biped,
+				new Phase(0.1F, 0.1F, 0.2F, 0.2F, "Leg_R", EFColliders.KICK),
+				new Phase(0.25F, 0.25F, 0.4F, 0.4F, "Tool_R", null),
+				new Phase(0.55F, 0.55F, 0.6F, 0.65F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD,2)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F),2)
+				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(2.0F),2)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		
+		ENDERBLASTER_ONEHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, "biped/combat/enderblaster_onehand_auto_3", biped,
+				new Phase(0.05F, 0.05F, 0.2F, 0.2F, "Tool_R", EFColliders.ENDER_BLASTER_CROSS),
+				new Phase(0.25F, 0.25F, 0.35F, 0.4F, "Tool_L", ColliderPreset.FIST))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		
+		ENDERBLASTER_ONEHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, "biped/combat/enderblaster_onehand_auto_4", biped,
+				new Phase(0.2F, 0.2F, 0.3F, 0.4F, "Knee_R", EFColliders.KNEE))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(3.0F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		
+		
+		ENDERBLASTER_ONEHAND_IDLE = new StaticAnimation(true, "biped/living/enderblaster_onehand_idle", biped);
 	}
 	
 	private static class ReuseableEvents {
