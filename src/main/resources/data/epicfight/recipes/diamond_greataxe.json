@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        " BB",
+        "PAB",
+        "S  "
+    ],
+    "key":
+    {
+        "B": { "item" : "minecraft:diamond" },
+	"P": { "tag" : "minecraft:planks" },
+        "S": { "item" : "minecraft:stick" },
+	"A": { "item" : "minecraft:diamond_axe" }
+    },
+    "result":
+    {
+        "item" : "epicfight:diamond_greataxe",
+        "count" : 1
+    }
+}

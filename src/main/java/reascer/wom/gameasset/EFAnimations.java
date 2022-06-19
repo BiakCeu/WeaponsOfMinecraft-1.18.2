@@ -34,6 +34,7 @@ import yesman.epicfight.api.animation.property.Property.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.Property.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.Property.AttackPhaseProperty;
 import yesman.epicfight.api.animation.property.Property.StaticAnimationProperty;
+import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.animation.types.AirSlashAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.animation.types.StaticAnimation.Event;
@@ -88,6 +89,9 @@ public class EFAnimations {
 	public static StaticAnimation TACHI_TWOHAND_AUTO_2;
 	public static StaticAnimation TACHI_TWOHAND_AUTO_3;
 	public static StaticAnimation TACHI_TWOHAND_AUTO_4;
+	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_CHARGE;
+	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_SLASHES;
+	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_FINAL;
 	
 	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_1;
 	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_2;
@@ -97,6 +101,11 @@ public class EFAnimations {
 	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_1;
 	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_2;
 	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_3;
+	
+	public static StaticAnimation STAFF_AUTO_1;
+	public static StaticAnimation STAFF_AUTO_2;
+	public static StaticAnimation STAFF_AUTO_3;
+	public static StaticAnimation STAFF_IDLE;
 	
 	public static StaticAnimation AGONY_AUTO_1;
 	public static StaticAnimation AGONY_AUTO_2;
@@ -287,6 +296,20 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
 		TACHI_TWOHAND_AUTO_4 = new BasicAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/tachi_twohand_auto_4", biped)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
+		TACHI_TWOHAND_BLOSSOM_CHARGE = new ActionAnimation(0.05F, "biped/skill/tachi_twohand_blossom_charge", biped);
+		TACHI_TWOHAND_BLOSSOM_SLASHES = new BasicMultipleAttackAnimation(0.05F, "biped/skill/tachi_twohand_blossom_slashes", biped,
+				new Phase(0.1F, 0.1F, 0.2F, 0.25F, "Tool_R", null),
+				new Phase(0.3F, 0.3F, 0.4F, 0.45F, "Tool_R", null),
+				new Phase(0.5F, 0.5F, 0.6F, 0.65F, "Tool_R", null),
+				new Phase(0.8F, 0.8F, 0.9F, 1.7F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F),2)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F),3)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		TACHI_TWOHAND_BLOSSOM_FINAL = new BasicAttackAnimation(0.1F, 0.05F, 0.2F, 0.3F, null, "Tool_R", "biped/skill/tachi_twohand_blossom_final", biped)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.25F))
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
 		LONGSWORD_TWOHAND_AUTO_1 = new BasicAttackAnimation(0.05F, 0.1F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/longsword_twohand_auto_1", biped)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
@@ -856,6 +879,36 @@ public class EFAnimations {
 		ENDERBLASTER_ONEHAND_IDLE = new StaticAnimation(true, "biped/living/enderblaster_onehand_idle", biped);
 		ENDERBLASTER_ONEHAND_WALK = new MovementAnimation(true, "biped/living/enderblaster_onehand_walk", biped);
 		ENDERBLASTER_ONEHAND_RUN = new MovementAnimation(true, "biped/living/enderblaster_onehand_run", biped);
+		
+		STAFF_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_1", biped,
+				new Phase(0.05F, 0.05F, 0.15F, 0.15F, "Tool_R", null),
+				new Phase(0.2F, 0.2F, 0.3F, 0.3F, "Tool_R", null),
+				new Phase(0.35F, 0.35F, 0.45F, 0.45F, "Tool_R", null),
+				new Phase(0.5F, 0.5F, 0.6F, 0.6F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),2)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),3)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
+		
+		STAFF_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_2", biped,
+				new Phase(0.1F, 0.1F, 0.2F, 0.2F, "Tool_R", null),
+				new Phase(0.3F, 0.3F, 0.4F, 0.4F, "Tool_R", null),
+				new Phase(0.5F, 0.5F, 0.6F, 0.6F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),2)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
+		
+		STAFF_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_3", biped,
+				new Phase(0.2F, 0.2F, 0.4F, 0.4F, "Tool_R", null),
+				new Phase(0.6F, 0.6F, 0.8F, 0.8F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F),1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
+		
+		STAFF_IDLE = new StaticAnimation(true, "biped/living/staff_idle", biped);
 	}
 	
 	private static class ReuseableEvents {

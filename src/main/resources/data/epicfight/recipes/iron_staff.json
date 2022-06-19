@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "  S",
+        " B ",
+        "S  "
+    ],
+    
+    "key":
+    {
+        "B": { "item" : "epicfight:wooden_staff" },
+        "S": { "item" : "minecraft:iron_ingot" }
+    },
+    
+    "result":
+    {
+        "item" : "epicfight:iron_staff",
+        "count" : 1
+    }
+}

@@ -22,6 +22,13 @@
 	"item.epicfight.iron_greataxe" : "Iron Greataxe",
 	"item.epicfight.diamond_greataxe" : "Diamond Greataxe",
 	"item.epicfight.netherite_greataxe" : "Netherite Greataxe",
+	
+	"item.epicfight.wooden_staff" : "Wooden staff",
+	"item.epicfight.stone_staff" : "Stone staff",
+	"item.epicfight.golden_staff" : "Golden staff ",
+	"item.epicfight.iron_staff" : "Iron staff",
+	"item.epicfight.diamond_staff" : "Diamond staff",
+	"item.epicfight.netherite_staff" : "Netherite staff",
 
 	"attribute.name.epicfight.impact": "%s Impact",
 	"attribute.name.epicfight.armor_negation": "%s%% Armor Negation",
@@ -190,9 +197,11 @@
 	"skill.epicfight.technician" : "Technician",
 	"skill.epicfight.technician.tooltip" : "Gain the stamina used when you dodge according to the enemy's attack timing.",
 	"skill.epicfight.counter_attack" : "Counter Attack",
-	"skill.epicfight.counter_attack.tooltip" : "Perfect Guard will trigger a counter attack based on weapons attacks.",
+	"skill.epicfight.counter_attack.tooltip" : "Perfect Guard will trigger a counter attack based on weapons attacks.\n\nAvailable Weapon Types : %s",
 	"skill.epicfight.arrow_tenacity" : "Arrow tenacity",
 	"skill.epicfight.arrow_tenacity.tooltip" : "Prevent the stun from arrows damage. This skill is permanent, thus you can use another passive on top of it but, you'll only keep the current passive if you die.",
+	"skill.epicfight.knight_roll" : "Precise roll",
+	"skill.epicfight.knight_roll.tooltip" : "Stamina : %d\n\nfaster, further and cheaper roll. This is how true expert do a roll.",
 	
 	"skill.epicfight.passive.category" : "Passive Skill",
 	"skill.epicfight.dodge.category" : "Dodge Skill",

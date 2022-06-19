@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.skill.AgonyPlungeSkill;
 import reascer.wom.skill.ArrowTenacitySkill;
+import reascer.wom.skill.BlossomSkill;
 import reascer.wom.skill.CounterAttack;
 import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.EnderBlastSkill;
@@ -37,6 +38,8 @@ public class EFSkills {
 	public static Skill ENDERSTEP;
 	public static Skill KNIGHT_ROLL;
 	
+	public static Skill BLOSSOM;
+	
 	public static Skill AGONY_PLUNGE;
 	public static Skill TRUE_BERSERK;
 	
@@ -58,6 +61,7 @@ public class EFSkills {
 		KNIGHT_ROLL = event.registerSkill(new DodgeSkill(DodgeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "knight_roll")).setConsumption(3.5F)
 				.setAnimations(EFAnimations.KNIGHT_ROLL_FORWARD, EFAnimations.KNIGHT_ROLL_BACKWARD, EFAnimations.KNIGHT_ROLL_LEFT, EFAnimations.KNIGHT_ROLL_RIGHT)),true);
 		
+		BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
 		
 		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(30.0F).setMaxStack(3).setAnimations(EFAnimations.AGONY_PLUNGE))
 				.newPropertyLine()

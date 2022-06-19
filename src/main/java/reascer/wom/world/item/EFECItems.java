@@ -22,4 +22,12 @@ public class EFECItems {
 	public static final RegistryObject<Item> GOLDEN_GREATAXE = ITEMS.register("golden_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.GOLD));
 	public static final RegistryObject<Item> DIAMOND_GREATAXE = ITEMS.register("diamond_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.DIAMOND));
 	public static final RegistryObject<Item> NETHERITE_GREATAXE = ITEMS.register("netherite_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.NETHERITE));
+	
+	public static final RegistryObject<Item> WOODEN_STAFF = ITEMS.register("wooden_staff", () -> new StaffItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.WOOD));
+	public static final RegistryObject<Item> STONE_STAFF = ITEMS.register("stone_staff", () -> new StaffItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.STONE));
+	public static final RegistryObject<Item> IRON_STAFF = ITEMS.register("iron_staff", () -> new StaffItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.IRON));
+	public static final RegistryObject<Item> GOLDEN_STAFF = ITEMS.register("golden_staff", () -> new StaffItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.GOLD));
+	public static final RegistryObject<Item> DIAMOND_STAFF = ITEMS.register("diamond_staff", () -> new StaffItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.DIAMOND));
+	public static final RegistryObject<Item> NETHERITE_STAFF = ITEMS.register("netherite_staff", () -> new StaffItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.NETHERITE));
+
 }

@@ -5,6 +5,8 @@ import yesman.epicfight.api.collider.MultiOBBCollider;
 import yesman.epicfight.api.collider.OBBCollider;
 
 public class EFColliders {
+	public static final Collider STAFF = new MultiOBBCollider(3, 0.2D, 0.2D, 1.9D, 0D, 0D, 0D);
+	
 	public static final Collider AGONY_PLUNGE = new OBBCollider(5.0F, 5.0F, 5.0F, 0F, 0F, 0F);
 	
 	public static final Collider PLUNDER_PERDITION = new OBBCollider(10.0F, 5.0F, 10.0F, 0F, 0F, 0F);

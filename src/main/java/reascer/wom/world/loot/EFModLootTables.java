@@ -62,6 +62,13 @@ public class EFModLootTables {
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
     		.build());
     	}
+    	
+    	if (event.getName().equals(BuiltInLootTables.END_CITY_TREASURE)) {
+    		event.getTable().addPool(LootPool.lootPool()
+    			.add(LootItem.lootTableItem(EFECItems.ENDER_BLASTER.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
+    		.build());
+    	}
     }
 }
 

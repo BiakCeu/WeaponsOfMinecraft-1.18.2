@@ -133,7 +133,7 @@ public class EFWeaponCapabilityPresets {
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.TACHI_TWOHAND_AUTO_1, EFAnimations.TACHI_TWOHAND_AUTO_2, EFAnimations.TACHI_TWOHAND_AUTO_3, EFAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
 			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.ONE_HAND, Skills.LETHAL_SLICING)
+			.specialAttack(Styles.ONE_HAND, EFSkills.BLOSSOM)
 			.specialAttack(Styles.TWO_HAND, Skills.DANCING_EDGE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_TACHI)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_TACHI)
@@ -148,6 +148,26 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
 			.weaponCombinationPredicator((itemstack) -> EpicFightCapabilities.getItemStackCapability(itemstack).getWeaponCategory() == WeaponCategory.TACHI)
+		);
+		return cap;
+	};
+	
+	public static final Function<Item, CapabilityItem> STAFF = (item) -> {
+		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
+			.category(WeaponCategory.SPEAR)
+			.styleProvider((playerpatch) -> Styles.TWO_HAND)
+			.collider(EFColliders.STAFF)
+			.hitSound(EpicFightSounds.BLUNT_HIT)
+			.canBePlacedOffhand(false)
+			.newStyleCombo(Styles.TWO_HAND, EFAnimations.STAFF_AUTO_1, EFAnimations.STAFF_AUTO_2, EFAnimations.STAFF_AUTO_3, Animations.SPEAR_DASH, Animations.SPEAR_TWOHAND_AIR_SLASH)
+			.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
+			.specialAttack(Styles.TWO_HAND, Skills.SLAUGHTER_STANCE)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.STAFF_IDLE)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_SPEAR)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_SPEAR)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_RUN_SPEAR)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SPEAR_GUARD)
 		);
 		return cap;
 	};
@@ -319,10 +339,11 @@ public class EFWeaponCapabilityPresets {
 	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
-		event.getTypeEntry().put("sword", SWORD);
-		event.getTypeEntry().put("tachi", TACHI);
-		event.getTypeEntry().put("longsword", LONGSWORD);
-		event.getTypeEntry().put("greatsword", GREATSWORD);
+		event.getTypeEntry().put("Xsword", SWORD);
+		event.getTypeEntry().put("Xtachi", TACHI);
+		event.getTypeEntry().put("Xlongsword", LONGSWORD);
+		event.getTypeEntry().put("Xgreatsword", GREATSWORD);
+		event.getTypeEntry().put("staff", STAFF);
 		event.getTypeEntry().put("agony", AGONY);
 		event.getTypeEntry().put("torment", TORMENT);
 		event.getTypeEntry().put("ruine", RUINE);
