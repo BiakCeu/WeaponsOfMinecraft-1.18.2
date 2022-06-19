@@ -1,8 +1,14 @@
 package reascer.wom.skill;
 
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import yesman.epicfight.client.events.engine.ControllEngine;
+import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.Skills;
 import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.Skill;
@@ -12,6 +18,23 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 public class EnderStepSkill extends StepSkill {
 	public EnderStepSkill(DodgeSkill.Builder builder) {
 		super(builder);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public FriendlyByteBuf gatherArguments(LocalPlayerPatch executer, ControllEngine controllEngine) {
+        int forward = controllEngine.isKeyDown(Minecraft.getInstance().options.keyUp) ? 1 : 0;
+        int backward = controllEngine.isKeyDown(Minecraft.getInstance().options.keyDown) ? -1 : 0;
+        int left = controllEngine.isKeyDown(Minecraft.getInstance().options.keyLeft) ? 1 : 0;
+        int right = controllEngine.isKeyDown(Minecraft.getInstance().options.keyRight) ? -1 : 0;
+		
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+		buf.writeInt(forward);
+		buf.writeInt(backward);
+		buf.writeInt(left);
+		buf.writeInt(right);
+		
+		return buf;
 	}
 	
 	@Override

@@ -20,7 +20,8 @@ public class EFColliders {
 	
 	public static final Collider ENDER_BLASTER = new MultiOBBCollider(4, 0.4D, 0.6D, 0.4D, 0D, 0D, 0D);
 	public static final Collider ENDER_BLASTER_CROSS = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0D, 0.6D);
-	public static final Collider KICK = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.8D, 0D);
+	public static final Collider KICK = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.6D, 0D);
+	public static final Collider KICK_HUGE = new MultiOBBCollider(4, 0.8D, 0.8D, 0.8D, 0D, 0.9D, 0D);
 	public static final Collider KNEE = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.4D, 0D);
-	
+	public static final Collider ENDER_BULLET = new MultiOBBCollider(6, 0.2D, 10.0D, 0.2D, 0.0D, -10.3D, 0.0D);
 }

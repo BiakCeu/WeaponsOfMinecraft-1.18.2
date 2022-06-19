@@ -1,13 +1,25 @@
 package reascer.wom.gameasset;
 
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Consumer;
 
+import com.google.common.collect.Lists;
+import com.mojang.realmsclient.client.Request.Get;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.ParticleStatus;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket.Rot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +28,9 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import reascer.wom.animation.BasicMultipleAttackAnimation;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.skill.EFKatanaPassive;
+import yesman.epicfight.api.animation.Animator;
+import yesman.epicfight.api.animation.ServerAnimator;
+import yesman.epicfight.api.animation.property.Property.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.Property.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.Property.AttackPhaseProperty;
 import yesman.epicfight.api.animation.property.Property.StaticAnimationProperty;
@@ -30,17 +45,25 @@ import yesman.epicfight.api.animation.types.MovementAnimation;
 import yesman.epicfight.api.animation.types.SpecialAttackAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.client.model.ClientModels;
+import yesman.epicfight.api.collider.MultiOBBCollider;
+import yesman.epicfight.api.collider.OBBCollider;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.api.model.Model;
+import yesman.epicfight.api.utils.game.ExtendedDamageSource;
 import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
+import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.ValueCorrector;
+import yesman.epicfight.api.utils.math.Vec3f;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.gameasset.Models;
+import yesman.epicfight.gameasset.Models.ServerModels;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFAnimations {
@@ -51,10 +74,29 @@ public class EFAnimations {
 	public static StaticAnimation ENDERSTEP_LEFT;
 	public static StaticAnimation ENDERSTEP_RIGHT;
 	
+	public static StaticAnimation KNIGHT_ROLL_FORWARD;
+	public static StaticAnimation KNIGHT_ROLL_BACKWARD;
+	public static StaticAnimation KNIGHT_ROLL_LEFT;
+	public static StaticAnimation KNIGHT_ROLL_RIGHT;
+	
 	public static StaticAnimation SWORD_ONEHAND_AUTO_1;
 	public static StaticAnimation SWORD_ONEHAND_AUTO_2;
 	public static StaticAnimation SWORD_ONEHAND_AUTO_3;
 	public static StaticAnimation SWORD_ONEHAND_AUTO_4;
+	
+	public static StaticAnimation TACHI_TWOHAND_AUTO_1;
+	public static StaticAnimation TACHI_TWOHAND_AUTO_2;
+	public static StaticAnimation TACHI_TWOHAND_AUTO_3;
+	public static StaticAnimation TACHI_TWOHAND_AUTO_4;
+	
+	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_1;
+	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_2;
+	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_3;
+	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_4;
+	
+	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_1;
+	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_2;
+	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_3;
 	
 	public static StaticAnimation AGONY_AUTO_1;
 	public static StaticAnimation AGONY_AUTO_2;
@@ -118,7 +160,19 @@ public class EFAnimations {
 	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_2;
 	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_3;
 	public static StaticAnimation ENDERBLASTER_ONEHAND_AUTO_4;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_DASH;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_JUMPKICK;
 	public static StaticAnimation ENDERBLASTER_ONEHAND_IDLE;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_WALK;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_RUN;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_1;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_2;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_2_LEFT;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_3;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_SHOOT_DASH;
+	public static StaticAnimation ENDERBLASTER_ONEHAND_AIRSHOOT;
 	
 	@SubscribeEvent
 	public static void registerAnimations(AnimationRegistryEvent event) {
@@ -130,7 +184,6 @@ public class EFAnimations {
 		Model biped = models.biped;
 		
 		EATING = new StaticAnimation(0.11F, true, "biped/living/eating", biped);
-		
 		ENDERSTEP_FORWARD = new DodgeAnimation(0.05F, "biped/skill/enderstep_forward", 0.6F, 1.65F, biped)
 				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {Event.create(0.05F, (entitypatch) -> {
 					Entity entity = entitypatch.getOriginal();
@@ -212,6 +265,11 @@ public class EFAnimations {
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					}, Side.CLIENT)});
 		
+		KNIGHT_ROLL_FORWARD = new DodgeAnimation(0.1F, "biped/skill/roll_forward", 0.6F, 0.8F, biped);
+		KNIGHT_ROLL_BACKWARD = new DodgeAnimation(0.1F, "biped/skill/roll_backward", 0.6F, 0.8F, biped);
+		KNIGHT_ROLL_LEFT = new DodgeAnimation(0.1F, "biped/skill/roll_left", 0.6F, 0.8F, biped);
+		KNIGHT_ROLL_RIGHT = new DodgeAnimation(0.1F, "biped/skill/roll_right", 0.6F, 0.8F, biped);
+		
 		SWORD_ONEHAND_AUTO_1 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/sword_onehand_auto_1", biped)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
 		SWORD_ONEHAND_AUTO_2 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/sword_onehand_auto_2", biped)
@@ -221,6 +279,30 @@ public class EFAnimations {
 		SWORD_ONEHAND_AUTO_4 = new BasicAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/sword_onehand_auto_4", biped)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
 		
+		TACHI_TWOHAND_AUTO_1 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/tachi_twohand_auto_1", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
+		TACHI_TWOHAND_AUTO_2 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/tachi_twohand_auto_2", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
+		TACHI_TWOHAND_AUTO_3 = new BasicAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, "Tool_R", "biped/combat/tachi_twohand_auto_3", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
+		TACHI_TWOHAND_AUTO_4 = new BasicAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/tachi_twohand_auto_4", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
+		
+		LONGSWORD_TWOHAND_AUTO_1 = new BasicAttackAnimation(0.05F, 0.1F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/longsword_twohand_auto_1", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
+		LONGSWORD_TWOHAND_AUTO_2 = new BasicAttackAnimation(0.05F, 0.1F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/longsword_twohand_auto_2", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
+		LONGSWORD_TWOHAND_AUTO_3 = new BasicAttackAnimation(0.05F, 0.1F, 0.3F, 0.4F, null, "Tool_R", "biped/combat/longsword_twohand_auto_3", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
+		LONGSWORD_TWOHAND_AUTO_4 = new BasicAttackAnimation(0.05F, 0.2F, 0.4F, 0.6F, null, "Tool_R", "biped/combat/longsword_twohand_auto_4", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
+		
+		GREATSWORD_TWOHAND_AUTO_1 = new BasicAttackAnimation(0.3F, 0.2F, 0.4F, 0.5F, null, "Tool_R", "biped/combat/greatsword_twohand_auto_1", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.15F);
+		GREATSWORD_TWOHAND_AUTO_2 = new BasicAttackAnimation(0.2F, 0.2F, 0.4F, 0.5F, null, "Tool_R", "biped/combat/greatsword_twohand_auto_2", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.15F);
+		GREATSWORD_TWOHAND_AUTO_3 = new BasicAttackAnimation(0.2F, 0.2F, 0.4F, 0.5F, null, "Tool_R", "biped/combat/greatsword_twohand_auto_3", biped)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.15F);
 		
 		AGONY_AUTO_1 = new BasicAttackAnimation(0.1F, 0.12F, 0.25F, 0.33F, null, "Tool_R", "biped/combat/agony_auto_1", biped);
 		AGONY_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/agony_auto_2", biped,
@@ -264,7 +346,9 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE,1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE,1)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.3F);
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.3F)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.INTERRUPT_PREVIOUS_DELTA_MOVEMENT, false);
 		
 		RUINE_AUTO_1 = new BasicAttackAnimation(0.1F, 0.333F, 0.583F, 0.667F, null, "Tool_R", "biped/combat/ruine_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.1F))
@@ -526,48 +610,273 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
 		ENDERBLASTER_ONEHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_auto_2", biped,
 				new Phase(0.1F, 0.1F, 0.2F, 0.2F, "Leg_R", EFColliders.KICK),
 				new Phase(0.25F, 0.25F, 0.4F, 0.4F, "Tool_R", null),
-				new Phase(0.55F, 0.55F, 0.6F, 0.65F, "Tool_R", null))
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				new Phase(0.55F, 0.55F, 0.6F, 0.65F, "Tool_R", EFColliders.ENDER_BLASTER_CROSS))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.45F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD,2)
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F),2)
 				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(2.0F),2)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
 		ENDERBLASTER_ONEHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, "biped/combat/enderblaster_onehand_auto_3", biped,
-				new Phase(0.05F, 0.05F, 0.2F, 0.2F, "Tool_R", EFColliders.ENDER_BLASTER_CROSS),
+				new Phase(0.05F, 0.05F, 0.2F, 0.2F, "Tool_R", null),
 				new Phase(0.25F, 0.25F, 0.35F, 0.4F, "Tool_L", ColliderPreset.FIST))
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
 		ENDERBLASTER_ONEHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, "biped/combat/enderblaster_onehand_auto_4", biped,
 				new Phase(0.2F, 0.2F, 0.3F, 0.4F, "Knee_R", EFColliders.KNEE))
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(3.0F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
+		ENDERBLASTER_ONEHAND_DASH = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_dash", biped,
+				new Phase(0.15F, 0.15F, 0.3F, 0.3F, "Leg_L", EFColliders.KICK_HUGE),
+				new Phase(0.4F, 0.4F, 0.75F, 0.85F, "Leg_L", EFColliders.KICK_HUGE))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
+				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(4.0F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		
+		ENDERBLASTER_ONEHAND_JUMPKICK = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_jumpkick", biped,
+				new Phase(0.0F, 0.0F, 0.20F, 0.20F, "Leg_L", EFColliders.KICK_HUGE),
+				new Phase(0.3F, 0.3F, 0.45F, 0.45F, "Leg_R", EFColliders.KICK_HUGE),
+				new Phase(0.55F, 0.55F, 0.65F, 0.85F, "Leg_R", EFColliders.KICK_HUGE))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.45F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.45F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),2)
+				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(3.0F),2)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,2)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.INTERRUPT_PREVIOUS_DELTA_MOVEMENT, false);
+		
+		ENDERBLASTER_ONEHAND_SHOOT_1 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_1", biped,
+				new Phase(0.05F, 0.05F, 0.15F, 0.15F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.25F, 0.25F, 0.35F, 0.35F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.6F, 0.6F, 0.7F, 0.7F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.6F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.6F),2)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,2)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,2)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.1F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.35F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.6F, ReuseableEvents.SHOOT, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_SHOOT_2 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2", biped,
+				new Phase(0.2F, 0.2F, 0.3F, 0.3F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.4F, 0.4F, 0.5F, 0.55F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.7F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.25F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.35F, ReuseableEvents.SHOOT, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD = new BasicMultipleAttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2_forward", biped,
+				new Phase(0.2F, 0.2F, 0.3F, 0.3F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.4F, 0.4F, 0.5F, 0.55F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.7F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.25F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.35F, ReuseableEvents.SHOOT, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_SHOOT_2_LEFT = new BasicMultipleAttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2_left", biped,
+				new Phase(0.2F, 0.2F, 0.3F, 0.3F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.4F, 0.4F, 0.5F, 0.55F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.7F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.25F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.35F, ReuseableEvents.SHOOT, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT = new BasicMultipleAttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2_right", biped,
+				new Phase(0.2F, 0.2F, 0.3F, 0.3F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.4F, 0.4F, 0.5F, 0.55F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.7F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.25F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.35F, ReuseableEvents.SHOOT, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_SHOOT_3 = new BasicMultipleAttackAnimation(0.05F, 0.7F, 0.75F, 1.2F, EFColliders.ENDER_BULLET, "Tool_R", "biped/skill/enderblaster_onehand_shoot_3", biped)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(2.5F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4.0F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {Event.create(0.00F, (entitypatch) -> {
+					entitypatch.playSound(EpicFightSounds.BUZZ, -1.5F, -1.0F);
+				}, Side.CLIENT),Event.create(0.85F, (entitypatch) -> {
+					OpenMatrix4f transformMatrix = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(0.1F), entitypatch.getEntityModel(ClientModels.LOGICAL_CLIENT).getArmature(), "Tool_R");
+					OpenMatrix4f transformMatrix3 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(0.1F), entitypatch.getEntityModel(ClientModels.LOGICAL_CLIENT).getArmature(), "Tool_R");
+					transformMatrix.translate(new Vec3f(0,-0.6F,-0.3F));
+					transformMatrix3.translate(new Vec3f(0.0f,-2F,-0.3F));
+					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix3,transformMatrix3);
+					HitResult ray = entitypatch.getOriginal().pick(10.D, 0.7F, false);
+					for (int i = 0; i < 20; i++) {
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.REVERSE_PORTAL,
+							(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+							(transformMatrix.m31 + entitypatch.getOriginal().getY()),
+							(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+							(transformMatrix3.m30 + (new Random().nextFloat() - 0.5F)*2),
+							(transformMatrix3.m31 + (new Random().nextFloat() - 0.5F)*2)-1,
+							(transformMatrix3.m32 + (new Random().nextFloat() - 0.5F)*2));
+					}
+					entitypatch.getOriginal().level.addParticle(EpicFightParticles.LASER.get(),
+							(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+							(transformMatrix.m31 + entitypatch.getOriginal().getY()),
+							(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+							(ray.getLocation().x),
+							(ray.getLocation().y),
+							(ray.getLocation().z));
+				}, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_AIRSHOOT = new BasicMultipleAttackAnimation(0.15F, "biped/skill/enderblaster_onehand_airshoot", biped,
+				new Phase(0.05F, 0.05F, 0.15F, 0.15F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.25F, 0.25F, 0.35F, 0.45F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE,ValueCorrector.multiplier(0.7F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.INTERRUPT_PREVIOUS_DELTA_MOVEMENT, false)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.15F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.3F, ReuseableEvents.SHOOT, Side.CLIENT)});
+		
+		ENDERBLASTER_ONEHAND_SHOOT_DASH = new BasicMultipleAttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_dash", biped,
+				new Phase(0.0F, 0.0F, 0.25F, 0.25F, "Leg_R", EFColliders.KICK_HUGE),
+				new Phase(0.5F, 0.5F, 0.6F, 0.6F, "Tool_R", EFColliders.ENDER_BULLET),
+				new Phase(0.75F, 0.75F, 0.85F, 1F, "Tool_R", EFColliders.ENDER_BULLET))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.45F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(6.0F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.8F),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.8F),2)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.LASER_BLAST,2)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, SoundEvents.AMETHYST_CLUSTER_BREAK,2)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ROTATE_X, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.6F, ReuseableEvents.SHOOT, Side.CLIENT),
+						Event.create(0.75F, ReuseableEvents.SHOOT, Side.CLIENT)});
 		
 		ENDERBLASTER_ONEHAND_IDLE = new StaticAnimation(true, "biped/living/enderblaster_onehand_idle", biped);
+		ENDERBLASTER_ONEHAND_WALK = new MovementAnimation(true, "biped/living/enderblaster_onehand_walk", biped);
+		ENDERBLASTER_ONEHAND_RUN = new MovementAnimation(true, "biped/living/enderblaster_onehand_run", biped);
 	}
 	
 	private static class ReuseableEvents {
 		private static final Consumer<LivingEntityPatch<?>> KATANA_IN = (entitypatch) -> entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
+		private static final Consumer<LivingEntityPatch<?>> SHOOT = (entitypatch) -> {
+			OpenMatrix4f transformMatrix = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(0.1F), entitypatch.getEntityModel(ClientModels.LOGICAL_CLIENT).getArmature(), "Tool_R");
+			OpenMatrix4f transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(0.1F), entitypatch.getEntityModel(ClientModels.LOGICAL_CLIENT).getArmature(), "Tool_R");
+			transformMatrix.translate(new Vec3f(0,-0.6F,-0.3F));
+			transformMatrix2.translate(new Vec3f(0.0f,-2F,0.0F));
+			OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
+			OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
+			OpenMatrix4f.mul(CORRECTION,transformMatrix2,transformMatrix2);
+			for (int i = 0; i < 20; i++) {
+				entitypatch.getOriginal().level.addParticle(ParticleTypes.REVERSE_PORTAL,
+					(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+					(transformMatrix.m31 + entitypatch.getOriginal().getY()),
+					(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+					(transformMatrix2.m30 + (new Random().nextFloat() - 0.5F)*2),
+					(transformMatrix2.m31 + (new Random().nextFloat() - 0.5F)*2)-1,
+					(transformMatrix2.m32 + (new Random().nextFloat() - 0.5F)*2));
+			}
+		};
 	}
 }
