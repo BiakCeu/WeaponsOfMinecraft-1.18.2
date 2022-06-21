@@ -159,7 +159,7 @@ public class EFWeaponCapabilityPresets {
 			.collider(EFColliders.STAFF)
 			.hitSound(EpicFightSounds.BLUNT_HIT)
 			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.TWO_HAND, EFAnimations.STAFF_AUTO_1, EFAnimations.STAFF_AUTO_2, EFAnimations.STAFF_AUTO_3, Animations.SPEAR_DASH, Animations.SPEAR_TWOHAND_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, EFAnimations.STAFF_AUTO_1, EFAnimations.STAFF_AUTO_2, EFAnimations.STAFF_AUTO_3, EFAnimations.STAFF_DASH, Animations.SPEAR_TWOHAND_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
 			.specialAttack(Styles.TWO_HAND, Skills.SLAUGHTER_STANCE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.STAFF_IDLE)

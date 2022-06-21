@@ -17,9 +17,10 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.skill.CapabilitySkill;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-@Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFEntityEvents{
-
+	
+	/*
 	@SubscribeEvent
 	public void updateMotion(UpdatePlayerMotionEvent event) {
 		UseAnim useAnim = event.getPlayerPatch().getOriginal().getItemInHand(event.getPlayerPatch().getOriginal().getUsedItemHand()).getUseAnimation();
@@ -28,5 +29,5 @@ public class EFEntityEvents{
 			event.getPlayerPatch().currentCompositeMotion = LivingMotions.DIGGING;
 		}
 	}
-	
+	*/
 }

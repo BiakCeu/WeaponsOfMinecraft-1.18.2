@@ -105,6 +105,7 @@ public class EFAnimations {
 	public static StaticAnimation STAFF_AUTO_1;
 	public static StaticAnimation STAFF_AUTO_2;
 	public static StaticAnimation STAFF_AUTO_3;
+	public static StaticAnimation STAFF_DASH;
 	public static StaticAnimation STAFF_IDLE;
 	
 	public static StaticAnimation AGONY_AUTO_1;
@@ -886,9 +887,13 @@ public class EFAnimations {
 				new Phase(0.35F, 0.35F, 0.45F, 0.45F, "Tool_R", null),
 				new Phase(0.5F, 0.5F, 0.6F, 0.6F, "Tool_R", null))
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),2)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.55F),3)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,3)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
 		
 		STAFF_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_2", biped,
@@ -896,8 +901,11 @@ public class EFAnimations {
 				new Phase(0.3F, 0.3F, 0.4F, 0.4F, "Tool_R", null),
 				new Phase(0.5F, 0.5F, 0.6F, 0.6F, "Tool_R", null))
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),2)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
 		
@@ -905,7 +913,18 @@ public class EFAnimations {
 				new Phase(0.2F, 0.2F, 0.4F, 0.4F, "Tool_R", null),
 				new Phase(0.6F, 0.6F, 0.8F, 0.8F, "Tool_R", null))
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
+		
+		STAFF_DASH = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_dash", biped,
+				new Phase(0.1F, 0.1F, 0.25F, 0.25F, "Tool_R", null),
+				new Phase(0.3F, 0.3F, 0.4F, 0.45F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.75F),1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
 		
 		STAFF_IDLE = new StaticAnimation(true, "biped/living/staff_idle", biped);

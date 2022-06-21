@@ -4,11 +4,7 @@
 	"masks":
 	[
 		{
-			"livingmotion":"RUN",
-			"type":"none"
-		},
-		{
-			"livingmotion":"JUMP",
+			"livingmotion":"ALL",
 			"type":"arms"
 		}
 	]
