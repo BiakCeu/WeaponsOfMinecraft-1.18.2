@@ -8,9 +8,11 @@ import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.skill.AgonyPlungeSkill;
 import reascer.wom.skill.ArrowTenacitySkill;
 import reascer.wom.skill.BlossomSkill;
+import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
 import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.EnderBlastSkill;
+import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderStepSkill;
 import reascer.wom.skill.FatalDrawSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
@@ -39,6 +41,7 @@ public class EFSkills {
 	public static Skill KNIGHT_ROLL;
 	
 	public static Skill BLOSSOM;
+	public static Skill CHARYBDIS;
 	
 	public static Skill AGONY_PLUNGE;
 	public static Skill TRUE_BERSERK;
@@ -52,6 +55,7 @@ public class EFSkills {
 	public static Skill COUNTER_ATTACK;
 	
 	public static Skill ENDER_BLAST;
+	public static Skill ENDER_FUSION;
 	
 	@SubscribeEvent
 	public static void registerSkills(SkillRegistryEvent event) {
@@ -62,6 +66,11 @@ public class EFSkills {
 				.setAnimations(EFAnimations.KNIGHT_ROLL_FORWARD, EFAnimations.KNIGHT_ROLL_BACKWARD, EFAnimations.KNIGHT_ROLL_LEFT, EFAnimations.KNIGHT_ROLL_RIGHT)),true);
 		
 		BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
+		CHARYBDIS = event.registerSkill(new CharybdisSkill(CharybdisSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "charybdis")).setConsumption(6.0F).setAnimations(EFAnimations.STAFF_CHARYBDIS))
+				.newPropertyLine()
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F))
+				.registerPropertiesToAnimation(),false);
 		
 		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(30.0F).setMaxStack(3).setAnimations(EFAnimations.AGONY_PLUNGE))
 				.newPropertyLine()
@@ -108,7 +117,27 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.registerPropertiesToAnimation(),false);
 		
-		ENDER_BLAST = event.registerSkill(new EnderBlastSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_blast")).setConsumption(20.0F).setMaxStack(12)), false);
+		ENDER_BLAST = event.registerSkill(new EnderBlastSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_blast")).setConsumption(24.0F).setMaxStack(12))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(2.5F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4))
+				.registerPropertiesToAnimation(), false);
+		
+		ENDER_FUSION = event.registerSkill(new EnderFusionSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_fusion")).setConsumption(24.0F).setMaxStack(24))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
+				.newPropertyLine()
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(2.5F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4))
+				.registerPropertiesToAnimation(), false);
 		
 		ARROW_TENACITY = event.registerSkill(new ArrowTenacitySkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "arrow_tenacity")).setRequiredXp(0)),true);
 		COUNTER_ATTACK = event.registerSkill(new CounterAttack(GuardSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "counter_attack")).setRequiredXp(8)),true);

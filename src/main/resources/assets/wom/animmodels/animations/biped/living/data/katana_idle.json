@@ -5,19 +5,15 @@
 	[
 		{
 			"livingmotion":"ALL",
-			"type":"root_upper_joints"
+			"type":"arms"
 		},
 		{
-			"livingmotion":"IDLE",
+			"livingmotion":"idle",
 			"type":"none"
 		},
 		{
-			"livingmotion":"KNEEL",
-			"type":"arms"
-		},
-		{
-			"livingmotion":"SWIM",
-			"type":"arms"
+			"livingmotion":"walk",
+			"type":"root_upper_joints"
 		}
 	]
 }

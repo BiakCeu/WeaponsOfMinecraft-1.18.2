@@ -2,20 +2,22 @@
 	"item.epicfight.agony" : "Spear of Agony",
 	"item.epicfight.agony.tooltip" : "Light and sharp spear allow his owner to perform deadly strokes. Jump attack allow to jump 2 block",
 	"skill.epicfight.agony_plunge" : "Apotheosis of agony",
-	"skill.epicfight.agony_plunge.tooltip" : "Jump in the air before landing on all enemy bellow you. The damage is multiplied by the amount of stack you have.",
+	"skill.epicfight.agony_plunge.tooltip" : "Jump in the air before landing on all enemy bellow you.\nThe damage is multiplied by the amount of stack you have.",
 	
 	"item.epicfight.tormented_mind" : "Tormented Mind",
-	"item.epicfight.tormented_mind.tooltip" : "A weapon for mass murder and act of abomination. this axe will make its bearer suffer from the wrath of its former bearer",
+	"item.epicfight.tormented_mind.tooltip" : "A weapon for mass murder and act of abomination.\nThis axe will torment its bearer with the suffering\nfrom the wrath of its former bearer",
 	"skill.epicfight.true_berserk" : "True berserk",
 	"skill.epicfight.true_berserk.tooltip" : "May the god fear your wrath..... ",
 
 	"item.epicfight.ruine" : "Ruine",
-	"item.epicfight.ruine.tooltip" : "An ancient weapon... Perfectly balance by a forgoten knowledge. Waiting for someone to master it.",
+	"item.epicfight.ruine.tooltip" : "An ancient weapon... Perfectly balance by a forgoten knowledge.\nThe cristal in the hilt is infused with endpower.\nThis allows the bearer to perform various deadly actions.",
 	"skill.epicfight.plunder_perdition" : "Plunder the perdition",
-	"skill.epicfight.plunder_perdition.tooltip" : "As you plunge your sword in the ground, enemy in the area will be struck by an ancient power.\nEach enemy hit will increase your speed for a period. the period is increased by the level of sweeping edge.",
+	"skill.epicfight.plunder_perdition.tooltip" : "As you plunge your sword in the ground,\nthe condensed endpower of the cristal strike each enemy in the area.\nEach enemy hit will increase your speed for a period. the period is increased by the level of sweeping edge.",
 
 	"item.epicfight.ender_blaster" : "Ender blaster",
-	"item.epicfight.ender_blaster.tooltip" : "The pinnacle of the end power. This weapon has transcended time and space in order to fine someone who can control its power at its most",
+	"item.epicfight.ender_blaster.tooltip" : "The pinnacle of the end power. This weapon has transcended time and space\nin order to find someone who can control its power at its most",
+	"skill.epicfight.ender_blast" : "Ender blast",
+	"skill.epicfight.ender_blast.tooltip" : "The blaster loader is composed of 12 chambers.\nKinetic energy stored in them is transmuted into endpower.\nWhen the trigger is pressed, half of the converted endpower\nis condensed into different types of bullets.\nThe other half is transfered into a condenser that overcharges\nthe endpower until it blasts the bullet out with tremendous precision.\nAll of that in just a fraction of a second ... outstanding!",
 
 	"item.epicfight.stone_greataxe" : "Stone Greataxe",
 	"item.epicfight.golden_greataxe" : "Golden Greataxe",
@@ -29,6 +31,8 @@
 	"item.epicfight.iron_staff" : "Iron staff",
 	"item.epicfight.diamond_staff" : "Diamond staff",
 	"item.epicfight.netherite_staff" : "Netherite staff",
+	"skill.epicfight.charybdis" : "Charybdis into Scylla",
+	"skill.epicfight.charybdis.tooltip" : "Consume Stamina to perform a whirlwind of hit for a total of 8 strikes. Reduce the stamina consumption with sweeping edge.",
 
 	"attribute.name.epicfight.impact": "%s Impact",
 	"attribute.name.epicfight.armor_negation": "%s%% Armor Negation",

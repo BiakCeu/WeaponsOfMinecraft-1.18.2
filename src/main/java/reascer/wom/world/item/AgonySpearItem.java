@@ -34,7 +34,7 @@ public class AgonySpearItem extends WeaponItem {
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return toRepair.getItem() == Items.IRON_INGOT;
+		return repair.getItem() == Items.AMETHYST_SHARD;
 	}
     
 	@OnlyIn(Dist.CLIENT)

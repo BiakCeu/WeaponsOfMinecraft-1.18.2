@@ -31,25 +31,25 @@ import yesman.epicfight.world.item.WeaponItem;
 
 public class EnderBlasterItem extends WeaponItem {
 	protected static final UUID MOVEMENT_SPEED_MODIFIER = UUID.fromString("9d2914cc-ecc3-11ec-8ea0-0242ac120002");
+	@OnlyIn(Dist.CLIENT)
 	private List<Component> tooltipExpand;
-	private float attackDamage;
-	private double attackSpeed;
+	private final float attackDamage;
+	private final double attackSpeed;
 	
 	public EnderBlasterItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -1.00F, build);
+		super(EpicFightItemTier.KATANA, 0, -1.00F, build.defaultDurability(EpicFightItemTier.KATANA.getUses()*2));
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
 			this.tooltipExpand.add(new TextComponent(""));
 			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".ender_blaster.tooltip"));
-			
-			this.attackDamage = 5.5F;
-			this.attackSpeed = -1.0F;
 		}
+		this.attackDamage = 6F;
+		this.attackSpeed = -1.0F;
 	}
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return toRepair.getItem() == Items.CRYING_OBSIDIAN;
+		return repair.getItem() == Items.CRYING_OBSIDIAN;
 	}
     
 	@OnlyIn(Dist.CLIENT)
@@ -66,7 +66,7 @@ public class EnderBlasterItem extends WeaponItem {
     		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
     		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, Operation.ADDITION));
     		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", this.attackSpeed, Operation.ADDITION));
-    		builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(MOVEMENT_SPEED_MODIFIER, "Weapon modifier", +0.02D, Operation.ADDITION));
+    		builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(MOVEMENT_SPEED_MODIFIER, "Weapon modifier", +0.01D, Operation.ADDITION));
     	    return builder.build();
         }
         

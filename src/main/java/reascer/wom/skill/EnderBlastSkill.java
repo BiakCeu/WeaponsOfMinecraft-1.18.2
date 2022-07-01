@@ -1,19 +1,25 @@
 package reascer.wom.skill;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.Input;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameRules.Key;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.EFAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
+import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
+import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
@@ -24,9 +30,11 @@ import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
+import yesman.epicfight.skill.SpecialAttackSkill;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
+import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class EnderBlastSkill extends SeperativeMotionSkill {
@@ -131,13 +139,13 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		int i = args.readInt();
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater())) {
+		if ((!player.isOnGround() && !player.isInWater()) && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
 		} else {
 			if(executer.getOriginal().isSprinting()) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
 			} else {
-				if (i != -2 && executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) == 1) {
+				if (i != -2 && executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) >= 1) {
 					executer.playAnimationSynchronized(this.attackAnimations[i+3], 0);
 					executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COMBO, 1, executer.getOriginal());
 				} else {
@@ -155,6 +163,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
 		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);
+		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() + (4.0F * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		executer.getSkill(this.category).activate();
 	}
 	
@@ -166,16 +175,36 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 	}
 	
 	@Override
+	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
+		List<Component> list = super.getTooltipOnItem(itemStack, cap, playerCap);
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Triple shot :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Double shot :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Shotgun blast :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(3), "Charged beam :");
+		
+		return list;
+	}
+	
+	@Override
+	public SpecialAttackSkill registerPropertiesToAnimation() {
+		return this;
+	}
+	
+	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
 			container.getDataManager().setData(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1);
-			if (container.getDataManager().getDataValue(ZOOM)) {
-				ClientEngine.instance.renderEngine.zoomIn();
+			if(container.getExecuter().isLogicalClient()) {
+				if (container.getDataManager().getDataValue(ZOOM)) {
+					ClientEngine.instance.renderEngine.zoomIn();
+				}
 			}
 		} else {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getExecuter().getSkill(this.category).getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			}
+			if(container.getExecuter().isLogicalClient()) {
 				ClientEngine.instance.renderEngine.zoomOut(0);
 			}
 		}

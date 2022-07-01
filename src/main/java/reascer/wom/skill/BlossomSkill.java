@@ -41,6 +41,20 @@ public class BlossomSkill extends SeperativeMotionSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], 0);
+		switch (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO)) {
+			case 0: {
+				executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, 8, executer.getOriginal());
+				break;
+			}
+			case 1: {
+				executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, 38, executer.getOriginal());
+				break;
+			}
+			case 2: {
+				executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, 30, executer.getOriginal());
+				break;
+			}
+		}
 		if (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) < 2) {
 			executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COMBO, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO)+1, executer.getOriginal());
 		}

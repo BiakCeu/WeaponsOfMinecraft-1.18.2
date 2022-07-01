@@ -7,7 +7,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
+import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.Skill;
@@ -98,6 +100,7 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getAttackDamage() > 1.0F) {
 				float attackDamage = event.getAttackDamage();
 				event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
+				container.getExecuter().getOriginal().resetFallDistance();
 			}
 		});
 		
@@ -134,6 +137,13 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Plunge :");
 		
 		return list;
+	}
+	
+	@Override
+	public boolean isExecutableState(PlayerPatch<?> executer) {
+		executer.updateEntityState();
+		EntityState playerState = executer.getEntityState();
+		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill() || !executer.getEntityState().canBasicAttack());
 	}
 	
 	@Override

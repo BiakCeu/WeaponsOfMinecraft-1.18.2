@@ -37,15 +37,17 @@ public class TormentedMindItem extends WeaponItem {
 	public TormentedMindItem(Item.Properties build) {
 		super(EpicFightItemTier.KATANA, 0, -2.7F, build);
 		if (EpicFightMod.isPhysicalClient()) {
-			this.tooltipExpand = new ArrayList<Component> ();
-			this.attackDamage = 9.0F;
-			this.attackSpeed = -2.7F;
+			this.tooltipExpand = new ArrayList<Component>();
+			this.tooltipExpand.add(new TextComponent(""));
+			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".tormented_mind.tooltip"));
 		}
+		this.attackDamage = 9.0F;
+		this.attackSpeed = -2.7F;
 	}
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return toRepair.getItem() == Items.IRON_INGOT;
+		return repair.getItem() == Items.QUARTZ;
 	}
     
 	@OnlyIn(Dist.CLIENT)

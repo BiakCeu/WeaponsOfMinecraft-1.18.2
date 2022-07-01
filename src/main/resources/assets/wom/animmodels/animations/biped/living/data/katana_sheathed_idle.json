@@ -8,15 +8,11 @@
 			"type":"root_upper_joints"
 		},
 		{
-			"livingmotion":"IDLE",
+			"livingmotion":"idle",
 			"type":"none"
 		},
 		{
-			"livingmotion":"KNEEL",
-			"type":"arms"
-		},
-		{
-			"livingmotion":"SWIM",
+			"livingmotion":"swim",
 			"type":"arms"
 		}
 	]

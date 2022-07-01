@@ -4,11 +4,15 @@
 	"masks":
 	[
 		{
-			"livingmotion":"IDLE",
+			"livingmotion":"ALL",
+			"type":"root_upper_joints"
+		},
+		{
+			"livingmotion":"idle",
 			"type":"none"
 		},
 		{
-			"livingmotion":"JUMP",
+			"livingmotion":"swim",
 			"type":"arms"
 		}
 	]

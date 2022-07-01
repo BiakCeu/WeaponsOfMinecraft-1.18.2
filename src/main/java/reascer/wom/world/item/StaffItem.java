@@ -20,17 +20,32 @@ public class StaffItem extends WeaponItem {
 	protected static final UUID MOVEMENT_SPEED_MODIFIER = UUID.fromString("16295ED8-B092-4A75-9A94-BCD8D56668BB");
 	
 	private final float attackDamage;
-	private final float attackSpeed;
+	private float attackSpeed;
 	
 	public StaffItem(Item.Properties build, Tier tier) {
-		super(tier, 0, 0.0F, build.defaultDurability(tier.getUses()*3));
+		super(tier, 0, 0.0F, build.defaultDurability((int) (tier.getUses()*2.5F)));
 		this.attackDamage = 1.5F + (tier.getAttackDamageBonus()/2);
-		if (tier.getLevel() == 2) {
-			this.attackSpeed = -1.25F - (0.2F * tier.getLevel());
-		} else if (tier.getLevel() == 3) {
-			this.attackSpeed = -1.25F - (0.05F * tier.getLevel());
-		} else {
-			this.attackSpeed = -1.25F - (0.1F * tier.getLevel());
+		switch (tier.getLevel()) {
+			case 0: {
+				this.attackSpeed = -1.25F;
+				break;
+			}
+			case 1: {
+				this.attackSpeed = -1.4F;
+				break;
+			}
+			case 2: {
+				this.attackSpeed = -1.65F;
+				break;
+			}
+			case 3: {
+				this.attackSpeed = -1.25F;
+				break;
+			}
+			case 4: {
+				this.attackSpeed = -1.4F;
+				break;
+			}
 		}
 	}
 	
