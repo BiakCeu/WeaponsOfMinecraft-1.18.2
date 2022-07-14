@@ -59,7 +59,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 			EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_2, 
 			EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_3,
 			EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_4,
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH,
+			EFAnimations.ENDERBLASTER_TWOHAND_PISTOLERO,
 			EFAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT);
 	}
 	
@@ -149,6 +149,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 		} else {
 			if(executer.getOriginal().isSprinting()) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
+				executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(NOFALLDAMAGE, true, executer.getOriginal());
 			} else {
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], 0);
 				if (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) < 3) {
@@ -162,12 +163,12 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 		}
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, cooldown, executer.getOriginal());
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
-		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);
+		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);	
 		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource()
-				+ (4.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)))
+				+ (1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)))
 				+ (executer.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCollider() == EFColliders.ENDER_BLASTER ? 
-						(4.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND))):
-						0));
+						(1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND))):
+						0));		
 		executer.getSkill(this.category).activate();
 	}
 	

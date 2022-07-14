@@ -222,8 +222,8 @@ public class TrueBerserkSkill extends SpecialAttackSkill {
 							this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(), container.getRemainDuration()-1);
 						}
 					} else {
-						if (container.getExecuter().getOriginal().getHealth() > 1f) {
-							container.getExecuter().getOriginal().setHealth(container.getExecuter().getOriginal().getHealth() - 1f);
+						if (container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.1f) > 0f) {
+							container.getExecuter().getOriginal().setHealth(container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.1f));
 							if(!container.getExecuter().isLogicalClient()) {
 								container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().xo, container.getExecuter().getOriginal().yo, container.getExecuter().getOriginal().zo,
 						    			SoundEvents.PLAYER_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 1.0F);

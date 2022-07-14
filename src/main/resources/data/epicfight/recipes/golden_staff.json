@@ -10,7 +10,7 @@
     "key":
     {
         "B": { "item" : "epicfight:wooden_staff" },
-        "S": { "item" : "minecraft:golden_ingot" }
+        "S": { "item" : "minecraft:gold_ingot" }
     },
     
     "result":

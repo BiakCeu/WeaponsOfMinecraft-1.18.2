@@ -41,7 +41,7 @@ public class TormentedMindItem extends WeaponItem {
 			this.tooltipExpand.add(new TextComponent(""));
 			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".tormented_mind.tooltip"));
 		}
-		this.attackDamage = 9.0F;
+		this.attackDamage = 8.0F;
 		this.attackSpeed = -2.7F;
 	}
 	

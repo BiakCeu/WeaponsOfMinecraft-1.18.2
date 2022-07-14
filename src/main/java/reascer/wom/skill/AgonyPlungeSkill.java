@@ -1,8 +1,10 @@
 package reascer.wom.skill;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -99,7 +101,7 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getAttackDamage() > 1.0F) {
 				float attackDamage = event.getAttackDamage();
-				event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
+				event.setAttackDamage(attackDamage * (0.5f + (0.5f * container.getDataManager().getDataValue(STACK))));
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
 		});

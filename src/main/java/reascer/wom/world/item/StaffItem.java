@@ -24,7 +24,7 @@ public class StaffItem extends WeaponItem {
 	
 	public StaffItem(Item.Properties build, Tier tier) {
 		super(tier, 0, 0.0F, build.defaultDurability((int) (tier.getUses()*2.5F)));
-		this.attackDamage = 1.5F + (tier.getAttackDamageBonus()/2);
+		this.attackDamage = 1.0F + (tier.getAttackDamageBonus());
 		switch (tier.getLevel()) {
 			case 0: {
 				this.attackSpeed = -1.25F;

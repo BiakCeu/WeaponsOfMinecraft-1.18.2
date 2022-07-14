@@ -40,9 +40,9 @@ public class CounterAttack extends GuardSkill {
 	private static final Map<WeaponCategory, BiFunction<CapabilityItem, PlayerPatch<?>, StaticAnimation>> AVAILABLE_WEAPON_TYPES = Maps.<WeaponCategory, BiFunction<CapabilityItem, PlayerPatch<?>, StaticAnimation>>newLinkedHashMap();
 	
 	static {
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.KATANA, (item, playerpatch) -> EFAnimations.KATANA_AUTO_3);
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.LONGSWORD, (item, playerpatch) -> EFAnimations.RUINE_AUTO_2);
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.SWORD, (item, playerpatch) -> item.getStyle(playerpatch) == Styles.ONE_HAND ? Animations.SWORD_AUTO_3 : Animations.SWORD_DUAL_AUTO3);
+		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.KATANA, (item, playerpatch) -> EFAnimations.KATANA_SHEATHED_COUNTER);
+		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.LONGSWORD, (item, playerpatch) -> EFAnimations.RUINE_DASH);
+		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.SWORD, (item, playerpatch) -> item.getStyle(playerpatch) == Styles.ONE_HAND ? Animations.SWORD_DASH : Animations.SWORD_DUAL_DASH);
 		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.TACHI, (item, playerpatch) -> EFAnimations.RUINE_DASH);
 		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.SPEAR, (item, playerpatch) -> EFAnimations.AGONY_DASH);
 	}
@@ -84,7 +84,8 @@ public class CounterAttack extends GuardSkill {
 				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.POSITION_FRONT_OF_EYE_POSITION, HitParticleType.ARGUMENT_ZERO, playerentity, damageSource.getDirectEntity());
 				
 				if (successParrying) {
-					penalty = 0.1F;
+					penalty += this.getPenaltyStamina(itemCapability) + 2.0f;
+					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
 					knockback *= 0.4F;
 					//container.getExecuter().playAnimationSynchronized(itemCapability.getAutoAttckMotion(container.getExecuter()).get(itemCapability.getAutoAttckMotion(container.getExecuter()).size()), -0.30F);
 				} else {

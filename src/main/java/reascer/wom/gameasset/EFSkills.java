@@ -82,7 +82,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(16))
 				.registerPropertiesToAnimation(),false);
 		
-		TRUE_BERSERK = event.registerSkill(new TrueBerserkSkill(TrueBerserkSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "true_berserk")).setConsumption(160.0F).setMaxDuration(3).setActivateType(ActivateType.DURATION_INFINITE).setAnimations(EFAnimations.TORMENT_BERSERK_CONVERT))
+		TRUE_BERSERK = event.registerSkill(new TrueBerserkSkill(TrueBerserkSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "true_berserk")).setConsumption(120.0F).setMaxDuration(3).setActivateType(ActivateType.DURATION_INFINITE).setAnimations(EFAnimations.TORMENT_BERSERK_CONVERT))
 				.newPropertyLine()
 				.newPropertyLine()
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.2F))
@@ -92,7 +92,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
 				.registerPropertiesToAnimation(),false);
 		
-		PLUNDER_PERDITION = event.registerSkill(new PlunderPerditionSkill(PlunderPerditionSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "plunder_perdition")).setConsumption(160.0F).setActivateType(ActivateType.ONE_SHOT))
+		PLUNDER_PERDITION = event.registerSkill(new PlunderPerditionSkill(PlunderPerditionSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "plunder_perdition")).setConsumption(120.0F).setActivateType(ActivateType.ONE_SHOT))
 				.newPropertyLine()
 				.newPropertyLine()
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
@@ -109,7 +109,7 @@ public class EFSkills {
 				.setActivateType(ActivateType.ONE_SHOT)
 				.setResource(Resource.COOLDOWN)),false);
 		
-		FATAL_DRAW_EF = event.registerSkill(new FatalDrawSkill(SpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "fatal_draw_ef")).setConsumption(60.0F).setMaxStack(12))
+		FATAL_DRAW_EF = event.registerSkill(new FatalDrawSkill(SpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "fatal_draw_ef")).setConsumption(40.0F).setMaxStack(12))
 				.newPropertyLine()
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.7F))
 				.addProperty(AttackPhaseProperty.ARMOR_NEGATION, ValueCorrector.adder(50.0F))
@@ -117,7 +117,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.registerPropertiesToAnimation(),false);
 		
-		ENDER_BLAST = event.registerSkill(new EnderBlastSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_blast")).setConsumption(24.0F).setMaxStack(12))
+		ENDER_BLAST = event.registerSkill(new EnderBlastSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_blast")).setConsumption(6.0F).setMaxStack(12))
 				.newPropertyLine()
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
 				.newPropertyLine()
@@ -129,7 +129,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4))
 				.registerPropertiesToAnimation(), false);
 		
-		ENDER_FUSION = event.registerSkill(new EnderFusionSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_fusion")).setConsumption(24.0F).setMaxStack(24))
+		ENDER_FUSION = event.registerSkill(new EnderFusionSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_fusion")).setConsumption(12.0F).setMaxStack(24))
 				.newPropertyLine()
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
 				.newPropertyLine()

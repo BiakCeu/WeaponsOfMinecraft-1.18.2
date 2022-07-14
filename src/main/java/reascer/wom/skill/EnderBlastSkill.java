@@ -163,7 +163,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
 		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);
-		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() + (4.0F * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
+		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() + (1.0F * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));			
 		executer.getSkill(this.category).activate();
 	}
 	
