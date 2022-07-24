@@ -10,13 +10,18 @@ import reascer.wom.skill.ArrowTenacitySkill;
 import reascer.wom.skill.BlossomSkill;
 import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
+import reascer.wom.skill.DodgeMasterSkill;
 import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderStepSkill;
 import reascer.wom.skill.FatalDrawSkill;
+import reascer.wom.skill.KickSkill;
+import reascer.wom.skill.PainAnticipationSkill;
+import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
 import reascer.wom.skill.TrueBerserkSkill;
+import reascer.wom.skill.VampirizeSkill;
 import yesman.epicfight.api.animation.property.Property.AttackPhaseProperty;
 import yesman.epicfight.api.forgeevent.SkillRegistryEvent;
 import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
@@ -38,7 +43,10 @@ import yesman.epicfight.skill.StepSkill;
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFSkills {
 	public static Skill ENDERSTEP;
+	public static Skill DODGEMASTER;
 	public static Skill KNIGHT_ROLL;
+	
+	public static Skill KICK;
 	
 	public static Skill BLOSSOM;
 	public static Skill CHARYBDIS;
@@ -53,6 +61,9 @@ public class EFSkills {
 	public static Skill FATAL_DRAW_EF;
 	public static Skill ARROW_TENACITY;
 	public static Skill COUNTER_ATTACK;
+	public static Skill PAIN_ANTICIPATION;
+	public static Skill PAIN_RETRIBUTION;
+	public static Skill VAMPIRIZE;
 	
 	public static Skill ENDER_BLAST;
 	public static Skill ENDER_FUSION;
@@ -61,6 +72,9 @@ public class EFSkills {
 	public static void registerSkills(SkillRegistryEvent event) {
 		ENDERSTEP = event.registerSkill(new EnderStepSkill(DodgeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "enderstep")).setConsumption(5.0F)
 				.setAnimations(EFAnimations.ENDERSTEP_FORWARD, EFAnimations.ENDERSTEP_BACKWARD, EFAnimations.ENDERSTEP_LEFT, EFAnimations.ENDERSTEP_RIGHT)),true);
+		
+		DODGEMASTER = event.registerSkill(new DodgeMasterSkill(DodgeMasterSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "dodgemaster")).setConsumption(2.0F)
+				.setAnimations(EFAnimations.DODGEMASTER_RIGHT, EFAnimations.DODGEMASTER_LEFT, EFAnimations.DODGEMASTER_RIGHT, EFAnimations.DODGEMASTER_LEFT)),true);
 		
 		KNIGHT_ROLL = event.registerSkill(new DodgeSkill(DodgeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "knight_roll")).setConsumption(3.5F)
 				.setAnimations(EFAnimations.KNIGHT_ROLL_FORWARD, EFAnimations.KNIGHT_ROLL_BACKWARD, EFAnimations.KNIGHT_ROLL_LEFT, EFAnimations.KNIGHT_ROLL_RIGHT)),true);
@@ -139,8 +153,14 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4))
 				.registerPropertiesToAnimation(), false);
 		
-		ARROW_TENACITY = event.registerSkill(new ArrowTenacitySkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "arrow_tenacity")).setRequiredXp(0)),true);
 		COUNTER_ATTACK = event.registerSkill(new CounterAttack(GuardSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "counter_attack")).setRequiredXp(8)),true);
+		//KICK = event.registerSkill(new KickSkill(KickSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "kick")).setConsumption(2.0F).setRequiredXp(3)),true);
+		
+		
+		ARROW_TENACITY = event.registerSkill(new ArrowTenacitySkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "arrow_tenacity")).setRequiredXp(0)),true);
+		PAIN_ANTICIPATION = event.registerSkill(new PainAnticipationSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "pain_anticipation")).setRequiredXp(5)),true);
+		PAIN_RETRIBUTION = event.registerSkill(new PainRetributionSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "pain_retribution")).setRequiredXp(8)),true);
+		VAMPIRIZE = event.registerSkill(new VampirizeSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "vampirize")).setRequiredXp(8)),true);
 		
 	}
 }

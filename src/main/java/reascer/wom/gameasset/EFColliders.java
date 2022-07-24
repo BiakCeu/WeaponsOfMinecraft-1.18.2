@@ -40,5 +40,6 @@ public class EFColliders {
 	public static final Collider ENDER_BULLET_WIDE = new OBBCollider( 4.6D, 1.5D, 4.6D, 0.0D, 0.0D, -4.6D);
 	public static final Collider ENDER_PISTOLERO = new OBBCollider( 2.5D, 2D, 2.5D, 0.0D, -1.5D, 0.0D);
 	
+	public static final Collider ANTITHEUS = new MultiOBBCollider(3, 0.4F, 1.0F, 1.6F, 0F, -0.4F, -0.9F);
 	
 }

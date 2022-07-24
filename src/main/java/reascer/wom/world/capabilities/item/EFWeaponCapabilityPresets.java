@@ -337,6 +337,44 @@ public class EFWeaponCapabilityPresets {
 		return weaponCapability;
 	};
 	
+	public static final Function<Item, CapabilityItem> ANTITHEUS = (item) -> {
+		EFWeaponCapability cap = new EFWeaponCapability(WeaponCapability.builder()
+				.category(WeaponCategory.GREATSWORD)
+				.styleProvider((entitypatch) -> {
+					if (entitypatch instanceof PlayerPatch<?>) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
+							return Styles.LIECHTENAUER;
+						}
+					}
+					return Styles.TWO_HAND;
+				})
+				.collider(EFColliders.ANTITHEUS)
+				.hitSound(EpicFightSounds.BLADE_HIT)
+				.swingSound(EpicFightSounds.WHOOSH_BIG)
+				.canBePlacedOffhand(false)
+				.newStyleCombo(Styles.TWO_HAND, EFAnimations.ANTITHEUS_AUTO_1, EFAnimations.ANTITHEUS_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.ANTITHEUS_AGRESSION, EFAnimations.TORMENT_AIRSLAM)
+				.newStyleCombo(Styles.LIECHTENAUER, EFAnimations.TORMENT_BERSERK_AUTO_1, EFAnimations.TORMENT_BERSERK_AUTO_2, EFAnimations.TORMENT_BERSERK_DASH, EFAnimations.TORMENT_BERSERK_AIRSLAM)
+				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
+				.specialAttack(Styles.TWO_HAND, EFSkills.TRUE_BERSERK)
+				.specialAttack(Styles.LIECHTENAUER, EFSkills.TRUE_BERSERK)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.ANTITHEUS_IDLE)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.ANTITHEUS_WALK)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.ANTITHEUS_RUN)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, EFAnimations.ANTITHEUS_RUN)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.IDLE, EFAnimations.TORMENT_BERSERK_IDLE)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.WALK, EFAnimations.TORMENT_BERSERK_WALK)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.CHASE, EFAnimations.TORMENT_BERSERK_RUN)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.RUN, EFAnimations.TORMENT_BERSERK_RUN)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
+					,EFWeaponCapability.EFbuilder()
+				.newHeavyStyleCombo(Styles.TWO_HAND, EFAnimations.TORMENT_AUTO_1, EFAnimations.TORMENT_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.TORMENT_DASH, Animations.GREATSWORD_AIR_SLASH)
+		);
+		return cap;
+	};
+	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
 		event.getTypeEntry().put("sword", SWORD);
@@ -349,7 +387,7 @@ public class EFWeaponCapabilityPresets {
 		event.getTypeEntry().put("ruine", RUINE);
 		event.getTypeEntry().put("katana", EFKATANA);
 		event.getTypeEntry().put("ender_blaster", ENDER_BLASTER);
-	  
+		event.getTypeEntry().put("antitheus", ANTITHEUS);
 	}
 	
 }

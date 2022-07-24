@@ -3,17 +3,16 @@
 	"base":
 	{
 		"loader": "forge:obj",
-  		"model": "epicfight:models/item/obj/tormented_mind.obj",
+  		"model": "epicfight:models/item/obj/antitheus.obj",
   		"flip-v": true,
-		"textures": { "#grip": "epicfight:item/swords.png" },
-		"materialLibraryOverride": "tormented_mind.mtl",
+		"materialLibraryOverride": "antitheus.mtl",
 		"display":
   		{
     		"thirdperson_righthand":
     		{
-      			"translation": [7.5, -9.5, 8.8],
+      			"translation": [7.5, -9.5, 8.3],
       			"rotation": [90, 0, 0],
-      			"scale": [1, 1, 1]
+      			"scale": [0.95, 0.95, 0.95]
     		},
     		"firstperson_righthand":
     		{
@@ -30,7 +29,7 @@
 			"parent": "item/generated",
 			"textures":
 			{
-				"layer0": "epicfight:item/tormented"
+				"layer0": "epicfight:item/antitheus"
 			}
 		},
 		"gui":
@@ -38,7 +37,7 @@
 			"parent": "item/generated",
 			"textures":
 			{
-				"layer0": "epicfight:item/tormented"
+				"layer0": "epicfight:item/antitheus"
 			},
 			"gui_light": "front"
 		},
@@ -47,7 +46,7 @@
 			"parent": "item/generated",
 			"textures":
 			{
-				"layer0": "epicfight:item/tormented"
+				"layer0": "epicfight:item/antitheus"
 			}
 		}
 	}

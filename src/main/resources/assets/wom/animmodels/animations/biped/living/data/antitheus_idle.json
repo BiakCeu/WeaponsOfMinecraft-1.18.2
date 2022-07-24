@@ -14,15 +14,6 @@
 		{
 			"livingmotion":"swim",
 			"type":"arms"
-		},
-		{
-			"livingmotion":"kneel",
-			"type":"arms"
-		}
-		,
-		{
-			"livingmotion":"sneak",
-			"type":"arms"
 		}
 	]
 }

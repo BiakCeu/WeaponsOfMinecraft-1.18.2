@@ -58,10 +58,16 @@ public class EFAnimations {
 	public static StaticAnimation ENDERSTEP_LEFT;
 	public static StaticAnimation ENDERSTEP_RIGHT;
 	
+	public static StaticAnimation DODGEMASTER_BACKWARD;
+	public static StaticAnimation DODGEMASTER_LEFT;
+	public static StaticAnimation DODGEMASTER_RIGHT;
+	
 	public static StaticAnimation KNIGHT_ROLL_FORWARD;
 	public static StaticAnimation KNIGHT_ROLL_BACKWARD;
 	public static StaticAnimation KNIGHT_ROLL_LEFT;
 	public static StaticAnimation KNIGHT_ROLL_RIGHT;
+	
+	public static StaticAnimation KICK;
 	
 	public static StaticAnimation SWORD_ONEHAND_AUTO_1;
 	public static StaticAnimation SWORD_ONEHAND_AUTO_2;
@@ -185,6 +191,15 @@ public class EFAnimations {
 	public static StaticAnimation ENDERBLASTER_TWOHAND_PISTOLERO;
 	public static StaticAnimation ENDERBLASTER_TWOHAND_IDLE;
 	
+	public static StaticAnimation ANTITHEUS_AGRESSION;
+	public static StaticAnimation ANTITHEUS_AUTO_1;
+	public static StaticAnimation ANTITHEUS_AUTO_2;
+	public static StaticAnimation ANTITHEUS_AUTO_3;
+	public static StaticAnimation ANTITHEUS_AUTO_4;
+	public static StaticAnimation ANTITHEUS_IDLE;
+	public static StaticAnimation ANTITHEUS_RUN;
+	public static StaticAnimation ANTITHEUS_WALK;
+	
 	@SubscribeEvent
 	public static void registerAnimations(AnimationRegistryEvent event) {
 		event.getRegistryMap().put(WeaponOfMinecraft.MODID, EFAnimations::build);
@@ -195,6 +210,27 @@ public class EFAnimations {
 		Model biped = models.biped;
 		
 		EATING = new StaticAnimation(0.11F, true, "biped/living/eating", biped);
+		
+		KICK = new BasicAttackAnimation(0.1F, 0.05F, 0.15F, 0.2F, null, "Tool_R", "biped/skill/kick", biped)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.setter(2))
+				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.setter(5))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
+		
+		DODGEMASTER_BACKWARD = new DodgeAnimation(0.00F, "biped/skill/dodgemaster_back", 0.6F, 1.65F, biped)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {Event.create(0.00F, (entitypatch) -> {
+					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG, 0.5F, 1.0F);
+				}, Side.CLIENT)});
+		DODGEMASTER_LEFT = new DodgeAnimation(0.00F, "biped/skill/dodgemaster_left", 0.6F, 1.65F, biped)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {Event.create(0.00F, (entitypatch) -> {
+					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG, 0.5F, 1.0F);
+				}, Side.CLIENT)});
+		DODGEMASTER_RIGHT = new DodgeAnimation(0.00F, "biped/skill/dodgemaster_right", 0.6F, 1.65F, biped)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {Event.create(0.00F, (entitypatch) -> {
+					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG, 0.5F, 1.0F);
+				}, Side.CLIENT)});
+		
+		
 		ENDERSTEP_FORWARD = new DodgeAnimation(0.05F, "biped/skill/enderstep_forward", 0.6F, 1.65F, biped)
 				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {Event.create(0.05F, (entitypatch) -> {
 					Entity entity = entitypatch.getOriginal();
@@ -516,7 +552,7 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.30F)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.50F);
 		
-		TORMENT_BERSERK_AIRSLAM = new BasicMultipleAttackAnimation(0.05F, 0.4F, 0.7F, 1.2F, EFColliders.TORMENT_BERSERK_AIRSLAM, "Root", "biped/skill/torment_berserk_airslam", biped)
+		TORMENT_BERSERK_AIRSLAM = new BasicMultipleAttackAnimation(0.15F, 0.4F, 0.7F, 1.2F, EFColliders.TORMENT_BERSERK_AIRSLAM, "Root", "biped/skill/torment_berserk_airslam", biped)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.GROUND_SLAM)
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.8F))
 				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.multiplier(1.2F))
@@ -529,7 +565,6 @@ public class EFAnimations {
 							if (entitypatch instanceof PlayerPatch) {
 								((PlayerPatch)entitypatch).setStamina(((PlayerPatch)entitypatch).getStamina() - 4.0f);
 							}
-							
 						}, Side.CLIENT),
 						Event.create(0.6F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT)
 						});
@@ -1386,6 +1421,45 @@ public class EFAnimations {
 		
 		STAFF_IDLE = new StaticAnimation(0.1f,true, "biped/living/staff_idle", biped);
 		STAFF_RUN = new MovementAnimation(0.1f,true, "biped/living/staff_run", biped);
+		
+		ANTITHEUS_AGRESSION = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_agression", biped,
+				new Phase(0.25F, 0.25F, 0.4F, 0.4F, "Tool_R", null),
+				new Phase(0.6F, 0.6F, 0.8F, 0.85F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG, 1)
+				.addProperty(AttackPhaseProperty.IMPACT, ValueCorrector.adder(-1),1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE,1)
+				.addProperty(AttackAnimationProperty.COLLIDER_ADDER, 1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.05F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
+						Event.create(0.35F, ReuseableEvents.RUINE_COMET_GROUNDTHRUST, Side.CLIENT)});
+		
+		ANTITHEUS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_auto_1", biped,
+				new Phase(0.4F, 0.4F, 0.6F, 0.6F, "Tool_R", null),
+				new Phase(0.75F, 0.75F, 0.9F, 0.9F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.65F),1)
+				.addProperty(AttackAnimationProperty.COLLIDER_ADDER, 1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(StaticAnimationProperty.EVENTS, new Event[] {
+						Event.create(0.05F, (entitypatch) -> {
+							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+						}, Side.CLIENT)});
+		
+		ANTITHEUS_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_auto_2", biped,
+				new Phase(0.25F, 0.25F, 0.4F, 0.4F, "Tool_R", null))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.0F))
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F);
+		
+		ANTITHEUS_IDLE = new StaticAnimation(0.1f,true, "biped/living/antitheus_idle", biped);
+		ANTITHEUS_RUN = new MovementAnimation(0.1f,true, "biped/living/antitheus_run", biped);
+		ANTITHEUS_WALK = new MovementAnimation(0.1f,true, "biped/living/antitheus_walk", biped);
+		
 	}
 	
 	private static class ReuseableEvents {

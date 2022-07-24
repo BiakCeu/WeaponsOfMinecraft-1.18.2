@@ -24,7 +24,7 @@ repositories {
         }
     }
 }
-version = '1.4.1'
+version = '1.5'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMinecraft'
 

@@ -17,6 +17,7 @@ public class EFECItems {
 	public static final RegistryObject<Item> TORMENTED_MIND = ITEMS.register("tormented_mind", () -> new TormentedMindItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> RUINE = ITEMS.register("ruine", () -> new RuineItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> ENDER_BLASTER = ITEMS.register("ender_blaster", () -> new EnderBlasterItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> ANTITHEUS = ITEMS.register("antitheus", () -> new AntitheusItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.RARE)));
 	
 	public static final RegistryObject<Item> IRON_GREATAXE = ITEMS.register("iron_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.IRON));
 	public static final RegistryObject<Item> GOLDEN_GREATAXE = ITEMS.register("golden_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.GOLD));

@@ -28,29 +28,36 @@ import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.world.item.EpicFightItemTier;
 import yesman.epicfight.world.item.WeaponItem;
 
-public class AgonySpearItem extends WeaponItem {
+public class AntitheusItem extends WeaponItem {
 	@OnlyIn(Dist.CLIENT)
 	private List<Component> tooltipExpand;
 	private float attackDamage;
 	private double attackSpeed;
-	
-	public AgonySpearItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -2.0F, build);
+
+	public AntitheusItem(Item.Properties build) {
+		super(EpicFightItemTier.KATANA, 0, -2.1F, build);
 		if (EpicFightMod.isPhysicalClient()) {
-			this.tooltipExpand = new ArrayList<Component> ();
+			this.tooltipExpand = new ArrayList<Component>();
 			this.tooltipExpand.add(new TextComponent(""));
-			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".agony.tooltip"));
+			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".antitheus.tooltip"));
 		}
-		
 		this.attackDamage = 5.0F;
-		this.attackSpeed = -2.0F;
+		this.attackSpeed = -2.1F;
 	}
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return repair.getItem() == Items.DEEPSLATE_REDSTONE_ORE;
+		return repair.getItem() == Items.QUARTZ;
 	}
     
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		for (Component txtComp : tooltipExpand) {
+			tooltip.add(txtComp);
+		}
+	}
+	
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
 		if (slot == EquipmentSlot.MAINHAND) {
@@ -62,12 +69,4 @@ public class AgonySpearItem extends WeaponItem {
         
         return super.getAttributeModifiers(slot, stack);
     }
-	
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		for (Component txtComp : tooltipExpand) {
-			tooltip.add(txtComp);
-		}
-	}
 }

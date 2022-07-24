@@ -1,4 +1,4 @@
-# Blender MTL File: 'katana.blend'
+# Blender MTL File: 'None'
 # Material Count: 1
 
 newmtl None
@@ -8,4 +8,4 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd epicfight:item/swords
+map_Kd epicfight:item/torment_texture
