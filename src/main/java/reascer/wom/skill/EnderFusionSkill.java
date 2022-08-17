@@ -40,7 +40,6 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategory;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class EnderFusionSkill extends SeperativeMotionSkill {
@@ -74,7 +73,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT, EVENT_UUID, (event) -> {
+		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_1.getId() ||
 				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_2.getId() ||
 				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_3.getId() ||
@@ -92,7 +91,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 	@Override
 	public void onRemoved(SkillContainer container) {
 		super.onRemoved(container);
-		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -114,7 +113,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void executeOnClient(LocalPlayerPatch executer, FriendlyByteBuf args) {
+	public Object getExecutionPacket(LocalPlayerPatch executer, FriendlyByteBuf args) {
 		int forward = args.readInt();
 		int backward = args.readInt();
 		int left = args.readInt();
@@ -136,7 +135,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 		CPExecuteSkill packet = new CPExecuteSkill(this.category.universalOrdinal());
 		packet.getBuffer().writeInt(animation);
 		
-		EpicFightNetworkManager.sendToServer(packet);
+		return packet;
 	}
 	
 	@Override
@@ -163,7 +162,10 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 		}
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, cooldown, executer.getOriginal());
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
-		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);	
+		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);
+		if (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() == 0 && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND)) == 0) {
+			this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()+1);
+		}
 		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource()
 				+ (1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)))
 				+ (executer.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCollider() == EFColliders.ENDER_BLASTER ? 

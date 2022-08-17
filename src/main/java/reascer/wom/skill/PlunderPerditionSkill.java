@@ -7,13 +7,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.EFAnimations;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
+import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
@@ -64,11 +65,19 @@ public class PlunderPerditionSkill extends SpecialAttackSkill {
 			if (container.getDataManager().getDataValue(BUFFING)) {
 				if (!container.getDataManager().getDataValue(BUFFED)) {
 					container.getDataManager().setData(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1);
+					event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() + (event.getPlayerPatch().getMaxStamina() * 0.05f));
+					event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth() + (event.getPlayerPatch().getOriginal().getMaxHealth() * 0.05f));
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.REVERSE_PORTAL, 
 							event.getTarget().xo, 
 							event.getTarget().yo + 1.0D, 
 							event.getTarget().zo, 
 							40, 0, 0, 0, 0.4);
+					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.PORTAL, 
+							event.getPlayerPatch().getOriginal().xo, 
+							event.getPlayerPatch().getOriginal().yo + 1.0D, 
+							event.getPlayerPatch().getOriginal().zo, 
+							10, 0, 0, 0, 0.8);
+					container.getExecuter().playSound(SoundEvents.CHAIN_BREAK, 2.0f, 1, 1);
 				}
 			}
 		});
@@ -87,7 +96,7 @@ public class PlunderPerditionSkill extends SpecialAttackSkill {
 			}
 		});
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT, EVENT_UUID, (event) -> {
+		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (event.getAnimation().getId() != EFAnimations.RUINE_PLUNDER.getId()) {
 				container.getDataManager().setData(BUFFING, false);
 			}
@@ -100,7 +109,7 @@ public class PlunderPerditionSkill extends SpecialAttackSkill {
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getDataManager().setData(BUFFED, false);
 		container.getDataManager().setData(STRENGHT, 0);
 		container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);

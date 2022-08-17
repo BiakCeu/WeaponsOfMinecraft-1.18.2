@@ -41,5 +41,8 @@ public class EFColliders {
 	public static final Collider ENDER_PISTOLERO = new OBBCollider( 2.5D, 2D, 2.5D, 0.0D, -1.5D, 0.0D);
 	
 	public static final Collider ANTITHEUS = new MultiOBBCollider(3, 0.4F, 1.0F, 1.6F, 0F, -0.4F, -0.9F);
+	public static final Collider ANTITHEUS_GUILLOTINE = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0F, 0F);
+	public static final Collider ANTITHEUS_ASCENDED_PUNCHES = new OBBCollider(1.0F, 1.0F, 1.0F, 0F, 1.0F, -1.0F);
+	public static final Collider ANTITHEUS_ASCENDED_BLINK = new OBBCollider(2.5F, 1.5F, 2.5F, 0F, 0.75F, 0.0F);
 	
 }

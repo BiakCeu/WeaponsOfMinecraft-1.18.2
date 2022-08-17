@@ -5,7 +5,7 @@ import java.util.UUID;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
+import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
@@ -50,7 +50,7 @@ public class PainAnticipationSkill extends PassiveSkill {
             }
         });
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT, EVENT_UUID, (event) -> {
+		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(TIMER) == 0) {
                 if(!container.getExecuter().isLogicalClient()) {
                 	container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
@@ -63,14 +63,14 @@ public class PainAnticipationSkill extends PassiveSkill {
 					container.getDataManager().setDataSync(ACTIVE, true,((ServerPlayerPatch) container.getExecuter()).getOriginal());
                 }
             }
-			container.getDataManager().setData(TIMER, maxtimer);
+			container.getDataManager().setDataSync(TIMER, maxtimer,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 		});
 	}
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 	}
 	
 	@Override

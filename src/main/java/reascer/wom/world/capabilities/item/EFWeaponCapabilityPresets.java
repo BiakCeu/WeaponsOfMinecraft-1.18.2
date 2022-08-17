@@ -2,6 +2,7 @@ package reascer.wom.world.capabilities.item;
 
 import java.util.function.Function;
 
+import com.ibm.icu.impl.units.UnitsData.Categories;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.world.InteractionHand;
@@ -26,16 +27,16 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
-import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategory;
+import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFWeaponCapabilityPresets {
-	public static final Function<Item, CapabilityItem> SWORD = (item) -> {
-		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.SWORD)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategory.SWORD ? Styles.TWO_HAND : Styles.ONE_HAND)
+	public static final Function<Item, CapabilityItem.Builder> SWORD = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.SWORD)
+			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.SWORD ? Styles.TWO_HAND : Styles.ONE_HAND)
 			.collider(ColliderPreset.SWORD)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.SWORD_ONEHAND_AUTO_1, EFAnimations.SWORD_ONEHAND_AUTO_2, EFAnimations.SWORD_ONEHAND_AUTO_3, EFAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
@@ -45,21 +46,20 @@ public class EFWeaponCapabilityPresets {
 			.specialAttack(Styles.TWO_HAND, Skills.DANCING_EDGE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
-			.weaponCombinationPredicator((itemstack) -> EpicFightCapabilities.getItemStackCapability(itemstack).getWeaponCategory() == WeaponCategory.SWORD)
-		);
+			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.SWORD);
 		
 		if (item instanceof TieredItem) {
 			int harvestLevel = ((TieredItem)item).getTier().getLevel();
-			cap.addStyleAttibute(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.IMPACT.get(), EpicFightAttributes.getImpactModifier(0.5D + 0.2D * harvestLevel)));
-			cap.addStyleAttibute(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.MAX_STRIKES.get(), EpicFightAttributes.getMaxStrikesModifier(1)));
+			builder.addStyleAttibutes(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.IMPACT.get(), EpicFightAttributes.getImpactModifier(0.5D + 0.2D * harvestLevel)));
+			builder.addStyleAttibutes(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.MAX_STRIKES.get(), EpicFightAttributes.getMaxStrikesModifier(1)));
 		}
 		
-		return cap;
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> GREATSWORD = (item) -> {
-		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.GREATSWORD)
+	public static final Function<Item, CapabilityItem.Builder> GREATSWORD = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.GREATSWORD)
 			.styleProvider((playerpatch) -> Styles.TWO_HAND)
 			.collider(EFColliders.GREATSWORD)
 			.swingSound(EpicFightSounds.WHOOSH_BIG)
@@ -75,15 +75,13 @@ public class EFWeaponCapabilityPresets {
 	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
 	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
 	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.INACTION, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
-		);
-		return cap;
+	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> LONGSWORD = (item) -> {
-		WeaponCapability weaponCapability = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.LONGSWORD)
+	public static final Function<Item, CapabilityItem.Builder> LONGSWORD = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.LONGSWORD)
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch<?>) {
 					if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
@@ -107,7 +105,6 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.INACTION, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
 			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.IDLE, Animations.BIPED_HOLD_LONGSWORD)
@@ -117,17 +114,15 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SNEAK, Animations.BIPED_HOLD_LONGSWORD)
 			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.KNEEL, Animations.BIPED_HOLD_LONGSWORD)
 			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.JUMP, Animations.BIPED_HOLD_LONGSWORD)
-			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.INACTION, Animations.BIPED_HOLD_LONGSWORD)
 			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-		);
-		return weaponCapability;
+			.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> TACHI = (item) -> {
-		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.TACHI)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategory.TACHI ? Styles.TWO_HAND : Styles.ONE_HAND)
+	public static final Function<Item, CapabilityItem.Builder> TACHI = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.TACHI)
+			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.TACHI ? Styles.TWO_HAND : Styles.ONE_HAND)
 			.collider(ColliderPreset.KATANA)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.TACHI_TWOHAND_AUTO_1, EFAnimations.TACHI_TWOHAND_AUTO_2, EFAnimations.TACHI_TWOHAND_AUTO_3, EFAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
@@ -144,17 +139,15 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_TACHI)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FLOAT, Animations.BIPED_HOLD_TACHI)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FALL, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.INACTION, Animations.BIPED_HOLD_TACHI)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
-			.weaponCombinationPredicator((itemstack) -> EpicFightCapabilities.getItemStackCapability(itemstack).getWeaponCategory() == WeaponCategory.TACHI)
-		);
-		return cap;
+			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.TACHI);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> STAFF = (item) -> {
-		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.SPEAR)
+	public static final Function<Item, CapabilityItem.Builder> STAFF = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.SPEAR)
 			.styleProvider((playerpatch) -> Styles.TWO_HAND)
 			.collider(EFColliders.STAFF)
 			.hitSound(EpicFightSounds.BLUNT_HIT)
@@ -167,14 +160,13 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.STAFF_RUN)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, EFAnimations.STAFF_RUN)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SPEAR_GUARD)
-		);
-		return cap;
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SPEAR_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> AGONY = (item) -> {
-		EFWeaponCapability cap = new EFWeaponCapability(WeaponCapability.builder()
-				.category(WeaponCategory.SPEAR)
+	public static final Function<Item, CapabilityItem.Builder> AGONY = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+				.category(WeaponCategories.SPEAR)
 				.styleProvider((playerpatch) -> Styles.TWO_HAND)
 				.collider(EFColliders.AGONY)
 				.hitSound(EpicFightSounds.BLADE_HIT)
@@ -187,16 +179,13 @@ public class EFWeaponCapabilityPresets {
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.AGONY_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, EFAnimations.AGONY_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SPEAR_GUARD)
-					,EFWeaponCapability.EFbuilder()
-				.newHeavyStyleCombo(Styles.TWO_HAND, EFAnimations.AGONY_AUTO_1, EFAnimations.AGONY_AUTO_2, EFAnimations.AGONY_AUTO_3, EFAnimations.AGONY_DASH, EFAnimations.AGONY_AIR_SLASH)
-		);
-		return cap;
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SPEAR_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> TORMENT = (item) -> {
-		EFWeaponCapability cap = new EFWeaponCapability(WeaponCapability.builder()
-				.category(WeaponCategory.GREATSWORD)
+	public static final Function<Item, CapabilityItem.Builder> TORMENT = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+				.category(WeaponCategories.GREATSWORD)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
 						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
@@ -225,16 +214,13 @@ public class EFWeaponCapabilityPresets {
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.CHASE, EFAnimations.TORMENT_BERSERK_RUN)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.RUN, EFAnimations.TORMENT_BERSERK_RUN)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
-					,EFWeaponCapability.EFbuilder()
-				.newHeavyStyleCombo(Styles.TWO_HAND, EFAnimations.TORMENT_AUTO_1, EFAnimations.TORMENT_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.TORMENT_DASH, Animations.GREATSWORD_AIR_SLASH)
-		);
-		return cap;
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> RUINE = (item) -> {
-		WeaponCapability weaponCapability = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.LONGSWORD)
+	public static final Function<Item, CapabilityItem.Builder> RUINE = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.LONGSWORD)
 			.styleProvider((playerpatch) -> Styles.TWO_HAND)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(EFColliders.RUINE)
@@ -249,16 +235,14 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.INACTION, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-		);
-		return weaponCapability;
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> EFKATANA = (item) -> {
-		WeaponCapability cap = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.KATANA)
+	public static final Function<Item, CapabilityItem.Builder> EFKATANA = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.KATANA)
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch) {
 					PlayerPatch<?> playerpatch = (PlayerPatch<?>)entitypatch;
@@ -296,15 +280,14 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.SWIM,  EFAnimations.KATANA_SHEATHED_RUN)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.FLOAT,  EFAnimations.KATANA_SHEATHED_IDLE)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.FALL, EFAnimations.KATANA_SHEATHED_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.KATANA_GUARD)
-		);
-		return cap;
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.KATANA_GUARD);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> ENDER_BLASTER = (item) -> {
-		WeaponCapability weaponCapability = new WeaponCapability(WeaponCapability.builder()
-			.category(WeaponCategory.RANGED)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategory.RANGED ? Styles.TWO_HAND : Styles.ONE_HAND)
+	public static final Function<Item, CapabilityItem.Builder> ENDER_BLASTER = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+			.category(WeaponCategories.RANGED)
+			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.RANGED ? Styles.TWO_HAND : Styles.ONE_HAND)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(EFColliders.ENDER_BLASTER)
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_1, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_2, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_3, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_4, EFAnimations.ENDERBLASTER_ONEHAND_DASH, EFAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)
@@ -332,14 +315,13 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, EFAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FALL, EFAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
-			.weaponCombinationPredicator((itemstack) -> EpicFightCapabilities.getItemStackCapability(itemstack).getWeaponCollider() == EFColliders.ENDER_BLASTER)
-		);
-		return weaponCapability;
+			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCollider() == EFColliders.ENDER_BLASTER);
+		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem> ANTITHEUS = (item) -> {
-		EFWeaponCapability cap = new EFWeaponCapability(WeaponCapability.builder()
-				.category(WeaponCategory.GREATSWORD)
+	public static final Function<Item, CapabilityItem.Builder> ANTITHEUS = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+				.category(WeaponCategories.GREATSWORD)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
 						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
@@ -350,29 +332,27 @@ public class EFWeaponCapabilityPresets {
 				})
 				.collider(EFColliders.ANTITHEUS)
 				.hitSound(EpicFightSounds.BLADE_HIT)
-				.swingSound(EpicFightSounds.WHOOSH_BIG)
+				.swingSound(EpicFightSounds.WHOOSH)
+				.passiveSkill(EFSkills.DEMON_MARK_PASSIVE)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, EFAnimations.ANTITHEUS_AUTO_1, EFAnimations.ANTITHEUS_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.ANTITHEUS_AGRESSION, EFAnimations.TORMENT_AIRSLAM)
-				.newStyleCombo(Styles.LIECHTENAUER, EFAnimations.TORMENT_BERSERK_AUTO_1, EFAnimations.TORMENT_BERSERK_AUTO_2, EFAnimations.TORMENT_BERSERK_DASH, EFAnimations.TORMENT_BERSERK_AIRSLAM)
+				.newStyleCombo(Styles.TWO_HAND, EFAnimations.ANTITHEUS_AUTO_1, EFAnimations.ANTITHEUS_AUTO_2, EFAnimations.ANTITHEUS_AUTO_3, EFAnimations.ANTITHEUS_AUTO_4, EFAnimations.ANTITHEUS_AGRESSION, EFAnimations.ANTITHEUS_GUILLOTINE)
+				.newStyleCombo(Styles.LIECHTENAUER, EFAnimations.ANTITHEUS_ASCENDED_AUTO_1, EFAnimations.ANTITHEUS_ASCENDED_AUTO_2, EFAnimations.ANTITHEUS_ASCENDED_AUTO_3, EFAnimations.ANTITHEUS_ASCENDED_BLINK, EFAnimations.ANTITHEUS_ASCENDED_DEATHFALL)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-				.specialAttack(Styles.TWO_HAND, EFSkills.TRUE_BERSERK)
-				.specialAttack(Styles.LIECHTENAUER, EFSkills.TRUE_BERSERK)
+				.specialAttack(Styles.TWO_HAND, EFSkills.DEMONIC_ASCENSION)
+				.specialAttack(Styles.LIECHTENAUER, EFSkills.DEMONIC_ASCENSION)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.ANTITHEUS_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.ANTITHEUS_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.ANTITHEUS_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, EFAnimations.ANTITHEUS_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.IDLE, EFAnimations.TORMENT_BERSERK_IDLE)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.WALK, EFAnimations.TORMENT_BERSERK_WALK)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.CHASE, EFAnimations.TORMENT_BERSERK_RUN)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.RUN, EFAnimations.TORMENT_BERSERK_RUN)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
-					,EFWeaponCapability.EFbuilder()
-				.newHeavyStyleCombo(Styles.TWO_HAND, EFAnimations.TORMENT_AUTO_1, EFAnimations.TORMENT_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.TORMENT_DASH, Animations.GREATSWORD_AIR_SLASH)
-		);
-		return cap;
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.IDLE, EFAnimations.ANTITHEUS_ASCENDED_IDLE)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.WALK, EFAnimations.ANTITHEUS_ASCENDED_WALK)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.CHASE, EFAnimations.ANTITHEUS_ASCENDED_RUN)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.RUN, EFAnimations.ANTITHEUS_ASCENDED_RUN)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_SWIM)
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, Animations.SWORD_GUARD);
+		return builder;
 	};
 	
 	@SubscribeEvent

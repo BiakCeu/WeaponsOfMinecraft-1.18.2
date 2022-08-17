@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.EFAnimations;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.game.ExtendedDamageSource;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.gameasset.Skills;
@@ -31,34 +33,44 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
-import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategory;
+import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
 import yesman.epicfight.world.entity.eventlistener.HurtEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class CounterAttack extends GuardSkill {
 	private static final SkillDataKey<Integer> LAST_ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final Map<WeaponCategory, BiFunction<CapabilityItem, PlayerPatch<?>, StaticAnimation>> AVAILABLE_WEAPON_TYPES = Maps.<WeaponCategory, BiFunction<CapabilityItem, PlayerPatch<?>, StaticAnimation>>newLinkedHashMap();
+	private static final SkillDataKey<Integer> PARRY_MOTION_COUNTER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
-	static {
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.KATANA, (item, playerpatch) -> EFAnimations.KATANA_SHEATHED_COUNTER);
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.LONGSWORD, (item, playerpatch) -> EFAnimations.RUINE_DASH);
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.SWORD, (item, playerpatch) -> item.getStyle(playerpatch) == Styles.ONE_HAND ? Animations.SWORD_DASH : Animations.SWORD_DUAL_DASH);
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.TACHI, (item, playerpatch) -> EFAnimations.RUINE_DASH);
-		AVAILABLE_WEAPON_TYPES.put(WeaponCategory.SPEAR, (item, playerpatch) -> EFAnimations.AGONY_DASH);
+	public static GuardSkill.Builder createBuilder(ResourceLocation resourceLocation) {
+		return GuardSkill.createBuilder(resourceLocation)
+				.addAdvancedGuardMotion(WeaponCategories.SWORD, (itemCap, playerpatch) -> itemCap.getStyle(playerpatch) == Styles.ONE_HAND ?
+					Animations.SWORD_DASH :
+					Animations.SWORD_DUAL_DASH)
+				.addAdvancedGuardMotion(WeaponCategories.LONGSWORD, (itemCap, playerpatch) ->
+					EFAnimations.RUINE_AUTO_3)
+				.addAdvancedGuardMotion(WeaponCategories.KATANA, (itemCap, playerpatch) ->
+					EFAnimations.KATANA_SHEATHED_COUNTER )
+				.addAdvancedGuardMotion(WeaponCategories.TACHI, (itemCap, playerpatch) ->
+					EFAnimations.RUINE_DASH)
+				.addAdvancedGuardMotion(WeaponCategories.SPEAR, (itemCap, playerpatch) ->
+					EFAnimations.AGONY_DASH);
 	}
 	
-	public CounterAttack(Builder<? extends Skill> builder) {
+	public CounterAttack(GuardSkill.Builder builder) {
 		super(builder);
 	}
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
+		
 		container.getDataManager().registerData(LAST_ACTIVE);
+		container.getDataManager().registerData(PARRY_MOTION_COUNTER);
+		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
-			if (GuardSkill.AVAILABLE_WEAPON_TYPES.getOrDefault(itemCapability.getWeaponCategory(), (a, b) -> null).apply(itemCapability, event.getPlayerPatch()) != null && this.isExecutableState(event.getPlayerPatch())) {
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && this.isExecutableState(event.getPlayerPatch())) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 			
@@ -72,8 +84,8 @@ public class CounterAttack extends GuardSkill {
 	}
 	
 	@Override
-	public void guard(SkillContainer container, CapabilityItem itemCapability, HurtEvent.Pre event, float knockback, float impact, boolean reinforced) {
-		if (this.getAvailableWeaponTypes(2).getOrDefault(itemCapability.getWeaponCategory(), (a, b) -> null).apply(itemCapability, event.getPlayerPatch()) != null) {
+	public void guard(SkillContainer container, CapabilityItem itemCapability, HurtEvent.Pre event, float knockback, float impact, boolean advanced) {
+		if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD)) {
 			DamageSource damageSource = event.getDamageSource();
 			
 			if (this.isBlockableSource(damageSource, true)) {
@@ -81,15 +93,13 @@ public class CounterAttack extends GuardSkill {
 				boolean successParrying = playerentity.tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 8;
 				float penalty = container.getDataManager().getDataValue(PENALTY);
 				event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
-				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.POSITION_FRONT_OF_EYE_POSITION, HitParticleType.ARGUMENT_ZERO, playerentity, damageSource.getDirectEntity());
+				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
 				
 				if (successParrying) {
-					penalty += this.getPenaltyStamina(itemCapability) + 2.0f;
-					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
+					penalty = 0.1F;
 					knockback *= 0.4F;
-					//container.getExecuter().playAnimationSynchronized(itemCapability.getAutoAttckMotion(container.getExecuter()).get(itemCapability.getAutoAttckMotion(container.getExecuter()).size()), -0.30F);
 				} else {
-					penalty += this.getPenaltyStamina(itemCapability);
+					penalty += this.getPenaltyMultiplier(itemCapability);
 					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
 				}
 				
@@ -98,21 +108,22 @@ public class CounterAttack extends GuardSkill {
 				}
 				
 				event.getPlayerPatch().knockBackEntity(damageSource.getDirectEntity().position(), knockback);
+				
 				float stamina = event.getPlayerPatch().getStamina() - penalty * impact;
 				event.getPlayerPatch().setStamina(stamina);
 				
-				StaticAnimation animation = this.getAvailableWeaponTypes(successParrying ? 2 : stamina >= 0.0F ? 1 : 0).get(itemCapability.getWeaponCategory()).apply(itemCapability, container.getExecuter());
+				BlockType blockType = successParrying ? BlockType.ADVANCED_GUARD : stamina >= 0.0F ? BlockType.GUARD : BlockType.GUARD_BREAK;
+				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
 				
 				if (animation != null) {
-					event.getPlayerPatch().playAnimationSynchronized(animation, -0.10f);
+					event.getPlayerPatch().playAnimationSynchronized(animation, -0.2F);
 				}
 				
-				if (stamina >= 0.0) {
-					if (event.getDamageSource() instanceof ExtendedDamageSource) {
-						((ExtendedDamageSource)event.getDamageSource()).setStunType(ExtendedDamageSource.StunType.NONE);
-					}
-					this.dealEvent(event.getPlayerPatch(), event);
+				if (blockType == BlockType.GUARD_BREAK) {
+					event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS, 3.0F, 0.0F, 0.1F);
 				}
+				
+				this.dealEvent(event.getPlayerPatch(), event);
 				
 				return;
 			}
@@ -122,22 +133,26 @@ public class CounterAttack extends GuardSkill {
 	}
 	
 	@Override
-	protected boolean isBlockableSource(DamageSource damageSource, boolean highLevelSkill) {
-		return (damageSource.isProjectile() && highLevelSkill) || super.isBlockableSource(damageSource, false);
+	protected boolean isBlockableSource(DamageSource damageSource, boolean advanced) {
+		return (damageSource.isProjectile() && advanced) || super.isBlockableSource(damageSource, false);
 	}
 	
-	@Override
-	public Map<WeaponCategory, BiFunction<CapabilityItem, PlayerPatch<?>, StaticAnimation>> getAvailableWeaponTypes(int meta) {
-		if (meta == 2) {
-			return AVAILABLE_WEAPON_TYPES;
-		} else {
-			return super.getAvailableWeaponTypes(meta);
+	@Nullable
+	protected StaticAnimation getGuardMotion(PlayerPatch<?> playerpatch, CapabilityItem itemCapability, BlockType blockType) {
+		if (blockType == BlockType.ADVANCED_GUARD) {
+			StaticAnimation motions = (StaticAnimation)this.getGuradMotionMap(blockType).getOrDefault(itemCapability.getWeaponCategory(), (a, b) -> null).apply(itemCapability, playerpatch);
+			
+			if (motions != null) {
+				return motions;
+			}
 		}
+		
+		return super.getGuardMotion(playerpatch, itemCapability, blockType);
 	}
 	
 	@Override
 	public Skill getPriorSkill() {
-		return Skills.ACTIVE_GUARD;
+		return Skills.GUARD;
 	}
 	
 	@Override
@@ -149,7 +164,7 @@ public class CounterAttack extends GuardSkill {
 	@Override
 	public List<Object> getTooltipArgs() {
 		List<Object> list = Lists.<Object>newArrayList();
-		list.add(String.format("%s, %s, %s, %s, %s", WeaponCategory.KATANA, WeaponCategory.LONGSWORD, WeaponCategory.SWORD, WeaponCategory.TACHI, WeaponCategory.SPEAR).toLowerCase());
+		list.add(String.format("%s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR).toLowerCase());
 		return list;
 	}
 }

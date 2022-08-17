@@ -41,7 +41,7 @@ public class AntitheusItem extends WeaponItem {
 			this.tooltipExpand.add(new TextComponent(""));
 			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".antitheus.tooltip"));
 		}
-		this.attackDamage = 5.0F;
+		this.attackDamage = 7.0F;
 		this.attackSpeed = -2.1F;
 	}
 	

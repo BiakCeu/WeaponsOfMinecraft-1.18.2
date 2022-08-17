@@ -7,8 +7,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import reascer.wom.gameasset.EFAnimations;
 import reascer.wom.gameasset.EFSkills;
+import reascer.wom.particle.EFEpicFightParticles;
 import reascer.wom.world.item.EFECItems;
 import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.particle.EpicFightParticles;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +29,8 @@ public class WeaponOfMinecraft
     	bus.addListener(EFSkills::registerSkills);
     	
     	EFECItems.ITEMS.register(bus);
-        MinecraftForge.EVENT_BUS.register(this);
+    	EFEpicFightParticles.PARTICLES.register(bus);
+    	MinecraftForge.EVENT_BUS.register(this);
+        
     }
 }

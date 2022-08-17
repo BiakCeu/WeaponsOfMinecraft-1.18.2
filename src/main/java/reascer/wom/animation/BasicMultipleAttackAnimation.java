@@ -1,23 +1,14 @@
 package reascer.wom.animation;
 
-import java.io.Console;
-
 import javax.annotation.Nullable;
 
-import com.mojang.math.Vector3f;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-
 import net.minecraft.world.InteractionHand;
-import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
-import yesman.epicfight.api.animation.property.Property.AttackAnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.LinkAnimation;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Model;
-import yesman.epicfight.api.utils.math.MathUtils;
-import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;

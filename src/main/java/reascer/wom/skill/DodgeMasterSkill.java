@@ -8,17 +8,21 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.game.AttackResult;
-import yesman.epicfight.api.utils.game.AttackResult.ResultType;
-import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
+import yesman.epicfight.api.utils.AttackResult.ResultType;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
+import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.gameasset.Skills;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPExecuteSkill;
+import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
@@ -102,10 +106,11 @@ public class DodgeMasterSkill extends Skill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				container.getDataManager().setDataSync(TIMER, 6,event.getPlayerPatch().getOriginal());
 				event.getPlayerPatch().playAnimationSynchronized(this.animations[container.getDataManager().getDataValue(DIRECTION)], 0);
 				event.getPlayerPatch().changeYaw(container.getDataManager().getDataValue(ROTATION));
 				event.setCanceled(true);
-				event.setResult(AttackResult.ResultType.FAILED);
+				event.setResult(ResultType.FAILED);
 			}
         });
 	}
@@ -134,7 +139,7 @@ public class DodgeMasterSkill extends Skill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void executeOnClient(LocalPlayerPatch executer, FriendlyByteBuf args) {
+	public Object getExecutionPacket(LocalPlayerPatch executer, FriendlyByteBuf args) {
 		int forward = args.readInt();
 		int backward = args.readInt();
 		int left = args.readInt();
@@ -158,7 +163,7 @@ public class DodgeMasterSkill extends Skill {
 		packet.getBuffer().writeInt(animation);
 		packet.getBuffer().writeFloat(degree);
 		
-		EpicFightNetworkManager.sendToServer(packet);
+		return packet;
 	}
 	
 	@Override
@@ -166,7 +171,12 @@ public class DodgeMasterSkill extends Skill {
 		super.executeOnServer(executer, args);
 		int i = args.readInt();
 		float yaw = args.readFloat();
-		executer.getSkill(this.category).getDataManager().setDataSync(TIMER, 7,executer.getOriginal());
+		if (executer.getSkill(this.category).getDataManager().getDataValue(TIMER) > 0) {
+			executer.playAnimationSynchronized(this.animations[i], 0);
+			executer.changeYaw(yaw);
+			executer.setStamina(executer.getStamina() - 3f);
+		}
+		executer.getSkill(this.category).getDataManager().setDataSync(TIMER, 6,executer.getOriginal());
 		executer.getSkill(this.category).getDataManager().setDataSync(DIRECTION, i,executer.getOriginal());
 		executer.getSkill(this.category).getDataManager().setDataSync(ROTATION, yaw,executer.getOriginal());
 	}

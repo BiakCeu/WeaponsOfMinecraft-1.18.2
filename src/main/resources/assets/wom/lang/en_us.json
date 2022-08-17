@@ -19,6 +19,9 @@
 	"skill.epicfight.ender_blast" : "Ender blast",
 	"skill.epicfight.ender_blast.tooltip" : "The blaster loader is composed of 12 chambers.\nKinetic energy stored in them is transmuted into endpower.\nWhen the trigger is pressed, half of the converted endpower\nis condensed into different types of bullets.\nThe other half is transfered into a condenser that overcharges\nthe endpower until it blasts the bullet out with tremendous precision.\nAll of that in just a fraction of a second ... outstanding!",
 
+	"item.epicfight.antitheus" : "Antitheus",
+	"item.epicfight.antitheus.tooltip" : "Harvest life in the most horrible and obnoxious way.",
+
 	"item.epicfight.stone_greataxe" : "Stone Greataxe",
 	"item.epicfight.golden_greataxe" : "Golden Greataxe",
 	"item.epicfight.iron_greataxe" : "Iron Greataxe",
@@ -214,7 +217,10 @@
 	"skill.epicfight.knight_roll.tooltip" : "Stamina : %d\n\nfaster, further and cheaper roll. This is how true expert do a roll.",
 	"skill.epicfight.dodgemaster" : "Dodge Master",
 	"skill.epicfight.dodgemaster.tooltip" : "Stamina : %d\n\nInstinctly dodge a small distance only if you would take damage during the cast of 0.35s.",
-	
+	"skill.epicfight.critical_knowledge" : "Critical Knowledge",
+	"skill.epicfight.critical_knowledge.tooltip" : "Give you 5% chance to deal 50% more damage.\nCritical chance is increase by 7.5%\nfor each level of thorns enchantement.\nWith thorns III on each armor piece,\nyou can get 95% critical chance.",
+
+
 	"skill.epicfight.passive.category" : "Passive Skill",
 	"skill.epicfight.dodge.category" : "Dodge Skill",
 	"skill.epicfight.guard.category" : "Guard Skill",

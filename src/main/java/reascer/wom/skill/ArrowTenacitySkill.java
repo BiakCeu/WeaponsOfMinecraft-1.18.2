@@ -3,7 +3,7 @@ package reascer.wom.skill;
 import java.util.UUID;
 
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
-import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
+import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;

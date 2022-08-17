@@ -24,7 +24,7 @@ repositories {
         }
     }
 }
-version = '1.5'
+version = '1.6'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMinecraft'
 
@@ -146,22 +146,21 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18.2-40.0.44'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.73'
     // EpicFight-18.1.20-beta.jar
-	implementation fg.deobf("curse.maven:efm-405076:3831973")
+    implementation fg.deobf("curse.maven:efm-405076:3935166")
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency

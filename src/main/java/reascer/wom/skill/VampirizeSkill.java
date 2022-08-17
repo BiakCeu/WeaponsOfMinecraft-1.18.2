@@ -2,16 +2,9 @@ package reascer.wom.skill;
 
 import java.util.UUID;
 
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import yesman.epicfight.api.utils.game.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class VampirizeSkill extends PassiveSkill {

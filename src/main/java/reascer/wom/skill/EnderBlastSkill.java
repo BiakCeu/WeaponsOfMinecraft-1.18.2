@@ -68,7 +68,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT, EVENT_UUID, (event) -> {
+		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_1.getId() ||
 				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2.getId() ||
 				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_3.getId() ||
@@ -88,7 +88,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 	@Override
 	public void onRemoved(SkillContainer container) {
 		super.onRemoved(container);
-		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -110,7 +110,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void executeOnClient(LocalPlayerPatch executer, FriendlyByteBuf args) {
+	public Object getExecutionPacket(LocalPlayerPatch executer, FriendlyByteBuf args) {
 		int forward = args.readInt();
 		int backward = args.readInt();
 		int left = args.readInt();
@@ -121,7 +121,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 		
 		if (vertic == 0) {
 			if (horizon == 0) {
-				animation = -2;
+				animation = -3;
 			} else {
 				animation = horizon >= 0 ? 1 : 2;
 			}
@@ -132,7 +132,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 		CPExecuteSkill packet = new CPExecuteSkill(this.category.universalOrdinal());
 		packet.getBuffer().writeInt(animation);
 		
-		EpicFightNetworkManager.sendToServer(packet);
+		return packet;
 	}
 	
 	@Override
@@ -145,7 +145,7 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 			if(executer.getOriginal().isSprinting()) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
 			} else {
-				if (i != -2 && executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) >= 1) {
+				if (i != -3 && executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) >= 1) {
 					executer.playAnimationSynchronized(this.attackAnimations[i+3], 0);
 					executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COMBO, 1, executer.getOriginal());
 				} else {
@@ -163,6 +163,9 @@ public class EnderBlastSkill extends SeperativeMotionSkill {
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
 		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
 		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);
+		if (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() == 0 && EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) == 0 ) {
+			this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()+1);
+		}
 		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() + (1.0F * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));			
 		executer.getSkill(this.category).activate();
 	}
