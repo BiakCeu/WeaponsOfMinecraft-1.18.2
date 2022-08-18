@@ -89,8 +89,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F))
 				.registerPropertiesToAnimation(),false);
 		
-		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(50.0F).setMaxStack(3)
-				.setAnimations(EFAnimations.AGONY_PLUNGE_FORWARD,EFAnimations.AGONY_PLUNGE_BACKWARD,EFAnimations.AGONY_PLUNGE_LEFT,EFAnimations.AGONY_PLUNGE_RIGHT,EFAnimations.AGONY_PLUNGE_MIDDLE))
+		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(50.0F).setMaxStack(3).setAnimations(EFAnimations.AGONY_PLUNGE_FORWARD))
 				.newPropertyLine()
 				.newPropertyLine()
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.setter(1.0F))
@@ -173,7 +172,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
 				.registerPropertiesToAnimation(),false);
 		
-		COUNTER_ATTACK = event.registerSkill(new CounterAttack(GuardSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "counter_attack")).setRequiredXp(8)),true);
+		COUNTER_ATTACK = event.registerSkill(new CounterAttack(CounterAttack.createBuilder(new ResourceLocation(EpicFightMod.MODID, "counter_attack")).setRequiredXp(8)),true);
 		//KICK = event.registerSkill(new KickSkill(KickSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "kick")).setConsumption(2.0F).setRequiredXp(3)),true);
 		
 		

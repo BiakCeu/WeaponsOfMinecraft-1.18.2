@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -42,7 +43,7 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 	private static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static class Builder extends Skill.Builder<AgonyPlungeSkill> {
 	
-		protected StaticAnimation[] attackAnimations;
+		protected StaticAnimation attackAnimations;
 		
 		public Builder(ResourceLocation resourceLocation) {
 			super(resourceLocation);
@@ -83,7 +84,7 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 			return this;
 		}
 		
-		public Builder setAnimations(StaticAnimation... animations) {
+		public Builder setAnimations(StaticAnimation animations) {
 			this.attackAnimations = animations;
 			return this;
 		}
@@ -93,7 +94,7 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 		return (new Builder(resourceLocation)).setCategory(SkillCategories.WEAPON_SPECIAL_ATTACK).setResource(Resource.SPECIAL_GAUAGE);
 	}
 	
-	protected final StaticAnimation[] attackAnimations;
+	protected final StaticAnimation attackAnimations;
 	
 	public AgonyPlungeSkill(Builder builder) {
 		super(builder);
@@ -112,11 +113,19 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getAttackDamage() > 1.0F) {
 				float attackDamage = event.getAttackDamage();
 				event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
+				container.getDataManager().setData(PLUNGING, false);
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
+			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0) {
+				container.getDataManager().setData(PLUNGING, false);
+				container.getDataManager().setData(STACK, 0);
+			}
+		});
+		
+		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0) {
 				container.getDataManager().setData(PLUNGING, false);
 				container.getDataManager().setData(STACK, 0);
@@ -130,56 +139,12 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public FriendlyByteBuf gatherArguments(LocalPlayerPatch executer, ControllEngine controllEngine) {
-        int forward = controllEngine.isKeyDown(Minecraft.getInstance().options.keyUp) ? 1 : 0;
-        int backward = controllEngine.isKeyDown(Minecraft.getInstance().options.keyDown) ? -1 : 0;
-        int left = controllEngine.isKeyDown(Minecraft.getInstance().options.keyLeft) ? 1 : 0;
-        int right = controllEngine.isKeyDown(Minecraft.getInstance().options.keyRight) ? -1 : 0;
-		
-		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-		buf.writeInt(forward);
-		buf.writeInt(backward);
-		buf.writeInt(left);
-		buf.writeInt(right);
-		
-		return buf;
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Object getExecutionPacket(LocalPlayerPatch executer, FriendlyByteBuf args) {
-		int forward = args.readInt();
-		int backward = args.readInt();
-		int left = args.readInt();
-		int right = args.readInt();
-		int vertic = forward + backward;
-		int horizon = left + right;
-		int animation;
-		
-		if (vertic == 0) {
-			if (horizon == 0) {
-				animation = 4;
-			} else {
-				animation = horizon >= 0 ? 2 : 3;
-			}
-		} else {
-			animation = vertic <= 0 ? 1 : 0;
-		}
-		
-		CPExecuteSkill packet = new CPExecuteSkill(this.category.universalOrdinal());
-		packet.getBuffer().writeInt(animation);
-		
-		return packet;
+		container.getExecuter().getEventListener().removeListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID);
 	}
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		int i = args.readInt();
-		executer.playAnimationSynchronized(this.attackAnimations[i], 0);
+		executer.playAnimationSynchronized(this.attackAnimations, 0);
 		executer.getSkill(this.category).getDataManager().setData(PLUNGING, true);
 		executer.getSkill(this.category).getDataManager().setData(STACK, executer.getSkill(this.category).getStack());
 		executer.setStamina(executer.getStamina() - (4f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
@@ -208,5 +173,13 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 	@Override
 	public SpecialAttackSkill registerPropertiesToAnimation() {
 		return this;
+	}
+	
+	@Override
+	public void updateContainer(SkillContainer container) {
+		super.updateContainer(container);
+		if (container.getDataManager().getDataValue(PLUNGING)) {
+			container.getExecuter().getOriginal().resetFallDistance();
+		}
 	}
 }

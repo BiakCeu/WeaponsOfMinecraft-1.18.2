@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -27,6 +28,7 @@ import yesman.epicfight.skill.SpecialAttackSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DemonicAscensionSkill extends SpecialAttackSkill {
@@ -106,7 +108,7 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 		container.getDataManager().setData(ACTIVE,false);
 		
 		if (!container.getExecuter().isLogicalClient()) {
-			this.setMaxDurationSynchronize((ServerPlayerPatch)container.getExecuter(), this.maxDuration + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()));
+			this.setMaxDurationSynchronize((ServerPlayerPatch)container.getExecuter(), 3*20*60);
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
@@ -125,7 +127,7 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 					event.getPlayerPatch().getOriginal().setHealth(Math.min(event.getPlayerPatch().getOriginal().getHealth()
 							+ WitherCatharsis/2, event.getPlayerPatch().getOriginal().getMaxHealth()));
 					event.getTarget().removeEffect(MobEffects.WITHER);
-					container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + 3*20, event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + ((3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))*20), event.getPlayerPatch().getOriginal());
 				}
 			}
 			if (container.getDataManager().getDataValue(ACTIVE) && !container.getDataManager().getDataValue(ASCENDING)) {
@@ -157,7 +159,6 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 				}
 				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, false, event.getPlayerPatch().getOriginal());
 				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, event.getPlayerPatch().getOriginal());
-				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(DemonicAscensionSkill.TIMER, 12*20, event.getPlayerPatch().getOriginal());
 			}
 		});
 		
@@ -206,6 +207,7 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 				executer.getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.ACTIVE, false, executer.getOriginal());
 			}
 		}
+		executer.getOriginal().removeEffect(EpicFightMobEffects.STUN_IMMUNITY.get());
 		this.setStackSynchronize(executer, executer.getSkill(this.category).getStack() - 1);
 		this.setDurationSynchronize(executer, 0);
 		executer.modifyLivingMotionByCurrentItem();
@@ -266,15 +268,14 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 						container.getExecuter().getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.ACTIVE, true, (ServerPlayer) container.getExecuter().getOriginal());					
 					}
 				}
-			}
-			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
-			} else {
-				if(!container.getExecuter().isLogicalClient()) {
+				if (container.getDataManager().getDataValue(TIMER) > 0) {
+					container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
+					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)/20F));
+				} else {
 					container.getSkill().cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
 					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(), 0);
+					container.deactivate();
 				}
-				container.deactivate();
 			}
 		}
 	}
