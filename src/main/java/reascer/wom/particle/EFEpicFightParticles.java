@@ -13,4 +13,11 @@ public class EFEpicFightParticles {
 	
 	public static final RegistryObject<SimpleParticleType> ANTITHEUS_CUT = PARTICLES.register("antitheus_cut", () -> new SimpleParticleType(true));
 	public static final RegistryObject<HitParticleType> ANTITHEUS_HIT = PARTICLES.register("antitheus_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+	
+	public static final RegistryObject<SimpleParticleType> ANTITHEUS_PUNCH = PARTICLES.register("antitheus_punch", () -> new SimpleParticleType(true));
+	public static final RegistryObject<HitParticleType> ANTITHEUS_PUNCH_HIT = PARTICLES.register("antitheus_punch_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+
+	public static final RegistryObject<SimpleParticleType> KATANA_SHEATHED_CUT = PARTICLES.register("katana_sheathed_cut", () -> new SimpleParticleType(true));
+	public static final RegistryObject<HitParticleType> KATANA_SHEATHED_HIT = PARTICLES.register("katana_sheathed_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+
 }

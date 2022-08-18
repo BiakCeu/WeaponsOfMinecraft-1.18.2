@@ -230,8 +230,6 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 	@Override
 	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
 		List<Component> list = super.getTooltipOnItem(itemStack, cap, playerCap);
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Auto attack :");
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Dash attack :");
 		
 		return list;
 	}

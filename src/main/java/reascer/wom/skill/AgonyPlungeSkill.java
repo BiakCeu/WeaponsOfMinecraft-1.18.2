@@ -147,7 +147,7 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 		executer.playAnimationSynchronized(this.attackAnimations, 0);
 		executer.getSkill(this.category).getDataManager().setData(PLUNGING, true);
 		executer.getSkill(this.category).getDataManager().setData(STACK, executer.getSkill(this.category).getStack());
-		executer.setStamina(executer.getStamina() - (4f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
+		executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		executer.getOriginal().setHealth(executer.getOriginal().getHealth() * (0.80f + (0.05f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
 		this.setStackSynchronize(executer, 0);
 		super.executeOnServer(executer, args);

@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "epicfight:demon_seal"
+    },
+    "addition": {
+        "item" : "minecraft:nether_star"
+    },
+    "result": {
+        "item": "epicfight:antitheus"
+    }
+}

@@ -69,6 +69,20 @@ public class EFModLootTables {
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
     		.build());
     	}
+    	
+    	if (event.getName().equals(BuiltInLootTables.NETHER_BRIDGE)) {
+    		event.getTable().addPool(LootPool.lootPool()
+    			.add(LootItem.lootTableItem(EFECItems.DEMON_SEAL.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
+    		.build());
+    	}
+    	
+    	if (event.getName().equals(BuiltInLootTables.BASTION_TREASURE)) {
+    		event.getTable().addPool(LootPool.lootPool()
+    			.add(LootItem.lootTableItem(EFECItems.DEMON_SEAL.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
+    		.build());
+    	}
     }
 }
 

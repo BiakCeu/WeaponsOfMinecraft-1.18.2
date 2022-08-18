@@ -2,7 +2,7 @@
 	"item.epicfight.agony" : "Spear of Agony",
 	"item.epicfight.agony.tooltip" : "Light and sharp spear allow his owner to perform deadly strokes. Jump attack allow to jump 2 block",
 	"skill.epicfight.agony_plunge" : "Apotheosis of agony",
-	"skill.epicfight.agony_plunge.tooltip" : "Jump in the air before landing on all enemy bellow you.\nThe damage is multiplied by the amount of stack you have.",
+	"skill.epicfight.agony_plunge.tooltip" : "Jump in the air before landing on all enemy bellow you.\nDamage is multiplied by the amount of stack you have\nand plunges increase the special skill gauge.\nthis allows you to plunge multiple time with enough damage dealt.\nEach plunge consume 20% current health and 5 stamina.",
 	
 	"item.epicfight.tormented_mind" : "Tormented Mind",
 	"item.epicfight.tormented_mind.tooltip" : "A weapon for mass murder and act of abomination.\nThis axe will torment its bearer with the suffering\nfrom the wrath of its former bearer",
@@ -12,7 +12,7 @@
 	"item.epicfight.ruine" : "Ruine",
 	"item.epicfight.ruine.tooltip" : "An ancient weapon... Perfectly balance by a forgoten knowledge.\nThe cristal in the hilt is infused with endpower.\nThis allows the bearer to perform various deadly actions.",
 	"skill.epicfight.plunder_perdition" : "Plunder the perdition",
-	"skill.epicfight.plunder_perdition.tooltip" : "As you plunge your sword in the ground,\nthe condensed endpower of the cristal strike each enemy in the area.\nEach enemy hit will increase your speed for a period. the period is increased by the level of sweeping edge.",
+	"skill.epicfight.plunder_perdition.tooltip" : "As you plunge your sword in the ground,\nthe condensed endpower of the cristal in the hilt\nwill plunder and harvest each enemy in the area.\nEach enemy hit will give you 5% of your max stamina and max health.\nThen, the Endcristal will give you increased overall speed for a period.\nThe period is increased by the level of sweeping edge.",
 
 	"item.epicfight.ender_blaster" : "Ender blaster",
 	"item.epicfight.ender_blaster.tooltip" : "The pinnacle of the end power. This weapon has transcended time and space\nin order to find someone who can control its power at its most",
@@ -20,7 +20,12 @@
 	"skill.epicfight.ender_blast.tooltip" : "The blaster loader is composed of 12 chambers.\nKinetic energy stored in them is transmuted into endpower.\nWhen the trigger is pressed, half of the converted endpower\nis condensed into different types of bullets.\nThe other half is transfered into a condenser that overcharges\nthe endpower until it blasts the bullet out with tremendous precision.\nAll of that in just a fraction of a second ... outstanding!",
 
 	"item.epicfight.antitheus" : "Antitheus",
-	"item.epicfight.antitheus.tooltip" : "Harvest life in the most horrible and obnoxious way.",
+	"item.epicfight.antitheus.tooltip" : "Harvest life in the most horrible and obnoxious way.\n\nAttacks have 20% chance to cause wither II for 6sec.\nif the entity allready has wither, then the wither effect\nwill upgrade to Wither III with the time refreshed.",
+	"skill.epicfight.demonic_ascension" : "Demonic Ascension",
+	"skill.epicfight.demonic_ascension.tooltip" : "The demon fed on the pain you caused,\nand its now strong enough to possessed you.\n\nWither effect on entities around you will be reaped\ncausing all the remaining damage at once\nand healing you for that amount.\nEach wither effect reaped will\nincrease the duration of the Ascension\n by 3sec on cast and 2sec during Ascension",
+
+	"item.epicfight.demon_seal" : "Demon Seal",
+	"item.epicfight.demon_seal.tooltip" : "An old demon is sealed inside this.",
 
 	"item.epicfight.stone_greataxe" : "Stone Greataxe",
 	"item.epicfight.golden_greataxe" : "Golden Greataxe",

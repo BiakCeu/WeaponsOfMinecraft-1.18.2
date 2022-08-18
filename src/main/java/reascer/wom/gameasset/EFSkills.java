@@ -162,15 +162,7 @@ public class EFSkills {
 				.setActivateType(ActivateType.ONE_SHOT)
 				.setResource(Resource.COOLDOWN)),false);
 		
-		DEMONIC_ASCENSION = event.registerSkill(new DemonicAscensionSkill(DemonicAscensionSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "demonic_ascension")).setConsumption(120.0F).setMaxDuration(3).setActivateType(ActivateType.DURATION_INFINITE).setAnimations(EFAnimations.ANTITHEUS_ASCENSION))
-				.newPropertyLine()
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.2F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(8))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.4F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
-				.registerPropertiesToAnimation(),false);
+		DEMONIC_ASCENSION = event.registerSkill(new DemonicAscensionSkill(DemonicAscensionSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "demonic_ascension")).setConsumption(240.0F).setMaxDuration(3).setActivateType(ActivateType.DURATION_INFINITE).setAnimations(EFAnimations.ANTITHEUS_ASCENSION)),false);
 		
 		COUNTER_ATTACK = event.registerSkill(new CounterAttack(CounterAttack.createBuilder(new ResourceLocation(EpicFightMod.MODID, "counter_attack")).setRequiredXp(8)),true);
 		//KICK = event.registerSkill(new KickSkill(KickSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "kick")).setConsumption(2.0F).setRequiredXp(3)),true);
