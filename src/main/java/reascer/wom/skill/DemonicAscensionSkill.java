@@ -46,7 +46,7 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 		this.activateAnimation = builder.activateAnimation;
 	}
 	
-	public static class Builder extends Skill.Builder<AgonyPlungeSkill> {
+	public static class Builder extends Skill.Builder<DemonicAscensionSkill> {
 		
 		protected StaticAnimation activateAnimation;
 		

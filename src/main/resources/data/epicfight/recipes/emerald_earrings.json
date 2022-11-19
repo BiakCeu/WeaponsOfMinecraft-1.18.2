@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "EEE",
+        "EBE",
+        "   "
+    ],
+    
+    "key":
+    {
+        "B": { "item" : "epicfight:ghast_tear" },
+        "E": { "item" : "minecraft:emerald" }
+    },
+    
+    "result":
+    {
+        "item" : "epicfight:emerald_earrings",
+        "count" : 1
+    }
+}

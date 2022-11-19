@@ -95,7 +95,7 @@ public class EFSkills {
 				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.setter(1.0F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
 				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.0F))
+				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.5F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
 				.registerPropertiesToAnimation(),false);
 		

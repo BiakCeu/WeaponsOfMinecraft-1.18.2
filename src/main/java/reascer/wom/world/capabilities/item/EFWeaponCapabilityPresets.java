@@ -171,7 +171,7 @@ public class EFWeaponCapabilityPresets {
 				.collider(EFColliders.AGONY)
 				.hitSound(EpicFightSounds.BLADE_HIT)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, EFAnimations.AGONY_AUTO_1, EFAnimations.AGONY_AUTO_2, EFAnimations.AGONY_AUTO_3, EFAnimations.AGONY_DASH, EFAnimations.AGONY_AIR_SLASH)
+				.newStyleCombo(Styles.TWO_HAND, EFAnimations.AGONY_AUTO_1, EFAnimations.AGONY_AUTO_2, EFAnimations.AGONY_AUTO_3, EFAnimations.AGONY_AUTO_4, EFAnimations.AGONY_CLAWSTRIKE, EFAnimations.AGONY_AIR_SLASH)
 				.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
 				.specialAttack(Styles.TWO_HAND, EFSkills.AGONY_PLUNGE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.AGONY_IDLE)
@@ -185,7 +185,7 @@ public class EFWeaponCapabilityPresets {
 	
 	public static final Function<Item, CapabilityItem.Builder> TORMENT = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
-				.category(WeaponCategories.GREATSWORD)
+				.category(WomWeaponCategories.TORMENT)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
 						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
@@ -198,7 +198,7 @@ public class EFWeaponCapabilityPresets {
 				.hitSound(EpicFightSounds.BLADE_HIT)
 				.swingSound(EpicFightSounds.WHOOSH_BIG)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, EFAnimations.TORMENT_AUTO_1, EFAnimations.TORMENT_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.TORMENT_DASH, EFAnimations.TORMENT_AIRSLAM)
+				.newStyleCombo(Styles.TWO_HAND, EFAnimations.TORMENT_AUTO_4, EFAnimations.TORMENT_AUTO_1, EFAnimations.TORMENT_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.TORMENT_DASH, EFAnimations.TORMENT_AIRSLAM)
 				.newStyleCombo(Styles.LIECHTENAUER, EFAnimations.TORMENT_BERSERK_AUTO_1, EFAnimations.TORMENT_BERSERK_AUTO_2, EFAnimations.TORMENT_BERSERK_DASH, EFAnimations.TORMENT_BERSERK_AIRSLAM)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.specialAttack(Styles.TWO_HAND, EFSkills.TRUE_BERSERK)
@@ -225,7 +225,7 @@ public class EFWeaponCapabilityPresets {
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(EFColliders.RUINE)
 			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.TWO_HAND, EFAnimations.RUINE_AUTO_1, EFAnimations.RUINE_AUTO_2, EFAnimations.RUINE_AUTO_3, EFAnimations.RUINE_DASH, EFAnimations.RUINE_COMET)
+			.newStyleCombo(Styles.TWO_HAND, EFAnimations.RUINE_AUTO_1, EFAnimations.RUINE_AUTO_2, EFAnimations.RUINE_AUTO_3, EFAnimations.RUINE_AUTO_4, EFAnimations.RUINE_DASH, EFAnimations.RUINE_COMET)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.specialAttack(Styles.TWO_HAND, EFSkills.PLUNDER_PERDITION)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.RUINE_IDLE)
@@ -236,7 +236,7 @@ public class EFWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD);
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, EFAnimations.RUINE_BLOCK);
 		return builder;
 	};
 	
@@ -286,8 +286,8 @@ public class EFWeaponCapabilityPresets {
 	
 	public static final Function<Item, CapabilityItem.Builder> ENDER_BLASTER = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.RANGED)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.RANGED ? Styles.TWO_HAND : Styles.ONE_HAND)
+			.category(WomWeaponCategories.ENDERBLASTER)
+			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WomWeaponCategories.ENDERBLASTER ? Styles.TWO_HAND : Styles.ONE_HAND)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(EFColliders.ENDER_BLASTER)
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_1, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_2, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_3, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_4, EFAnimations.ENDERBLASTER_ONEHAND_DASH, EFAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)
@@ -321,7 +321,7 @@ public class EFWeaponCapabilityPresets {
 	
 	public static final Function<Item, CapabilityItem.Builder> ANTITHEUS = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
-				.category(WeaponCategories.GREATSWORD)
+				.category(WomWeaponCategories.ANTITHEUS)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
 						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {

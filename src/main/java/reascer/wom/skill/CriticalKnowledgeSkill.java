@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -35,11 +36,13 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 				event.getTarget().hurt((DamageSource) event.getDamageSource(), event.getAttackDamage()/2);
 				if(!event.getPlayerPatch().isLogicalClient()) {
 					ServerPlayerPatch executer = (ServerPlayerPatch) event.getPlayerPatch();
+					event.getTarget().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 1.0f, 1.0f);
+					event.getTarget().playSound(SoundEvents.FIREWORK_ROCKET_TWINKLE, 1.0f, 1.0f);
 					((ServerLevel) executer.getOriginal().level).sendParticles( ParticleTypes.ELECTRIC_SPARK,
 							event.getTarget().getX(), 
 							event.getTarget().getY() + 1.2D, 
 							event.getTarget().getZ(), 
-							20, 0.0D, 0.0D, 0.0D, 1.0D);
+							40, 0.0D, 0.0D, 0.0D, 1.5D);
 				}
 			}
         });

@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +113,8 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getAttackDamage() > 1.0F) {
 				float attackDamage = event.getAttackDamage();
-				event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
+				//event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
+				//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
 				container.getDataManager().setData(PLUNGING, false);
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
@@ -145,11 +147,11 @@ public class AgonyPlungeSkill extends SpecialAttackSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		executer.playAnimationSynchronized(this.attackAnimations, 0);
-		executer.getSkill(this.category).getDataManager().setData(PLUNGING, true);
-		executer.getSkill(this.category).getDataManager().setData(STACK, executer.getSkill(this.category).getStack());
+		executer.getSkill(this.category).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
+		executer.getSkill(this.category).getDataManager().setDataSync(STACK, executer.getSkill(this.category).getStack(), executer.getOriginal());
 		executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		executer.getOriginal().setHealth(executer.getOriginal().getHealth() * (0.80f + (0.05f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
-		this.setStackSynchronize(executer, 0);
+		//this.setStackSynchronize(executer, executer.getSkill(this.category).getStack() - 1);
 		super.executeOnServer(executer, args);
 		executer.getSkill(this.category).deactivate();
 	}

@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.particle.EFEpicFightParticles;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.Skill;
@@ -82,6 +83,10 @@ public class PlunderPerditionSkill extends SpecialAttackSkill {
 			}
 		});
 		
+		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
+			container.getExecuter().getOriginal().level.addAlwaysVisibleParticle(EFEpicFightParticles.RUINE_PLUNDER_SWORD.get(), event.getTarget().xo, event.getTarget().yo, event.getTarget().zo, 0, 0, 0);
+		});
+		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
 			if (event.getAnimationId() == EFAnimations.RUINE_PLUNDER.getId() && container.getDataManager().getDataValue(STRENGHT) > 0) {
 				if (!container.getExecuter().isLogicalClient()) {
@@ -108,6 +113,7 @@ public class PlunderPerditionSkill extends SpecialAttackSkill {
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getDataManager().setData(BUFFED, false);

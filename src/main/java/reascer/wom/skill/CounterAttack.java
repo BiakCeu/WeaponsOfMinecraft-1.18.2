@@ -19,6 +19,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.EFColliders;
+import reascer.wom.world.capabilities.item.WomWeaponCategories;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSounds;
@@ -45,15 +47,21 @@ public class CounterAttack extends GuardSkill {
 		return GuardSkill.createBuilder(resourceLocation)
 				.addAdvancedGuardMotion(WeaponCategories.SWORD, (itemCap, playerpatch) -> itemCap.getStyle(playerpatch) == Styles.ONE_HAND ?
 					Animations.SWORD_DASH :
-					Animations.SWORD_DUAL_DASH)
+					Animations.SWORD_DUAL_AUTO3)
 				.addAdvancedGuardMotion(WeaponCategories.LONGSWORD, (itemCap, playerpatch) ->
-					EFAnimations.RUINE_AUTO_3)
-				.addAdvancedGuardMotion(WeaponCategories.KATANA, (itemCap, playerpatch) ->
-					EFAnimations.KATANA_SHEATHED_COUNTER )
+					Animations.LONGSWORD_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.TACHI, (itemCap, playerpatch) ->
-					EFAnimations.RUINE_DASH)
+					Animations.TACHI_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.SPEAR, (itemCap, playerpatch) ->
-					EFAnimations.AGONY_DASH);
+					Animations.SPEAR_DASH)
+				.addAdvancedGuardMotion(WomWeaponCategories.AGONY, (itemCap, playerpatch) ->
+					EFAnimations.AGONY_DASH)
+				.addAdvancedGuardMotion(WomWeaponCategories.RUINE, (itemCap, playerpatch) ->
+					EFAnimations.RUINE_COUNTER)
+				.addAdvancedGuardMotion(WomWeaponCategories.STAFF, (itemCap, playerpatch) ->
+					EFAnimations.STAFF_DASH)
+				.addAdvancedGuardMotion(WeaponCategories.KATANA, (itemCap, playerpatch) ->
+					EFAnimations.KATANA_SHEATHED_COUNTER );
 	}
 	
 	public CounterAttack(GuardSkill.Builder builder) {
@@ -140,10 +148,18 @@ public class CounterAttack extends GuardSkill {
 	@Nullable
 	protected StaticAnimation getGuardMotion(PlayerPatch<?> playerpatch, CapabilityItem itemCapability, BlockType blockType) {
 		if (blockType == BlockType.ADVANCED_GUARD) {
-			StaticAnimation motions = (StaticAnimation)this.getGuradMotionMap(blockType).getOrDefault(itemCapability.getWeaponCategory(), (a, b) -> null).apply(itemCapability, playerpatch);
+			if (itemCapability.getWeaponCollider() == EFColliders.AGONY) {
+				return EFAnimations.AGONY_AUTO_2;
+			} else if (itemCapability.getWeaponCollider() == EFColliders.RUINE) {
+				return EFAnimations.RUINE_COUNTER;
+			} else if (itemCapability.getWeaponCollider() == EFColliders.STAFF) {
+				return EFAnimations.STAFF_DASH;
+			}
 			
-			if (motions != null) {
-				return motions;
+			
+			StaticAnimation motion = (StaticAnimation)this.getGuradMotionMap(blockType).getOrDefault(itemCapability.getWeaponCategory(), (a, b) -> null).apply(itemCapability, playerpatch);
+			if (motion != null) {
+				return motion;
 			}
 		}
 		
@@ -164,7 +180,7 @@ public class CounterAttack extends GuardSkill {
 	@Override
 	public List<Object> getTooltipArgs() {
 		List<Object> list = Lists.<Object>newArrayList();
-		list.add(String.format("%s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR).toLowerCase());
+		list.add(String.format("%s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WomWeaponCategories.AGONY , WomWeaponCategories.RUINE, WomWeaponCategories.STAFF).toLowerCase());
 		return list;
 	}
 }

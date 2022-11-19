@@ -12,7 +12,7 @@ public class PainRetributionSkill extends PainAnticipationSkill {
 	public PainRetributionSkill(Builder<? extends Skill> builder) {
 		super(builder);
 		maxtimer = 80;
-		maxduree = 20;
+		maxduree = 80;
 	}
 	
 	@Override

@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "GTG",
+        "GGG",
+        "GGG"
+    ],
+    
+    "key":
+    {
+        "T": { "item" : "epicfight:ghast_tear" },
+        "G": { "item" : "minecraft:gold_ingot" }
+    },
+    
+    "result":
+    {
+        "item" : "epicfight:golden_kit",
+        "count" : 1
+    }
+}

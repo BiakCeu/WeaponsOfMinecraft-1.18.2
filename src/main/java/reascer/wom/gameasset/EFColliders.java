@@ -10,17 +10,19 @@ public class EFColliders {
 	
 	public static final Collider GREATSWORD = new MultiOBBCollider(3, 0.2D, 0.8D, 1.0D, 0D, 0D, -1.2D);
 	
-	public static final Collider AGONY = new MultiOBBCollider(4, 0.35D, 0.35D, 0.8D, 0D, 0D, -1.2D);
-	public static final Collider AGONY_AIRSLASH = new MultiOBBCollider(4, 0.55D, 0.55D, 1.4D, 0D, 0D, -0.8D);
+	public static final Collider AGONY = new MultiOBBCollider(5, 0.45D, 0.45D, 1.4D, 0D, 0D, -1.2D);
+	public static final Collider AGONY_AIRSLASH = new MultiOBBCollider(4, 0.55D, 0.55D, 1.4D, 0D, 0D, -1.2D);
 	public static final Collider AGONY_PLUNGE = new OBBCollider(5.0F, 2.0F, 5.0F, 0F, 0F, 0F);
 	
 	public static final Collider PLUNDER_PERDITION = new OBBCollider(8.0F, 4.0F, 8.0F, 0F, 0F, 0F);
-	public static final Collider RUINE = new MultiOBBCollider(4, 0.4D, 0.4D, 1.45D, 0D, 0D, -1.05D);
+	public static final Collider RUINE = new MultiOBBCollider(5, 0.4D, 0.4D, 1.45D, 0D, 0D, -1.05D);
 	public static final Collider RUINE_COMET = new MultiOBBCollider(4, 0.6D, 0.6D, 1.35D, 0D, 0D, -0.95D);
+	public static final Collider SHOULDER_BUMP = new OBBCollider( 0.8D, 0.8D, 0.8D, 0D, 1.2D, -1.2D);
 	
 	public static final Collider TORMENT = new MultiOBBCollider(3, 0.4F, 0.6F, 1.0F, 0F, -0.2F, -0.8F);
 	public static final Collider TORMENT_AIRSLAM = new OBBCollider( 1.4F, 0.8F, 1.4F, 0F, 0.8F, -1.6F);
 	public static final Collider TORMENT_BERSERK_AIRSLAM = new OBBCollider( 3.2F, 3F, 3.2F, 0F, 3F, -3.6F);
+	public static final Collider TORMENT_BERSERK_DASHSLAM = new OBBCollider( 1.8F, 1.6F, 1.8F, 0F, 1.6F, -1.8F);
 	
 	public static final Collider KATANA_SHEATHED_AUTO = new OBBCollider(2.00F, 1.0F, 2.0F, 0F, 1.0F, -1F);
 	public static final Collider KATANA_SHEATHED_DASH = new OBBCollider(2.00F, 1.0F, 3.5F, 0F, 1.0F, 2.50F);

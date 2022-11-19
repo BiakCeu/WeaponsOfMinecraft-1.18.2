@@ -17,7 +17,7 @@ public class VampirizeSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			container.getExecuter().getOriginal().setHealth( Math.min(container.getExecuter().getOriginal().getHealth() + (event.getAttackDamage() * 0.30f),
+			container.getExecuter().getOriginal().setHealth( Math.min(container.getExecuter().getOriginal().getHealth() + (event.getAttackDamage() * 0.10f),
 					container.getExecuter().getOriginal().getMaxHealth()));
         });
 	}

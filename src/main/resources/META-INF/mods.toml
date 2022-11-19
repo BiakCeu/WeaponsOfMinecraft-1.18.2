@@ -58,7 +58,7 @@ A minecraft mod that add more special weapons to your Epicfight mod.
     ordering="NONE"
     side="BOTH"
 
-# [[dependencies.wom]]
+#[[dependencies.wom]]
 #    modId="epicfight"
 #    mandatory=true
 #    versionRange="[18.2.0,)"

@@ -26,7 +26,7 @@ public class PainAnticipationSkill extends PassiveSkill {
 	public PainAnticipationSkill(Builder<? extends Skill> builder) {
 		super(builder);
 		maxtimer = 40;
-		maxduree = 10;
+		maxduree = 40;
 	}
 	
 	@Override
@@ -104,6 +104,11 @@ public class PainAnticipationSkill extends PassiveSkill {
 						container.getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(TIMER, maxtimer,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					}
+				}
+			} else {
+				if(!container.getExecuter().isLogicalClient()) {
+					container.getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(TIMER, maxtimer,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				}
 			}
 		}
