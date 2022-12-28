@@ -18,6 +18,7 @@ import reascer.wom.gameasset.EFSkills;
 import reascer.wom.particle.EFEpicFightParticles;
 import reascer.wom.world.capabilities.EFLivingEntity;
 import reascer.wom.world.item.EFECItems;
+import yesman.epicfight.api.client.model.Meshes;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("wom")
 public class WeaponOfMinecraft
@@ -31,11 +32,11 @@ public class WeaponOfMinecraft
     	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     	bus.addListener(this::doClientStuff);
     	bus.addListener(EFAnimations::registerAnimations);
-    	bus.addListener(EFSkills::registerSkills);
     	
     	EFECItems.ITEMS.register(bus);
     	EFEpicFightParticles.PARTICLES.register(bus);
     	EFEnchantment.ENCHANTEMENTS.register(bus);
+    	EFSkills.registerSkills();
     	
     	MinecraftForge.EVENT_BUS.register(this);
         
@@ -43,6 +44,6 @@ public class WeaponOfMinecraft
     
     private void doClientStuff(final FMLClientSetupEvent event) {
     	ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-    	EFClientModels.LOGICAL_CLIENT.loadModels(resourceManager);
+		Meshes.build(resourceManager);
     }
 }

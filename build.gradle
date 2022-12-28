@@ -2,6 +2,7 @@ buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = "https://repo.spongepowered.org/maven" }
         mavenCentral()
     }
     dependencies {
@@ -14,6 +15,7 @@ plugins {
     id 'maven-publish'
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 
 repositories {
@@ -24,7 +26,7 @@ repositories {
         }
     }
 }
-version = '1.6'
+version = '1.7'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMinecraft'
 
@@ -160,7 +162,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.73'
     // EpicFight-18.3.2.jar
-    implementation fg.deobf("curse.maven:efm-405076:4018756")
+    //implementation fg.deobf("curse.maven:efm-405076:4018756")
     //implementation fg.deobf("yesman:epicfight:18.3.2")
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

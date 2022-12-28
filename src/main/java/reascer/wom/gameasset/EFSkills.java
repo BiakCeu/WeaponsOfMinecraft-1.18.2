@@ -25,19 +25,17 @@ import reascer.wom.skill.PlunderPerditionSkill;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.skill.VampirizeSkill;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
-import yesman.epicfight.api.forgeevent.SkillRegistryEvent;
-import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
-import yesman.epicfight.api.utils.math.ValueCorrector;
+import yesman.epicfight.api.data.reloader.SkillManager;
+import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.GuardSkill;
 import yesman.epicfight.skill.PassiveSkill;
-import yesman.epicfight.skill.SimpleSpecialAttackSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.Skill.ActivateType;
 import yesman.epicfight.skill.Skill.Resource;
 import yesman.epicfight.skill.SkillCategories;
-import yesman.epicfight.skill.SpecialAttackSkill;
+import yesman.epicfight.skill.WeaponInnateSkill;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFSkills {
@@ -47,7 +45,7 @@ public class EFSkills {
 	
 	public static Skill KICK;
 	
-	public static Skill BLOSSOM;
+	//public static Skill BLOSSOM;
 	public static Skill CHARYBDIS;
 	
 	public static Skill AGONY_PLUNGE;
@@ -71,24 +69,32 @@ public class EFSkills {
 	public static Skill ENDER_BLAST;
 	public static Skill ENDER_FUSION;
 	
-	@SubscribeEvent
-	public static void registerSkills(SkillRegistryEvent event) {
-		ENDERSTEP = event.registerSkill(new EnderStepSkill(DodgeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "enderstep")).setConsumption(5.0F)
-				.setAnimations(EFAnimations.ENDERSTEP_FORWARD, EFAnimations.ENDERSTEP_BACKWARD, EFAnimations.ENDERSTEP_LEFT, EFAnimations.ENDERSTEP_RIGHT)),true);
+	public static void registerSkills() {
+		SkillManager.register(EnderStepSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_forward"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_backward"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_left"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_right")), 
+				EpicFightMod.MODID,"ender_step");
 		
-		DODGEMASTER = event.registerSkill(new DodgeMasterSkill(DodgeMasterSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "dodgemaster")).setConsumption(2.0F)
-				.setAnimations(EFAnimations.DODGEMASTER_BACKWARD, EFAnimations.DODGEMASTER_BACKWARD, EFAnimations.DODGEMASTER_RIGHT, EFAnimations.DODGEMASTER_LEFT)),true);
+		SkillManager.register(DodgeMasterSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_backward"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_backward"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_right"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_left")),
+				EpicFightMod.MODID,"dodge_master");
 		
-		KNIGHT_ROLL = event.registerSkill(new DodgeSkill(DodgeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "knight_roll")).setConsumption(3.5F)
-				.setAnimations(EFAnimations.KNIGHT_ROLL_FORWARD, EFAnimations.KNIGHT_ROLL_BACKWARD, EFAnimations.KNIGHT_ROLL_LEFT, EFAnimations.KNIGHT_ROLL_RIGHT)),true);
+		SkillManager.register(DodgeSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_forward"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_backward"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_left"),
+				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_right")),
+				EpicFightMod.MODID,"precise_roll");
 		
-		BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
-		CHARYBDIS = event.registerSkill(new CharybdisSkill(CharybdisSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "charybdis")).setConsumption(6.0F).setAnimations(EFAnimations.STAFF_CHARYBDIS))
-				.newPropertyLine()
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.35F))
-				.registerPropertiesToAnimation(),false);
-		
+		//BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
+		SkillManager.register(CharybdisSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				EpicFightMod.MODID,"Charybdis");
+		/*
 		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(50.0F).setMaxStack(3).setAnimations(EFAnimations.AGONY_PLUNGE_FORWARD))
 				.newPropertyLine()
 				.newPropertyLine()
@@ -173,6 +179,13 @@ public class EFSkills {
 		PAIN_RETRIBUTION = event.registerSkill(new PainRetributionSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "pain_retribution")).setRequiredXp(8)),true);
 		VAMPIRIZE = event.registerSkill(new VampirizeSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "vampirize")).setRequiredXp(8)),true);
 		CRITICAL_KNOWLEDGE = event.registerSkill(new CriticalKnowledgeSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "critical_knowledge")).setRequiredXp(8)),true);
-		
+		*/
+	}
+	
+	@SubscribeEvent
+	public static void buildSkillEvent(SkillBuildEvent onBuild) {
+		ENDERSTEP = onBuild.build(EpicFightMod.MODID, "enderstep");
+		KNIGHT_ROLL = onBuild.build(EpicFightMod.MODID, "precise_roll");		
+		DODGEMASTER = onBuild.build(EpicFightMod.MODID, "dodgemaster");
 	}
 }

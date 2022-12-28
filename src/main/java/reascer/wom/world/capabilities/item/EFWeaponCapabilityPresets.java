@@ -20,8 +20,8 @@ import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.ColliderPreset;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.gameasset.Skills;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -40,10 +40,10 @@ public class EFWeaponCapabilityPresets {
 			.collider(ColliderPreset.SWORD)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.SWORD_ONEHAND_AUTO_1, EFAnimations.SWORD_ONEHAND_AUTO_2, EFAnimations.SWORD_ONEHAND_AUTO_3, EFAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_COMBO1, Animations.SWORD_DUAL_COMBO2, Animations.SWORD_DUAL_COMBO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.ONE_HAND, Skills.SWEEPING_EDGE)
-			.specialAttack(Styles.TWO_HAND, Skills.DANCING_EDGE)
+			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.SWEEPING_EDGE)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
 			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.SWORD);
@@ -66,7 +66,7 @@ public class EFWeaponCapabilityPresets {
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.TWO_HAND, EFAnimations.GREATSWORD_TWOHAND_AUTO_1, EFAnimations.GREATSWORD_TWOHAND_AUTO_2, EFAnimations.GREATSWORD_TWOHAND_AUTO_3, Animations.GREATSWORD_DASH, Animations.GREATSWORD_AIR_SLASH)
-			.specialAttack(Styles.TWO_HAND, Skills.GIANT_WHIRLWIND)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.GIANT_WHIRLWIND)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
@@ -84,7 +84,7 @@ public class EFWeaponCapabilityPresets {
 			.category(WeaponCategories.LONGSWORD)
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch<?>) {
-					if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
+					if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getRemainDuration() > 0) {
 						return Styles.LIECHTENAUER;
 					}
 				}
@@ -96,8 +96,8 @@ public class EFWeaponCapabilityPresets {
 			.newStyleCombo(Styles.TWO_HAND, EFAnimations.LONGSWORD_TWOHAND_AUTO_1,EFAnimations.LONGSWORD_TWOHAND_AUTO_2, EFAnimations.LONGSWORD_TWOHAND_AUTO_3,EFAnimations.LONGSWORD_TWOHAND_AUTO_4, Animations.LONGSWORD_DASH, Animations.LONGSWORD_AIR_SLASH)
 			.newStyleCombo(Styles.LIECHTENAUER,EFAnimations.LONGSWORD_TWOHAND_AUTO_1,EFAnimations.LONGSWORD_TWOHAND_AUTO_2, EFAnimations.LONGSWORD_TWOHAND_AUTO_3,EFAnimations.LONGSWORD_TWOHAND_AUTO_4, Animations.LONGSWORD_DASH, Animations.LONGSWORD_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.TWO_HAND, Skills.LIECHTENAUER)
-			.specialAttack(Styles.LIECHTENAUER, Skills.LIECHTENAUER)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.LIECHTENAUER)
+			.innateSkill(Styles.LIECHTENAUER,(itemstack) -> EpicFightSkills.LIECHTENAUER)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
@@ -126,10 +126,10 @@ public class EFWeaponCapabilityPresets {
 			.collider(ColliderPreset.KATANA)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.TACHI_TWOHAND_AUTO_1, EFAnimations.TACHI_TWOHAND_AUTO_2, EFAnimations.TACHI_TWOHAND_AUTO_3, EFAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_COMBO1, Animations.SWORD_DUAL_COMBO2, Animations.SWORD_DUAL_COMBO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.ONE_HAND, Skills.LETHAL_SLICING)
-			.specialAttack(Styles.TWO_HAND, Skills.DANCING_EDGE)
+			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.LETHAL_SLICE)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_TACHI)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_TACHI)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_TACHI)
@@ -154,7 +154,7 @@ public class EFWeaponCapabilityPresets {
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.TWO_HAND, EFAnimations.STAFF_AUTO_1, EFAnimations.STAFF_AUTO_2, EFAnimations.STAFF_AUTO_3, EFAnimations.STAFF_DASH, Animations.SPEAR_TWOHAND_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
-			.specialAttack(Styles.TWO_HAND, EFSkills.CHARYBDIS)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.CHARYBDIS)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.STAFF_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_SPEAR)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.STAFF_RUN)
@@ -173,7 +173,7 @@ public class EFWeaponCapabilityPresets {
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, EFAnimations.AGONY_AUTO_1, EFAnimations.AGONY_AUTO_2, EFAnimations.AGONY_AUTO_3, EFAnimations.AGONY_AUTO_4, EFAnimations.AGONY_CLAWSTRIKE, EFAnimations.AGONY_AIR_SLASH)
 				.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
-				.specialAttack(Styles.TWO_HAND, EFSkills.AGONY_PLUNGE)
+				.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.AGONY_PLUNGE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.AGONY_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.AGONY_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.AGONY_RUN)
@@ -188,7 +188,7 @@ public class EFWeaponCapabilityPresets {
 				.category(WomWeaponCategories.TORMENT)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
-						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getRemainDuration() > 0) {
 							return Styles.LIECHTENAUER;
 						}
 					}
@@ -201,8 +201,8 @@ public class EFWeaponCapabilityPresets {
 				.newStyleCombo(Styles.TWO_HAND, EFAnimations.TORMENT_AUTO_4, EFAnimations.TORMENT_AUTO_1, EFAnimations.TORMENT_AUTO_2, EFAnimations.TORMENT_AUTO_3, EFAnimations.TORMENT_DASH, EFAnimations.TORMENT_AIRSLAM)
 				.newStyleCombo(Styles.LIECHTENAUER, EFAnimations.TORMENT_BERSERK_AUTO_1, EFAnimations.TORMENT_BERSERK_AUTO_2, EFAnimations.TORMENT_BERSERK_DASH, EFAnimations.TORMENT_BERSERK_AIRSLAM)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-				.specialAttack(Styles.TWO_HAND, EFSkills.TRUE_BERSERK)
-				.specialAttack(Styles.LIECHTENAUER, EFSkills.TRUE_BERSERK)
+				.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.TRUE_BERSERK)
+				.innateSkill(Styles.LIECHTENAUER,(itemstack) -> EFSkills.TRUE_BERSERK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.TORMENT_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.TORMENT_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.TORMENT_RUN)
@@ -227,7 +227,7 @@ public class EFWeaponCapabilityPresets {
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.TWO_HAND, EFAnimations.RUINE_AUTO_1, EFAnimations.RUINE_AUTO_2, EFAnimations.RUINE_AUTO_3, EFAnimations.RUINE_AUTO_4, EFAnimations.RUINE_DASH, EFAnimations.RUINE_COMET)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.TWO_HAND, EFSkills.PLUNDER_PERDITION)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.PLUNDER_PERDITION)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.RUINE_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.RUINE_WALK)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
@@ -260,8 +260,8 @@ public class EFWeaponCapabilityPresets {
 			.newStyleCombo(Styles.SHEATH, EFAnimations.KATANA_SHEATHED_AUTO_1, EFAnimations.KATANA_SHEATHED_AUTO_2, EFAnimations.KATANA_SHEATHED_AUTO_3, EFAnimations.KATANA_SHEATHED_DASH, Animations.KATANA_SHEATH_AIR_SLASH)
 			.newStyleCombo(Styles.TWO_HAND, EFAnimations.KATANA_AUTO_1, EFAnimations.KATANA_AUTO_2, EFAnimations.KATANA_AUTO_3, EFAnimations.KATANA_DASH, Animations.KATANA_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.SHEATH, EFSkills.FATAL_DRAW_EF)
-			.specialAttack(Styles.TWO_HAND, EFSkills.FATAL_DRAW_EF)
+			.innateSkill(Styles.SHEATH,(itemstack) -> EFSkills.FATAL_DRAW_EF)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.FATAL_DRAW_EF)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, EFAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.KATANA_IDLE)
@@ -293,8 +293,8 @@ public class EFWeaponCapabilityPresets {
 			.newStyleCombo(Styles.ONE_HAND, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_1, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_2, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_3, EFAnimations.ENDERBLASTER_ONEHAND_AUTO_4, EFAnimations.ENDERBLASTER_ONEHAND_DASH, EFAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)
 			.newStyleCombo(Styles.TWO_HAND, EFAnimations.ENDERBLASTER_TWOHAND_AUTO_1, EFAnimations.ENDERBLASTER_TWOHAND_AUTO_2, EFAnimations.ENDERBLASTER_TWOHAND_AUTO_3, EFAnimations.ENDERBLASTER_TWOHAND_AUTO_4, EFAnimations.ENDERBLASTER_TWOHAND_TOMAHAWK, EFAnimations.ENDERBLASTER_TWOHAND_TISHNAW)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.specialAttack(Styles.ONE_HAND, EFSkills.ENDER_BLAST)
-			.specialAttack(Styles.TWO_HAND, EFSkills.ENDER_FUSION)
+			.innateSkill(Styles.ONE_HAND,(itemstack) -> EFSkills.ENDER_BLAST)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.ENDER_FUSION)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.IDLE, EFAnimations.ENDERBLASTER_ONEHAND_IDLE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.KNEEL, EFAnimations.ENDERBLASTER_ONEHAND_IDLE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.WALK, EFAnimations.ENDERBLASTER_ONEHAND_WALK)
@@ -324,7 +324,7 @@ public class EFWeaponCapabilityPresets {
 				.category(WomWeaponCategories.ANTITHEUS)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
-						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getRemainDuration() > 0) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getRemainDuration() > 0) {
 							return Styles.LIECHTENAUER;
 						}
 					}
@@ -338,8 +338,8 @@ public class EFWeaponCapabilityPresets {
 				.newStyleCombo(Styles.TWO_HAND, EFAnimations.ANTITHEUS_AUTO_1, EFAnimations.ANTITHEUS_AUTO_2, EFAnimations.ANTITHEUS_AUTO_3, EFAnimations.ANTITHEUS_AUTO_4, EFAnimations.ANTITHEUS_AGRESSION, EFAnimations.ANTITHEUS_GUILLOTINE)
 				.newStyleCombo(Styles.LIECHTENAUER, EFAnimations.ANTITHEUS_ASCENDED_AUTO_1, EFAnimations.ANTITHEUS_ASCENDED_AUTO_2, EFAnimations.ANTITHEUS_ASCENDED_AUTO_3, EFAnimations.ANTITHEUS_ASCENDED_BLINK, EFAnimations.ANTITHEUS_ASCENDED_DEATHFALL)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-				.specialAttack(Styles.TWO_HAND, EFSkills.DEMONIC_ASCENSION)
-				.specialAttack(Styles.LIECHTENAUER, EFSkills.DEMONIC_ASCENSION)
+				.innateSkill(Styles.TWO_HAND,(itemstack) -> EFSkills.DEMONIC_ASCENSION)
+				.innateSkill(Styles.LIECHTENAUER,(itemstack) -> EFSkills.DEMONIC_ASCENSION)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, EFAnimations.ANTITHEUS_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, EFAnimations.ANTITHEUS_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, EFAnimations.ANTITHEUS_RUN)

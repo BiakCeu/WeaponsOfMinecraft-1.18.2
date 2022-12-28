@@ -1,4 +1,27 @@
 {
+	"enchantment.epicfight.invigoration" : "Invigoration",
+	"attribute.name.epicfight.staminar" : "Max Stamina",
+
+	"item.epicfight.golden_monocle" : "Golden Monocle",
+	"item.epicfight.golden_chrono" : "Golden Pocket Watch",
+	"item.epicfight.golden_mokassin" : "Golden Moccasins",
+	"item.epicfight.golden_kit" : "Golden Suspenders",
+	
+	"item.epicfight.diamond_crown" : "Diamond Crown",
+	"item.epicfight.diamond_armbracelet" : "Diamond Armlet",
+	"item.epicfight.diamond_legtopseal" : "Diamond thigh strap",
+	"item.epicfight.diamond_legbottomseal" : "Diamond calf strap",
+
+	"item.epicfight.emerald_earrings" : "Emerald Ear Rings",
+	"item.epicfight.emerald_chakra" : "Emerald Back Cercle",
+	"item.epicfight.emerald_tasset" : "Emerald Tasset",
+	"item.epicfight.emerald_anklebracelet" : "Emerald Ankle Bracelet",
+
+	"item.epicfight.netherite_mask" : "Netherite Mask",
+	"item.epicfight.netherite_manicle" : "Netherite chaines",
+	"item.epicfight.netherite_belt" : "Netherite Belt",
+	"item.epicfight.netherite_chains" : "Netherite shackles",
+
 	"item.epicfight.agony" : "Spear of Agony",
 	"item.epicfight.agony.tooltip" : "Light and sharp spear allow his owner to perform deadly strokes. Jump attack allow to jump 2 block",
 	"skill.epicfight.agony_plunge" : "Apotheosis of agony",

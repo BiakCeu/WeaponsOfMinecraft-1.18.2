@@ -3,32 +3,33 @@ package reascer.wom.animation;
 import javax.annotation.Nullable;
 
 import net.minecraft.world.InteractionHand;
+import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.LinkAnimation;
 import yesman.epicfight.api.collider.Collider;
-import yesman.epicfight.api.model.Model;
+import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 public class BasicMultipleAttackAnimation extends AttackAnimation {
-	public BasicMultipleAttackAnimation(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, String index, String path, Model model) {
-		this(convertTime, antic, antic, contact, recovery, collider, index, path, model);
+	public BasicMultipleAttackAnimation(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
+		this(convertTime, antic, antic, contact, recovery, collider, colliderJoint, path, armature);
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, String index, String path, Model model) {
-		super(convertTime, antic, preDelay, contact, recovery, collider, index, path, model);
+	public BasicMultipleAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
+		super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, path, armature);
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider,  String index, String path, Model model) {
-		super(convertTime, antic, antic, contact, recovery, hand, collider, index, path, model);
+	public BasicMultipleAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
+		super(convertTime, antic, antic, contact, recovery, hand, collider, colliderJoint, path, armature);
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, String path, Model model, Phase... phases) {
-		super(convertTime, path, model, phases);
+	public BasicMultipleAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
+		super(convertTime, path, armature, phases);
 	}
 	
 	@Override

@@ -15,7 +15,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.client.model.EFClientModels;
-import yesman.epicfight.api.client.model.ClientModel;
+import reascer.wom.client.model.WomMeshes;
+import yesman.epicfight.api.client.model.Mesh;
+import yesman.epicfight.api.client.model.Mesh.RawMesh;
 import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
 import yesman.epicfight.client.particle.TexturedCustomModelParticle;
 import yesman.epicfight.main.EpicFightMod;
@@ -24,7 +26,7 @@ import yesman.epicfight.main.EpicFightMod;
 public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 	private float yO;
 	
-	public RuinePlunderSwordParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, ClientModel particleMesh, ResourceLocation texture) {
+	public RuinePlunderSwordParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, RawMesh particleMesh, ResourceLocation texture) {
 		super(level, x, y-10.0f, z, xd, yd, zd, particleMesh, texture);
 		this.lifetime = 50;
 		this.hasPhysics = false;
@@ -80,7 +82,7 @@ public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 	public static class Provider implements ParticleProvider<SimpleParticleType> {
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			return new RuinePlunderSwordParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, EFClientModels.LOGICAL_CLIENT.ruine_plunde_sword, new ResourceLocation(EpicFightMod.MODID, "textures/item/ruine_texture.png"));
+			return new RuinePlunderSwordParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, WomMeshes.RUINE_PLUNDER_SWORD, new ResourceLocation(EpicFightMod.MODID, "textures/item/ruine_texture.png"));
 		}
 	}
 }

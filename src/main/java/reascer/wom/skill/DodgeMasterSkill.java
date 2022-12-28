@@ -18,8 +18,8 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.AttackResult.ResultType;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.gameasset.Skills;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.particle.EpicFightParticles;
@@ -33,69 +33,14 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class DodgeMasterSkill extends Skill {
+public class DodgeMasterSkill extends DodgeSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("691d9d1e-05ce-11ed-b939-0242ac120002");
 	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Integer> DIRECTION = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Float> ROTATION = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
 	
-	public static class Builder extends Skill.Builder<DodgeSkill> {
-		protected StaticAnimation[] animations;
-		
-		public Builder(ResourceLocation resourceLocation) {
-			super(resourceLocation);
-		}
-		
-		public Builder setCategory(SkillCategory category) {
-			this.category = category;
-			return this;
-		}
-		
-		public Builder setConsumption(float consumption) {
-			this.consumption = consumption;
-			return this;
-		}
-		
-		public Builder setMaxDuration(int maxDuration) {
-			this.maxDuration = maxDuration;
-			return this;
-		}
-		
-		public Builder setMaxStack(int maxStack) {
-			this.maxStack = maxStack;
-			return this;
-		}
-		
-		public Builder setRequiredXp(int requiredXp) {
-			this.requiredXp = requiredXp;
-			return this;
-		}
-		
-		public Builder setActivateType(ActivateType activateType) {
-			this.activateType = activateType;
-			return this;
-		}
-		
-		public Builder setResource(Resource resource) {
-			this.resource = resource;
-			return this;
-		}
-		
-		public Builder setAnimations(StaticAnimation... animations) {
-			this.animations = animations;
-			return this;
-		}
-	}
-	
-	public static Builder createBuilder(ResourceLocation registryName) {
-		return (new Builder(registryName)).setCategory(SkillCategories.DODGE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.STAMINA).setRequiredXp(8);
-	}
-	
-	protected final StaticAnimation[] animations;
-	
 	public DodgeMasterSkill(Builder builder) {
 		super(builder);
-		this.animations = builder.animations;
 	}
 	
 	@Override
@@ -108,7 +53,7 @@ public class DodgeMasterSkill extends Skill {
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
 				container.getDataManager().setDataSync(TIMER, 6,event.getPlayerPatch().getOriginal());
 				event.getPlayerPatch().playAnimationSynchronized(this.animations[container.getDataManager().getDataValue(DIRECTION)], 0);
-				event.getPlayerPatch().changeYaw(container.getDataManager().getDataValue(ROTATION));
+				event.getPlayerPatch().changeModelYRot(container.getDataManager().getDataValue(ROTATION));
 				event.setCanceled(true);
 				event.setResult(ResultType.FAILED);
 			}
@@ -173,7 +118,7 @@ public class DodgeMasterSkill extends Skill {
 		float yaw = args.readFloat();
 		if (executer.getSkill(this.category).getDataManager().getDataValue(TIMER) > 0) {
 			executer.playAnimationSynchronized(this.animations[i], 0);
-			executer.changeYaw(yaw);
+			executer.changeModelYRot(yaw);
 			executer.setStamina(executer.getStamina() - 3f);
 		}
 		executer.getSkill(this.category).getDataManager().setDataSync(TIMER, 6,executer.getOriginal());
@@ -183,7 +128,7 @@ public class DodgeMasterSkill extends Skill {
 	
 	@Override
 	public Skill getPriorSkill() {
-		return Skills.STEP;
+		return EpicFightSkills.STEP;
 	}
 	
 	@Override

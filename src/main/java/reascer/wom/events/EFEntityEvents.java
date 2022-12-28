@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.client.forgeevent.UpdatePlayerMotionEvent;
-import yesman.epicfight.gameasset.Skills;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.skill.CapabilitySkill;
