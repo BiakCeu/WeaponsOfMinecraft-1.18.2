@@ -2,6 +2,7 @@ package reascer.wom.gameasset;
 
 import java.util.Random;
 import java.util.function.BiConsumer;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;

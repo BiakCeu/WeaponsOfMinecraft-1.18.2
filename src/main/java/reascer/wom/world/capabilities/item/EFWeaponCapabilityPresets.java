@@ -2,7 +2,6 @@ package reascer.wom.world.capabilities.item;
 
 import java.util.function.Function;
 
-import com.ibm.icu.impl.units.UnitsData.Categories;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.world.InteractionHand;
@@ -28,8 +27,8 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
-import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
+import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFWeaponCapabilityPresets {

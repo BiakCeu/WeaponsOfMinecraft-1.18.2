@@ -5,36 +5,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
-import reascer.wom.skill.AgonyPlungeSkill;
-import reascer.wom.skill.ArrowTenacitySkill;
-import reascer.wom.skill.BlossomSkill;
 import reascer.wom.skill.CharybdisSkill;
-import reascer.wom.skill.CounterAttack;
-import reascer.wom.skill.CriticalKnowledgeSkill;
-import reascer.wom.skill.DemonMarkPassiveSkill;
-import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.DodgeMasterSkill;
-import reascer.wom.skill.EFKatanaPassive;
-import reascer.wom.skill.EnderBlastSkill;
-import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderStepSkill;
-import reascer.wom.skill.FatalDrawSkill;
-import reascer.wom.skill.PainAnticipationSkill;
-import reascer.wom.skill.PainRetributionSkill;
-import reascer.wom.skill.PlunderPerditionSkill;
-import reascer.wom.skill.TrueBerserkSkill;
-import reascer.wom.skill.VampirizeSkill;
-import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.data.reloader.SkillManager;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.skill.DodgeSkill;
-import yesman.epicfight.skill.GuardSkill;
-import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.Skill.ActivateType;
-import yesman.epicfight.skill.Skill.Resource;
-import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.WeaponInnateSkill;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
@@ -71,29 +49,30 @@ public class EFSkills {
 	
 	public static void registerSkills() {
 		SkillManager.register(EnderStepSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_forward"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_backward"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_left"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/enderstep_right")), 
-				EpicFightMod.MODID,"ender_step");
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_forward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_backward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_left"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_right")), 
+				WeaponOfMinecraft.MODID,"ender_step");
 		
 		SkillManager.register(DodgeMasterSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_backward"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_backward"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_right"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/dodgemaster_left")),
-				EpicFightMod.MODID,"dodge_master");
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_right"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_left")),
+				WeaponOfMinecraft.MODID,"dodge_master");
 		
 		SkillManager.register(DodgeSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_forward"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_backward"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_left"),
-				new ResourceLocation(EpicFightMod.MODID, "biped/skill/roll_right")),
-				EpicFightMod.MODID,"precise_roll");
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/roll_forward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/roll_backward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/roll_left"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/roll_right")),
+				WeaponOfMinecraft.MODID,"precise_roll");
 		
 		//BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
+		
 		SkillManager.register(CharybdisSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
-				EpicFightMod.MODID,"Charybdis");
+				WeaponOfMinecraft.MODID,"charybdis");
 		/*
 		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(50.0F).setMaxStack(3).setAnimations(EFAnimations.AGONY_PLUNGE_FORWARD))
 				.newPropertyLine()
@@ -184,8 +163,8 @@ public class EFSkills {
 	
 	@SubscribeEvent
 	public static void buildSkillEvent(SkillBuildEvent onBuild) {
-		ENDERSTEP = onBuild.build(EpicFightMod.MODID, "enderstep");
-		KNIGHT_ROLL = onBuild.build(EpicFightMod.MODID, "precise_roll");		
-		DODGEMASTER = onBuild.build(EpicFightMod.MODID, "dodgemaster");
+		ENDERSTEP = onBuild.build(WeaponOfMinecraft.MODID, "ender_step");
+		KNIGHT_ROLL = onBuild.build(WeaponOfMinecraft.MODID, "precise_roll");		
+		DODGEMASTER = onBuild.build(WeaponOfMinecraft.MODID, "dodge_master");
 	}
 }

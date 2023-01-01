@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.gameasset.Skills;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.StepSkill;
@@ -42,6 +42,6 @@ public class EnderStepSkill extends StepSkill {
 	
 	@Override
 	public Skill getPriorSkill() {
-		return Skills.STEP;
+		return EpicFightSkills.STEP;
 	}
 }
