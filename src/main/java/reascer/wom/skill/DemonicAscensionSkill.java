@@ -17,86 +17,35 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import reascer.wom.gameasset.EFAnimations;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.SpecialAttackSkill;
+import yesman.epicfight.skill.WeaponInnateSkill;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class DemonicAscensionSkill extends SpecialAttackSkill {
+public class DemonicAscensionSkill extends WeaponInnateSkill {
 	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> ASCENDING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> SUPERARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final UUID EVENT_UUID = UUID.fromString("61ec318a-10f6-11ed-861d-0242ac120002");
 	
-	protected final StaticAnimation activateAnimation;
+	private StaticAnimation activateAnimation;
 	
 	public DemonicAscensionSkill(Builder builder) {
 		super(builder);
 
-		this.activateAnimation = builder.activateAnimation;
-	}
-	
-	public static class Builder extends Skill.Builder<DemonicAscensionSkill> {
-		
-		protected StaticAnimation activateAnimation;
-		
-		public Builder(ResourceLocation resourceLocation) {
-			super(resourceLocation);
-		}
-		
-		public Builder setCategory(SkillCategories category) {
-			this.category = category;
-			return this;
-		}
-		
-		public Builder setConsumption(float consumption) {
-			this.consumption = consumption;
-			return this;
-		}
-		
-		public Builder setMaxDuration(int maxDuration) {
-			this.maxDuration = maxDuration;
-			return this;
-		}
-		
-		public Builder setMaxStack(int maxStack) {
-			this.maxStack = maxStack;
-			return this;
-		}
-		
-		public Builder setRequiredXp(int requiredXp) {
-			this.requiredXp = requiredXp;
-			return this;
-		}
-		
-		public Builder setActivateType(ActivateType activateType) {
-			this.activateType = activateType;
-			return this;
-		}
-		
-		public Builder setResource(Resource resource) {
-			this.resource = resource;
-			return this;
-		}
-		
-		public Builder setAnimations(StaticAnimation activateAnimation) {
-			this.activateAnimation = activateAnimation;
-			return this;
-		}
-	}
-	
-	public static Builder createBuilder(ResourceLocation resourceLocation) {
-		return (new Builder(resourceLocation)).setCategory(SkillCategories.WEAPON_SPECIAL_ATTACK).setResource(Resource.SPECIAL_GAUAGE);
+		this.activateAnimation = EFAnimations.ANTITHEUS_ASCENSION;
 	}
 	
 	@Override
@@ -157,8 +106,8 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 				if (!event.getPlayerPatch().getSkill(SkillCategories.WEAPON_PASSIVE).isEmpty()) {
 					event.getPlayerPatch().getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.ACTIVE, true, event.getPlayerPatch().getOriginal());					
 				}
-				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, false, event.getPlayerPatch().getOriginal());
-				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, event.getPlayerPatch().getOriginal());
+				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, false, event.getPlayerPatch().getOriginal());
+				event.getPlayerPatch().getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, event.getPlayerPatch().getOriginal());
 			}
 		});
 		
@@ -218,13 +167,10 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 		if (executer.isLogicalClient()) {
 			return super.canExecute(executer);
 		} else {
-			return executer.getHoldingItemCapability(InteractionHand.MAIN_HAND).getSpecialAttack(executer) == this && executer.getOriginal().getVehicle() == null;
+			ItemStack itemstack = executer.getOriginal().getMainHandItem();
+			
+			return EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null;
 		}
-	}
-	
-	@Override
-	public SpecialAttackSkill registerPropertiesToAnimation() {
-		return this;
 	}
 	
 	@Override
@@ -276,5 +222,10 @@ public class DemonicAscensionSkill extends SpecialAttackSkill {
 				}
 			}
 		}
+	}
+
+	@Override
+	public WeaponInnateSkill registerPropertiesToAnimation() {
+		return this;
 	}
 }

@@ -1,19 +1,44 @@
 package reascer.wom.gameasset;
 
+import java.util.Set;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.skill.AgonyPlungeSkill;
+import reascer.wom.skill.ArrowTenacitySkill;
 import reascer.wom.skill.CharybdisSkill;
+import reascer.wom.skill.CounterAttack;
+import reascer.wom.skill.CriticalKnowledgeSkill;
+import reascer.wom.skill.DemonMarkPassiveSkill;
+import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.DodgeMasterSkill;
+import reascer.wom.skill.EFKatanaPassive;
+import reascer.wom.skill.EnderBlastSkill;
+import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderStepSkill;
+import reascer.wom.skill.FatalDrawSkill;
+import reascer.wom.skill.PainAnticipationSkill;
+import reascer.wom.skill.PainRetributionSkill;
+import reascer.wom.skill.PlunderPerditionSkill;
+import reascer.wom.skill.TrueBerserkSkill;
+import reascer.wom.skill.VampirizeSkill;
+import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.data.reloader.SkillManager;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
+import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.skill.DodgeSkill;
+import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
+import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.WeaponInnateSkill;
+import yesman.epicfight.skill.Skill.ActivateType;
+import yesman.epicfight.skill.Skill.Resource;
+import yesman.epicfight.world.damagesource.ExtraDamageInstance;
+import yesman.epicfight.world.damagesource.StunType;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFSkills {
@@ -73,92 +98,53 @@ public class EFSkills {
 		
 		SkillManager.register(CharybdisSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"charybdis");
-		/*
-		AGONY_PLUNGE = event.registerSkill(new AgonyPlungeSkill(AgonyPlungeSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "agony_plunge")).setConsumption(50.0F).setMaxStack(3).setAnimations(EFAnimations.AGONY_PLUNGE_FORWARD))
-				.newPropertyLine()
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.setter(1.0F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.5F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
-				.registerPropertiesToAnimation(),false);
+
+		SkillManager.register(AgonyPlungeSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"agony_plunge");
 		
-		TRUE_BERSERK = event.registerSkill(new TrueBerserkSkill(TrueBerserkSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "true_berserk")).setConsumption(120.0F).setMaxDuration(3).setActivateType(ActivateType.DURATION_INFINITE).setAnimations(EFAnimations.TORMENT_BERSERK_CONVERT))
-				.newPropertyLine()
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.2F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(8))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.4F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(10))
-				.registerPropertiesToAnimation(),false);
+		SkillManager.register(TrueBerserkSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"true_berserk");
 		
-		PLUNDER_PERDITION = event.registerSkill(new PlunderPerditionSkill(PlunderPerditionSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "plunder_perdition")).setConsumption(120.0F).setActivateType(ActivateType.ONE_SHOT))
-				.newPropertyLine()
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(20))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.3F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.setter(20))
-				.newPropertyLine()
-				.registerPropertiesToAnimation(),false);
-		
-		KATANA_PASSIVE_EF = event.registerSkill(new EFKatanaPassive(Skill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "katana_passive_ef"))
-				.setCategory(SkillCategories.WEAPON_PASSIVE)
-				.setConsumption(2.0F)
-				.setActivateType(ActivateType.ONE_SHOT)
-				.setResource(Resource.COOLDOWN)),false);
-		
-		FATAL_DRAW_EF = event.registerSkill(new FatalDrawSkill(SpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "fatal_draw_ef")).setConsumption(40.0F).setMaxStack(12))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(1.7F))
-				.addProperty(AttackPhaseProperty.ARMOR_NEGATION, ValueCorrector.adder(50.0F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(6))
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-				.registerPropertiesToAnimation(),false);
-		
-		ENDER_BLAST = event.registerSkill(new EnderBlastSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_blast")).setConsumption(6.0F).setMaxStack(12))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.7F))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(2.5F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4))
-				.registerPropertiesToAnimation(), false);
-		
-		ENDER_FUSION = event.registerSkill(new EnderFusionSkill(SimpleSpecialAttackSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "ender_fusion")).setConsumption(12.0F).setMaxStack(24))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.6F))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(0.85F))
-				.newPropertyLine()
-				.addProperty(AttackPhaseProperty.DAMAGE, ValueCorrector.multiplier(2.5F))
-				.addProperty(AttackPhaseProperty.MAX_STRIKES, ValueCorrector.multiplier(4))
-				.registerPropertiesToAnimation(), false);
-		
-		DEMON_MARK_PASSIVE = event.registerSkill(new DemonMarkPassiveSkill(Skill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "demon_mark_passive"))
-				.setCategory(SkillCategories.WEAPON_PASSIVE)
-				.setConsumption(0.0F)
-				.setActivateType(ActivateType.ONE_SHOT)
-				.setResource(Resource.COOLDOWN)),false);
-		
-		DEMONIC_ASCENSION = event.registerSkill(new DemonicAscensionSkill(DemonicAscensionSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "demonic_ascension")).setConsumption(240.0F).setMaxDuration(3).setActivateType(ActivateType.DURATION_INFINITE).setAnimations(EFAnimations.ANTITHEUS_ASCENSION)),false);
-		
-		COUNTER_ATTACK = event.registerSkill(new CounterAttack(CounterAttack.createBuilder(new ResourceLocation(EpicFightMod.MODID, "counter_attack")).setRequiredXp(8)),true);
-		//KICK = event.registerSkill(new KickSkill(KickSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "kick")).setConsumption(2.0F).setRequiredXp(3)),true);
+		SkillManager.register(PlunderPerditionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"plunder_perdition");
+	
+		SkillManager.register(EFKatanaPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
+				WeaponOfMinecraft.MODID,"katana_passive_ef");
+
+		SkillManager.register(FatalDrawSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"fatal_draw_ef");
+
+		SkillManager.register(EnderBlastSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"ender_blast");
+
+		SkillManager.register(EnderFusionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"ender_fusion");
+
+		SkillManager.register(DemonMarkPassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
+				WeaponOfMinecraft.MODID,"demon_mark_passive");
+
+		SkillManager.register(DemonicAscensionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
+				WeaponOfMinecraft.MODID,"demonic_ascension");
 		
 		
-		ARROW_TENACITY = event.registerSkill(new ArrowTenacitySkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "arrow_tenacity")).setRequiredXp(0)),true);
-		PAIN_ANTICIPATION = event.registerSkill(new PainAnticipationSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "pain_anticipation")).setRequiredXp(5)),true);
-		PAIN_RETRIBUTION = event.registerSkill(new PainRetributionSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "pain_retribution")).setRequiredXp(8)),true);
-		VAMPIRIZE = event.registerSkill(new VampirizeSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "vampirize")).setRequiredXp(8)),true);
-		CRITICAL_KNOWLEDGE = event.registerSkill(new CriticalKnowledgeSkill(PassiveSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "critical_knowledge")).setRequiredXp(8)),true);
-		*/
+		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder(),
+				WeaponOfMinecraft.MODID,"counter_attack");
+
+		
+		SkillManager.register(ArrowTenacitySkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"arrow_tenacity");
+
+		SkillManager.register(PainAnticipationSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"pain_anticipation");
+
+		SkillManager.register(PainRetributionSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"pain_retribution");
+
+		SkillManager.register(VampirizeSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"vampirize");
+
+		SkillManager.register(CriticalKnowledgeSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"critical_knowledge");
 	}
 	
 	@SubscribeEvent
@@ -166,5 +152,103 @@ public class EFSkills {
 		ENDERSTEP = onBuild.build(WeaponOfMinecraft.MODID, "ender_step");
 		KNIGHT_ROLL = onBuild.build(WeaponOfMinecraft.MODID, "precise_roll");		
 		DODGEMASTER = onBuild.build(WeaponOfMinecraft.MODID, "dodge_master");
+		
+		COUNTER_ATTACK = onBuild.build(WeaponOfMinecraft.MODID, "counter_attack");
+		
+		ARROW_TENACITY = onBuild.build(WeaponOfMinecraft.MODID, "arrow_tenacity");
+		PAIN_ANTICIPATION = onBuild.build(WeaponOfMinecraft.MODID, "pain_anticipation");
+		PAIN_RETRIBUTION = onBuild.build(WeaponOfMinecraft.MODID, "pain_retribution");
+		VAMPIRIZE = onBuild.build(WeaponOfMinecraft.MODID, "vampirize");
+		CRITICAL_KNOWLEDGE = onBuild.build(WeaponOfMinecraft.MODID, "critical_knowledge");
+		
+		WeaponInnateSkill charybdisSkill  = onBuild.build(WeaponOfMinecraft.MODID, "charybdis");
+		charybdisSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35f))
+			.registerPropertiesToAnimation();
+		CHARYBDIS = charybdisSkill;
+		
+		WeaponInnateSkill AgonyPlungeSkill = onBuild.build(WeaponOfMinecraft.MODID, "agony_plunge");
+		AgonyPlungeSkill.newProperty()
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10))
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(10))
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.registerPropertiesToAnimation();
+		AGONY_PLUNGE = AgonyPlungeSkill;
+		
+		WeaponInnateSkill trueBerserkSkill = onBuild.build(WeaponOfMinecraft.MODID, "true_berserk");
+		trueBerserkSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(8))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.4f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(10))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.registerPropertiesToAnimation();
+		TRUE_BERSERK = trueBerserkSkill;
+		
+		WeaponInnateSkill plunderPerditionSkill = onBuild.build(WeaponOfMinecraft.MODID, "plunder_perdition");
+		plunderPerditionSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.3f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(20))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.registerPropertiesToAnimation();
+		PLUNDER_PERDITION = plunderPerditionSkill;
+		
+		KATANA_PASSIVE_EF = onBuild.build(WeaponOfMinecraft.MODID, "katana_passive_ef");
+		
+		WeaponInnateSkill fatalDrawEFsSkill = onBuild.build(WeaponOfMinecraft.MODID, "fatal_draw_ef");
+		fatalDrawEFsSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.7f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
+			.addProperty(AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(50))
+			.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.registerPropertiesToAnimation();
+			
+		FATAL_DRAW_EF = fatalDrawEFsSkill;
+		
+		WeaponInnateSkill enderblastSkill = onBuild.build(WeaponOfMinecraft.MODID, "ender_blast");
+		enderblastSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.5f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(8))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.registerPropertiesToAnimation();
+		ENDER_BLAST = enderblastSkill;
+		
+		WeaponInnateSkill enderfusionSkill = onBuild.build(WeaponOfMinecraft.MODID, "ender_fusion");
+		enderfusionSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.5f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(8))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.registerPropertiesToAnimation();
+		ENDER_FUSION = enderfusionSkill;
+		
+		DEMON_MARK_PASSIVE = onBuild.build(WeaponOfMinecraft.MODID, "demon_mark_passive");
+		DEMONIC_ASCENSION = onBuild.build(WeaponOfMinecraft.MODID, "demonic_ascension");
+		
 	}
 }

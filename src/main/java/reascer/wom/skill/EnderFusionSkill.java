@@ -30,19 +30,19 @@ import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPExecuteSkill;
-import yesman.epicfight.skill.SeperativeMotionSkill;
+import yesman.epicfight.skill.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SpecialAttackSkill;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class EnderFusionSkill extends SeperativeMotionSkill {
+public class EnderFusionSkill extends ConditionalWeaponInnateSkill {
 	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Boolean> ZOOM = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
@@ -51,7 +51,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
     private static final int cooldown = 60;
 	public EnderFusionSkill(Builder<? extends Skill> builder) {
 		super(builder, (executer) -> {
-			int combo = executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO);
+			int combo = executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(COMBO);
 			return combo;
 			
 		},  EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_1, 
@@ -144,29 +144,29 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 		ServerPlayer player = executer.getOriginal();
 		if ((!player.isOnGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
-			executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(NOFALLDAMAGE, true, executer.getOriginal());
+			executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(NOFALLDAMAGE, true, executer.getOriginal());
 		} else {
 			if(executer.getOriginal().isSprinting()) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
-				executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(NOFALLDAMAGE, true, executer.getOriginal());
+				executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(NOFALLDAMAGE, true, executer.getOriginal());
 			} else {
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], 0);
-				if (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO) < 3) {
-					executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COMBO, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().getDataValue(COMBO)+1, executer.getOriginal());	
+				if (executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(COMBO) < 3) {
+					executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(COMBO, executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(COMBO)+1, executer.getOriginal());	
 				}
 				else {
-					executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COMBO, 0, executer.getOriginal());
+					executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(COMBO, 0, executer.getOriginal());
 				}
 				
 			}
 		}
-		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(COOLDOWN, cooldown, executer.getOriginal());
-		executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
-		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()-1);
-		if (executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource() == 0 && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND)) == 0) {
-			this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getStack()+1);
+		executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(COOLDOWN, cooldown, executer.getOriginal());
+		executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
+		this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_INNATE).getStack()-1);
+		if (executer.getSkill(SkillCategories.WEAPON_INNATE).getResource() == 0 && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND)) == 0) {
+			this.setStackSynchronize(executer, executer.getSkill(SkillCategories.WEAPON_INNATE).getStack()+1);
 		}
-		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_SPECIAL_ATTACK).getResource()
+		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_INNATE).getResource()
 				+ (1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)))
 				+ (executer.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCollider() == EFColliders.ENDER_BLASTER ? 
 						(1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND))):
@@ -192,7 +192,7 @@ public class EnderFusionSkill extends SeperativeMotionSkill {
 	}
 	
 	@Override
-	public SpecialAttackSkill registerPropertiesToAnimation() {
+	public WeaponInnateSkill registerPropertiesToAnimation() {
 		return this;
 	}
 	

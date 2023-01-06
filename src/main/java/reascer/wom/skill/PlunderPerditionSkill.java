@@ -15,19 +15,19 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.EFAnimations;
 import reascer.wom.particle.EFEpicFightParticles;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.SpecialAttackSkill;
+import yesman.epicfight.skill.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 
-public class PlunderPerditionSkill extends SpecialAttackSkill {
+public class PlunderPerditionSkill extends WeaponInnateSkill{
 	private static final UUID EVENT_UUID = UUID.fromString("b9d719ba-bcb8-11ec-8422-0242ac120002");
 	private static final SkillDataKey<Boolean> BUFFED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final SkillDataKey<Boolean> BUFFING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
@@ -143,7 +143,7 @@ public class PlunderPerditionSkill extends SpecialAttackSkill {
 	}
 	
 	@Override
-	public SpecialAttackSkill registerPropertiesToAnimation() {
+	public WeaponInnateSkill registerPropertiesToAnimation() {
 		return this;
 	}
 	

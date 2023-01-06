@@ -3,31 +3,24 @@ package reascer.wom.skill;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.advancements.critereon.MobEffectsPredicate.MobEffectInstancePredicate;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import reascer.wom.gameasset.EFAnimations;
-import yesman.epicfight.api.animation.Animator;
-import yesman.epicfight.api.animation.ServerAnimator;
-import yesman.epicfight.api.client.model.ClientModels;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.client.events.engine.RenderEngine;
-import yesman.epicfight.gameasset.Models;
+import yesman.epicfight.gameasset.Armatures;
+import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class DemonMarkPassiveSkill extends Skill {
+public class DemonMarkPassiveSkill extends PassiveSkill {
 	public static final SkillDataKey<Boolean> CATHARSIS = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> BASIC_ATTACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
@@ -76,10 +69,11 @@ public class DemonMarkPassiveSkill extends Skill {
 			int numberOf = 3;
 			float partialScale = 1.0F / (numberOf - 1);
 			float interpolation = 0.0F;
-			Armature armature = entitypatch.getEntityModel(Models.LOGICAL_SERVER).getArmature();
+			Armature armature = entitypatch.getArmature();
 			OpenMatrix4f transformMatrix;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Tool_L");
+				
+				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolL);
 				transformMatrix.translate(new Vec3f(0,0.0F,0.0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
 				for (int j = 0; j < 1; j++) {
@@ -105,7 +99,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			OpenMatrix4f transformMatrix2;
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Tool_R");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,1.8F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				transformMatrix2.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 4.0f)));
@@ -132,7 +126,7 @@ public class DemonMarkPassiveSkill extends Skill {
 				float partialScale2 = 1.0F / (numberOf2 - 1);
 				float interpolation2 = 0.0F;
 				for (int i = 0; i < numberOf2; i++) {
-					transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation2), armature, "Tool_R");
+					transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation2), Armatures.BIPED.toolR);
 					transformMatrix2.translate(new Vec3f(0,0.0F,1.8F));
 					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 					transformMatrix2.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 4.0f)));
@@ -163,7 +157,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//HEAD
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Head");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.head);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -178,7 +172,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//CHEST
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Chest");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.chest);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -193,7 +187,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//LEFT ARM
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Arm_L");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.armL);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -208,7 +202,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//RIGHT ARM
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Arm_R");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.armR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -223,7 +217,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//BELLY
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Torso");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.torso);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -238,7 +232,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//LEFT THIGH
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Thigh_L");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.thighL);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -253,7 +247,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//RIGHT THIGH
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Thigh_R");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.thighR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -268,7 +262,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//LEFT LEG
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Leg_L");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.legL);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -283,7 +277,7 @@ public class DemonMarkPassiveSkill extends Skill {
 			//RIGHT LEG
 			interpolation = 0.0F;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Leg_R");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.legR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
@@ -301,11 +295,11 @@ public class DemonMarkPassiveSkill extends Skill {
 			int numberOf = 7;
 			float partialScale = 1.0F / (numberOf - 1);
 			float interpolation = 0.0F;
-			Armature armature = entitypatch.getEntityModel(Models.LOGICAL_SERVER).getArmature();
+			Armature armature = entitypatch.getArmature();
 			OpenMatrix4f transformMatrix;
 			OpenMatrix4f transformMatrix2;
 			for (int i = 0; i < numberOf; i++) {
-				transformMatrix = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Tool_R");
+				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
 				transformMatrix.translate(new Vec3f(0,0.0F,1.8F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
 				for (int j = 0; j < 1; j++) {
@@ -319,7 +313,7 @@ public class DemonMarkPassiveSkill extends Skill {
 						(new Random().nextFloat() - 0.5F)*0.15f);
 				}
 				
-				transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation), armature, "Tool_R");
+				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
 				transformMatrix2.translate(new Vec3f(0,0.7F,-1.8F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				for (int j = 0; j < 1; j++) {
@@ -340,7 +334,7 @@ public class DemonMarkPassiveSkill extends Skill {
 				float partialScale2 = 1.0F / (numberOf2 - 1);
 				float interpolation2 = 0.0F;
 				for (int i = 0; i < numberOf2; i++) {
-					transformMatrix2 = Animator.getBindedJointTransformByName(entitypatch.getAnimator().getPose(interpolation2), armature, "Tool_R");
+					transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation2), Armatures.BIPED.toolR);
 					transformMatrix2.translate(new Vec3f(0,0.7F,-1.8F));
 					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 					float blade = -(new Random().nextFloat() * 1.8f);

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import reascer.wom.gameasset.EFAnimations;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPPlayAnimation;
+import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
@@ -16,7 +17,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class EFKatanaPassive extends Skill {
+public class EFKatanaPassive extends PassiveSkill {
 	public static final SkillDataKey<Boolean> SHEATH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final UUID EVENT_UUID = UUID.fromString("010e5bfa-e6a2-11ec-8fea-0242ac120002");
 	

@@ -8,7 +8,7 @@
     
     "key":
     {
-        "T": { "item" : "epicfight:ghast_tear" },
+        "T": { "item" : "minecraft:ghast_tear" },
         "G": { "item" : "minecraft:gold_ingot" }
     },
     

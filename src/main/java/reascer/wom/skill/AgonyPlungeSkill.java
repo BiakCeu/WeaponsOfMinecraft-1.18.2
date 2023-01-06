@@ -40,7 +40,7 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 
 public class AgonyPlungeSkill extends WeaponInnateSkill {
-	private static final UUID EVENT_UUID = UUID.fromString("b9d719ba-bcb8-11ec-8422-0242ac120002");
+	private static final UUID EVENT_UUID = UUID.fromString("c7a0ee46-56b3-4008-9fba-d2594b1e2676");
 	private static final SkillDataKey<Boolean> PLUNGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private StaticAnimation attackAnimations;
@@ -59,11 +59,11 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		container.getDataManager().setData(STACK, 0);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
+			container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunging: " + container.getDataManager().getDataValue(PLUNGING) + " | Stack: " + container.getDataManager().getDataValue(STACK) + " | Plunging: " + event.getAttackDamage() ), UUID.randomUUID());
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getAttackDamage() > 1.0F) {
 				float attackDamage = event.getAttackDamage();
-				//event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
-				//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
-				container.getDataManager().setData(PLUNGING, false);
+				event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
+				container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
 		});
@@ -97,9 +97,10 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		executer.playAnimationSynchronized(this.attackAnimations, 0);
 		executer.getSkill(this.category).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
 		executer.getSkill(this.category).getDataManager().setDataSync(STACK, executer.getSkill(this.category).getStack(), executer.getOriginal());
+		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this.category).getDataManager().getDataValue(STACK)), UUID.randomUUID());
 		executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		executer.getOriginal().setHealth(executer.getOriginal().getHealth() * (0.80f + (0.05f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
-		//this.setStackSynchronize(executer, executer.getSkill(this.category).getStack() - 1);
+		this.setStackSynchronize(executer, 0);
 		super.executeOnServer(executer, args);
 		executer.getSkill(this.category).deactivate();
 	}

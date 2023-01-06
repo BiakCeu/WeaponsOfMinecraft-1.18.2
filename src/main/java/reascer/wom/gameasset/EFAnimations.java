@@ -447,35 +447,32 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
 		
 		AGONY_CLAWSTRIKE = new BasicMultipleAttackAnimation(0.0F, "biped/combat/agony_clawstrike", biped,
-				new Phase(0.0F, 0.25F, 0.5F, 0.55F, 0.55F, biped.toolR, EFColliders.AGONY_AIRSLASH),
-				new Phase(0.55F, 0.85F, 1.0F, 1.20F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.3F),1)
+				new Phase(0.0F, 0.35F, 0.6F, 0.95F, Float.MAX_VALUE, biped.toolR, EFColliders.AGONY_AIRSLASH))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.6F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG,1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false);
 		
 		AGONY_DASH = new DashAttackAnimation(0.15F, 0.05F, 0.2F, 0.458F, 0.625F, EFColliders.AGONY_AIRSLASH, biped.toolR, "biped/combat/agony_dash", biped)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.4F));
+		
 		AGONY_AIR_SLASH = new BasicAttackAnimation(0.0F, 0.45F, 0.6F, 0.85F, EFColliders.AGONY_AIRSLASH, biped.toolR, "biped/combat/agony_airslash", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.4F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.6F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.1F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.3F)
-				
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.RUINE_COMET_GROUNDTHRUST, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.7F, ReuseableEvents.AGONY_GROUNDSLAM, Side.CLIENT));
 		
 		AGONY_IDLE = new StaticAnimation(0.1f,true, "biped/living/agony_idle", biped);
 		AGONY_RUN = new MovementAnimation(0.1f,true, "biped/living/agony_run", biped);
@@ -501,12 +498,13 @@ public class EFAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.AGONY_AIRBURST_JUMP, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.2F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.AGONY_AIRBURST_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.2F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.25F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.3F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
+						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
 		
 		RUINE_AUTO_1 = new BasicAttackAnimation(0.20F, 0.25F, 0.45F, 0.55F, null, biped.toolR, "biped/combat/ruine_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
@@ -688,9 +686,9 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, false)
-				.addEvents(TimeStampedEvent.create(0.4F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.7F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(1.15F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.4F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT),
+					TimeStampedEvent.create(0.7F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT),
+					TimeStampedEvent.create(1.15F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 		
 		TORMENT_BERSERK_AIRSLAM = new BasicMultipleAttackAnimation(0.15F, 0.4F, 0.7F, 1.2F, EFColliders.TORMENT_BERSERK_AIRSLAM, biped.rootJoint, "biped/skill/torment_berserk_airslam", biped)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.GROUND_SLAM)
@@ -705,8 +703,8 @@ public class EFAnimations {
 							if (entitypatch instanceof PlayerPatch) {
 								((PlayerPatch)entitypatch).setStamina(((PlayerPatch)entitypatch).getStamina() - 2.0f);
 							}
-						}, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT));
+						}, Side.CLIENT),
+				TimeStampedEvent.create(0.6F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT));
 		
 		TORMENT_BERSERK_CONVERT = new BasicAttackAnimation(0.05F, 0.6F, 1.35F, 1.7F, EFColliders.PLUNDER_PERDITION, biped.rootJoint, "biped/skill/torment_berserk_convert", biped)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, SoundEvents.ENDERMAN_SCREAM)
@@ -734,12 +732,10 @@ public class EFAnimations {
 				.addEvents(TimeStampedEvent.create(0.25F, (entitypatch, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				}, Side.CLIENT)) 
-				.addEvents(TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				}, Side.CLIENT)) 
-				.addEvents(TimeStampedEvent.create(0.85F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.85F, (entitypatch, params) -> {
 					((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE), 3);
@@ -764,23 +760,20 @@ public class EFAnimations {
 				.addEvents(TimeStampedEvent.create(0.25F, (entitypatch, params) -> {
 						Entity entity = entitypatch.getOriginal();
 						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-					}, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
+					}, Side.CLIENT),TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
 						Entity entity = entitypatch.getOriginal();
 						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-					}, Side.CLIENT)) 
-				.addEvents(TimeStampedEvent.create(0.50F, (entitypatch, params) -> {
+					}, Side.CLIENT),TimeStampedEvent.create(0.50F, (entitypatch, params) -> {
 						Entity entity = entitypatch.getOriginal();
 						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-					}, Side.CLIENT)) 
-				.addEvents(TimeStampedEvent.create(1.05F, (entitypatch, params) -> {
+					}, Side.CLIENT),TimeStampedEvent.create(1.05F, (entitypatch, params) -> {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE), 3);
 						}
 						entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 					}, Side.SERVER));
-		
+				
 		
 		KATANA_SHEATHED_AUTO_3 = new BasicAttackAnimation(0.15F, 0.05F, 0.25F, 0.50F, EFColliders.KATANA_SHEATHED_AUTO, biped.rootJoint, "biped/combat/katana_sheathed_auto_3", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
@@ -794,8 +787,7 @@ public class EFAnimations {
 				.addEvents(TimeStampedEvent.create(0.25F, (entitypatch, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				}, Side.CLIENT)) 
-				.addEvents(TimeStampedEvent.create(0.80F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.80F, (entitypatch, params) -> {
 					((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE), 3);
@@ -836,12 +828,10 @@ public class EFAnimations {
 					if (entitypatch instanceof PlayerPatch) {
 						((PlayerPatch)entitypatch).setStamina(((PlayerPatch)entitypatch).getStamina() - 4.0f);
 					}
-				}, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.15F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.15F, (entitypatch, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				}, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.8F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, params) -> {
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE), 3);
@@ -867,8 +857,7 @@ public class EFAnimations {
 				.addEvents(TimeStampedEvent.create(0.15F, (entitypatch, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				}, Side.CLIENT)) 
-				.addEvents(TimeStampedEvent.create(0.8F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, params) -> {
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE), 3);
@@ -908,14 +897,12 @@ public class EFAnimations {
 		KATANA_FATAL_DRAW = new AttackAnimation(0.15F, 0.0F, 0.55F, 0.70F, 1.0F, EFColliders.FATAL_DRAW, biped.rootJoint, "biped/skill/katana_fatal_draw", biped)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_SHARP)
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.KATANA_SHEATHED_HIT)
-				
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.KATANA_IN, Side.SERVER));
 		
 		KATANA_FATAL_DRAW_SECOND = new AttackAnimation(0.15F, 0.0F, 0.50F, 0.70F, 1.0F, EFColliders.FATAL_DRAW, biped.rootJoint, "biped/skill/katana_fatal_draw_second", biped)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_SHARP)
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.KATANA_SHEATHED_HIT)
-				
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.KATANA_IN, Side.SERVER));
 		
@@ -923,10 +910,9 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_SHARP)
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.KATANA_SHEATHED_HIT)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
-				
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.KATANA_IN, Side.SERVER))
-				.addEvents(TimeStampedEvent.create(0.6F, (entitypatch, params) -> {
+				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.KATANA_IN, Side.SERVER),
+				TimeStampedEvent.create(0.6F, (entitypatch, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT));
@@ -971,7 +957,7 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
 		ENDERBLASTER_ONEHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_auto_4", biped,
-				new Phase(0.0F, 0.3F, 0.4F, 0.55F, Float.MAX_VALUE, biped.legL, EFColliders.KICK_HUGE))
+				new Phase(0.0F, 0.3F, 0.4F, 0.75F, Float.MAX_VALUE, biped.legL, EFColliders.KICK_HUGE))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(2.00F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG)
@@ -1032,10 +1018,9 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.35F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.6F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_SHOOT_2 = new AttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2", biped,
 				new Phase(0.0F, 0.2F, 0.3F, 0.35F, 0.35F, biped.toolR, EFColliders.ENDER_BULLET),
@@ -1052,9 +1037,8 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD = new AttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2_forward", biped,
 				new Phase(0.0F, 0.2F, 0.3F, 0.35F, 0.35F, biped.toolR, EFColliders.ENDER_BULLET),
@@ -1071,9 +1055,8 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_SHOOT_2_LEFT = new AttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2_left", biped,
 				new Phase(0.0F, 0.2F, 0.3F, 0.35F, 0.35F, biped.toolR, EFColliders.ENDER_BULLET_WIDE),
@@ -1090,9 +1073,8 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+						TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT = new AttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_2_right", biped,
 				new Phase(0.0F, 0.2F, 0.3F, 0.35F, 0.35F, biped.toolR, EFColliders.ENDER_BULLET_WIDE),
@@ -1109,9 +1091,8 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.5F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_SHOOT_3 = new AttackAnimation(0.05F, 0.7F, 0.7F, 0.75F, 1.2F, EFColliders.ENDER_BULLET, biped.toolR, "biped/skill/enderblaster_onehand_shoot_3", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.5F))
@@ -1127,7 +1108,7 @@ public class EFAnimations {
 					if (entitypatch instanceof PlayerPatch) {
 						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.BUZZ, SoundSource.PLAYERS, 0.6F, 1.5F);
 					}
-				}, Side.CLIENT)).addEvents(TimeStampedEvent.create(0.75F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.75F, (entitypatch, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.LASER_BLAST, SoundSource.PLAYERS, 0.7F, 1F);
 					}
@@ -1173,9 +1154,8 @@ public class EFAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, true)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.3F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_SHOOT_DASH = new AttackAnimation(0.05F, "biped/skill/enderblaster_onehand_shoot_dash", biped,
 				new Phase(0.0F, 0.0F, 0.25F, 0.5F, 0.5F, biped.rootJoint, EFColliders.ENDER_DASH),
@@ -1198,9 +1178,8 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.85F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.85F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_ONEHAND_IDLE = new StaticAnimation(0.1f,true, "biped/living/enderblaster_onehand_idle", biped);
 		ENDERBLASTER_ONEHAND_WALK = new MovementAnimation(0.1f,true, "biped/living/enderblaster_onehand_walk", biped);
@@ -1244,7 +1223,7 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
-		ENDERBLASTER_TWOHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.4F, 0.55F, EFColliders.KICK_HUGE, biped.legL, "biped/combat/enderblaster_onehand_auto_4", biped)
+		ENDERBLASTER_TWOHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.4F, 0.75F, EFColliders.KICK_HUGE, biped.legL, "biped/combat/enderblaster_onehand_auto_4", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(2.00F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG)
@@ -1265,9 +1244,8 @@ public class EFAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.50F, ReuseableEvents.GROUND_BODYSCRAPE_LAND, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
+					TimeStampedEvent.create(0.50F, ReuseableEvents.GROUND_BODYSCRAPE_LAND, Side.CLIENT));
 		
 		ENDERBLASTER_TWOHAND_TOMAHAWK = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_twohand_dash", biped,
 				new Phase(0.0F, 0.3F, 0.44F, 0.45F, 0.45F, biped.legL, EFColliders.KICK_HUGE),
@@ -1285,8 +1263,7 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.GROUND_BODYSCRAPE_LAND, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.GROUND_BODYSCRAPE_LAND, Side.CLIENT));
 		
 		ENDERBLASTER_TWOHAND_SHOOT_1 = new AttackAnimation(0.05F, "biped/skill/enderblaster_twohand_shoot_1", biped,
 				new Phase(0.0F, 0.05F, 0.15F, 0.30F, 0.30F, biped.toolR, EFColliders.ENDER_BULLET),
@@ -1308,12 +1285,11 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.4F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
-		
+				.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.1F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.4F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+					TimeStampedEvent.create(0.65F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+
 		ENDERBLASTER_TWOHAND_SHOOT_2 = new AttackAnimation(0.05F, "biped/skill/enderblaster_twohand_shoot_2", biped,
 				new Phase(0.0F, 0.4F, 0.44F, 0.45F, 0.45F, InteractionHand.OFF_HAND, biped.toolL, EFColliders.ENDER_BULLET),
 				new Phase(0.45F, 0.5F, 0.54F, 0.55F, 0.55F, biped.toolR, EFColliders.ENDER_BULLET),
@@ -1359,14 +1335,14 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				
-						.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.75F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.85F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.95F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(1.05F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(1.15F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
+						.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+						TimeStampedEvent.create(0.55F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+						TimeStampedEvent.create(0.65F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+						TimeStampedEvent.create(0.75F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+						TimeStampedEvent.create(0.85F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+						TimeStampedEvent.create(0.95F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+						TimeStampedEvent.create(1.05F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+						TimeStampedEvent.create(1.15F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		
 		ENDERBLASTER_TWOHAND_SHOOT_3 = new AttackAnimation(0.05F, "biped/skill/enderblaster_twohand_shoot_3", biped,
 				new Phase(0.0F, 0.25F, 0.35F, 0.5F, 0.5F, InteractionHand.OFF_HAND, biped.head, EFColliders.ENDER_BULLET_WIDE),
@@ -1390,10 +1366,9 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOTGUN_SHOOT_BOTH, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.SHOTGUN_SHOOT_BOTH, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.80F, ReuseableEvents.SHOTGUN_SHOOT_BOTH, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.SHOTGUN_SHOOT_BOTH, Side.CLIENT),
+					TimeStampedEvent.create(0.55F, ReuseableEvents.SHOTGUN_SHOOT_BOTH, Side.CLIENT),
+					TimeStampedEvent.create(0.80F, ReuseableEvents.SHOTGUN_SHOOT_BOTH, Side.CLIENT));
 		
 		ENDERBLASTER_TWOHAND_SHOOT_4 = new AttackAnimation(0.05F, 0.35F, 0.35F, 0.45F, 0.8F, EFColliders.ENDER_BULLET, biped.toolR, "biped/skill/enderblaster_twohand_shoot_4", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(4.0F))
@@ -1410,7 +1385,7 @@ public class EFAnimations {
 					if (entitypatch instanceof PlayerPatch) {
 						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.BUZZ, SoundSource.PLAYERS, 0.6F, 1.5F);
 					}
-				}, Side.CLIENT)).addEvents(TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
+				}, Side.CLIENT),TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.LASER_BLAST, SoundSource.PLAYERS, 0.7F, 1F);
 					}
@@ -1500,13 +1475,12 @@ public class EFAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, true)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.75F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.85F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.95F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.55F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+					TimeStampedEvent.create(0.65F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.75F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT),
+					TimeStampedEvent.create(0.85F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.95F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT));
 		
 		ENDERBLASTER_TWOHAND_PISTOLERO = new AttackAnimation(0.1F, "biped/skill/enderblaster_twohand_shoot_dash", biped,
 				new Phase(0.0F, 0.25F, 0.29F, 0.3F, 0.3F, biped.rootJoint, EFColliders.ENDER_PISTOLERO),
@@ -1535,11 +1509,10 @@ public class EFAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, true)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.4F, ReuseableEvents.SHOTGUN_SHOOT_LEFT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.5F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.SHOTGUN_SHOOT_LEFT, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.4F, ReuseableEvents.SHOTGUN_SHOOT_LEFT, Side.CLIENT),
+					TimeStampedEvent.create(0.5F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT),
+					TimeStampedEvent.create(0.6F, ReuseableEvents.SHOTGUN_SHOOT_LEFT, Side.CLIENT));
 		
 		ENDERBLASTER_TWOHAND_IDLE = new StaticAnimation(0.1f,true, "biped/living/enderblaster_twohand_idle", biped);
 		
@@ -1631,8 +1604,6 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.65F);
 		
-		
-		
 		STAFF_IDLE = new StaticAnimation(0.1f,true, "biped/living/staff_idle", biped);
 		STAFF_RUN = new MovementAnimation(0.1f,true, "biped/living/staff_run", biped);
 		
@@ -1651,14 +1622,13 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-						.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.RUINE_COMET_GROUNDTHRUST, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.8F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
+				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
+					TimeStampedEvent.create(0.15F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+					TimeStampedEvent.create(0.45F, ReuseableEvents.RUINE_COMET_GROUNDTHRUST, Side.CLIENT),
+					TimeStampedEvent.create(0.8F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
 		ANTITHEUS_GUILLOTINE = new BasicMultipleAttackAnimation(0.00F, "biped/combat/antitheus_guillotine", biped,
-				new Phase(0.0F, 0.6F, 0.8F, 0.8F, 0.8F, biped.rootJoint, EFColliders.ANTITHEUS_GUILLOTINE),
+				new Phase(0.0F, 0.6F, 0.75F, 0.8F, 0.8F, biped.rootJoint, EFColliders.ANTITHEUS_GUILLOTINE),
 				new Phase(0.8F, 0.9F, 1.0F, 1.1F, Float.MAX_VALUE, biped.rootJoint, EFColliders.ANTITHEUS_GUILLOTINE))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10.0F))
@@ -1671,21 +1641,18 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.5F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-						.addEvents(TimeStampedEvent.create(1.0F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER))
-					;
-		
+				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT),
+					TimeStampedEvent.create(0.5F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+					TimeStampedEvent.create(1.0F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
+
 		ANTITHEUS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_auto_1", biped,
-				new Phase(0.0F, 0.35F, 0.6F, 0.6F, 0.6F, biped.toolR, null),
+				new Phase(0.0F, 0.35F, 0.55F, 0.6F, 0.6F, biped.toolR, null),
 				new Phase(0.6F, 0.70F, 0.9F, 0.9F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.55F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),1)
@@ -1695,26 +1662,22 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-						.addEvents(TimeStampedEvent.create(0.9F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER))
-					;
+				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT),
+					TimeStampedEvent.create(0.25F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+					TimeStampedEvent.create(0.9F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
 		ANTITHEUS_AUTO_2 = new BasicAttackAnimation(0.05F, 0.20F, 0.4F, 0.4F,null, biped.toolR, "biped/combat/antitheus_auto_2", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.ANTITHEUS_HIT)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
-				
-						.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-						.addEvents(TimeStampedEvent.create(0.4F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER))
-					;
+				.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+						TimeStampedEvent.create(0.4F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
 		ANTITHEUS_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_auto_3", biped,
-				new Phase(0.0F, 0.3F, 0.55F, 0.55F, 0.55F, biped.toolR, null),
+				new Phase(0.0F, 0.3F, 0.50F, 0.55F, 0.55F, biped.toolR, null),
 				new Phase(0.55F, 0.65F, 0.75F, 0.80F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.8F),1)
@@ -1724,8 +1687,8 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG, 1)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
-				.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-				.addEvents(TimeStampedEvent.create(0.75F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
+				.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+					TimeStampedEvent.create(0.75F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
 		ANTITHEUS_AUTO_4 = new BasicAttackAnimation(0.05F, 0.55F, 0.75F, 0.9F, null, biped.toolR, "biped/combat/antitheus_auto_4", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.6F))
@@ -1734,16 +1697,16 @@ public class EFAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.8F)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
-				.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-				.addEvents(TimeStampedEvent.create(0.75F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
+				.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+					TimeStampedEvent.create(0.75F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
 		ANTITHEUS_IDLE = new StaticAnimation(0.2f,true, "biped/living/antitheus_idle", biped);
 		ANTITHEUS_RUN = new MovementAnimation(0.2f,true, "biped/living/antitheus_run", biped);
 		ANTITHEUS_WALK = new MovementAnimation(0.2f,true, "biped/living/antitheus_walk", biped);
 		
 		ANTITHEUS_ASCENSION = new AttackAnimation(0.1f, "biped/skill/antitheus_ascension", biped,
-				new Phase(0.0f, 0.5f, 0.6f, 0.6f, 0.6f, biped.rootJoint, EFColliders.PLUNDER_PERDITION),
-				new Phase(0.6f, 1.75f, 2.05f, 2.85f, Float.MAX_VALUE, biped.rootJoint, EFColliders.PLUNDER_PERDITION))
+				new Phase(0.0f, 0.5f, 0.6f, 0.65f, 0.65f, biped.rootJoint, EFColliders.PLUNDER_PERDITION),
+				new Phase(0.65f, 1.75f, 2.05f, 2.85f, Float.MAX_VALUE, biped.rootJoint, EFColliders.PLUNDER_PERDITION))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.0F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(4.0F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
@@ -1754,17 +1717,16 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.ANTITHEUS_PUNCH_HIT,1)	
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG,1)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F)
+				.addEvents(TimeStampedEvent.create(0.5F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 1.0F, 0.5F);
 				
-						.addEvents(TimeStampedEvent.create(0.5F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 1.0F, 0.5F);
-						}, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(1.75F, (entitypatch, params) -> {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.ACTIVE, true, (ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ACTIVE, true, (ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, true, (ServerPlayer)entitypatch.getOriginal());
-							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
-							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
-						}, Side.SERVER));
+				}, Side.CLIENT),TimeStampedEvent.create(1.75F, (entitypatch, params) -> {
+					((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.ACTIVE, true, (ServerPlayer)entitypatch.getOriginal());
+					((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ACTIVE, true, (ServerPlayer)entitypatch.getOriginal());
+					((PlayerPatch<?>) entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, true, (ServerPlayer)entitypatch.getOriginal());
+					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
+					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
+				}, Side.SERVER));
 		
 		ANTITHEUS_ASCENDED_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.4F, 0.4F, EFColliders.ANTITHEUS_ASCENDED_PUNCHES, biped.rootJoint, "biped/skill/antitheus_ascended_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.9F))
@@ -1772,14 +1734,13 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.ANTITHEUS_PUNCH_HIT)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)	
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT));
 		
 		ANTITHEUS_ASCENDED_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/antitheus_ascended_auto_2", biped,
-				new Phase(0.0F, 0.3F, 0.4F, 0.4F, 0.4F, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES),
-				new Phase(0.4F, 0.6F, 0.7F, 0.7F, Float.MAX_VALUE, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES))
+				new Phase(0.0F, 0.3F, 0.4F, 0.5F, 0.5F, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES),
+				new Phase(0.5F, 0.6F, 0.7F, 0.7F, Float.MAX_VALUE, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.ANTITHEUS_PUNCH_HIT)		
@@ -1789,15 +1750,14 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT));
 		
 		ANTITHEUS_ASCENDED_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/antitheus_ascended_auto_3", biped,
-				new Phase(0.0F, 0.2F, 0.3F, 0.3F, 0.3F, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES),
-				new Phase(0.3F, 0.4F, 0.5F, 0.5F, 0.5F, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES),
-				new Phase(0.5F, 0.7F, 0.85F, 0.85F, Float.MAX_VALUE, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES))
+				new Phase(0.0F, 0.2F, 0.3F, 0.35F, 0.35F, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES),
+				new Phase(0.35F, 0.4F, 0.5F, 0.55F, 0.55F, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES),
+				new Phase(0.55F, 0.7F, 0.80F, 0.85F, Float.MAX_VALUE, biped.rootJoint, EFColliders.ANTITHEUS_ASCENDED_PUNCHES))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.9F),2)
@@ -1810,10 +1770,9 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG,2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT));
 		
 		ANTITHEUS_ASCENDED_DEATHFALL = new BasicMultipleAttackAnimation(0.05F, 0.35F, 0.4F, 0.6F, EFColliders.ANTITHEUS_GUILLOTINE, biped.rootJoint, "biped/skill/antitheus_ascended_deathfall", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
@@ -1823,44 +1782,42 @@ public class EFAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EFEpicFightParticles.ANTITHEUS_PUNCH_HIT)		
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)		
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
-				
 				.addProperty(AttackAnimationProperty.ROTATE_X, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				
-						.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.30F, (entitypatch, params) -> {
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
-							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT))
-						.addEvents(TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
-							if (entitypatch instanceof PlayerPatch) {
-								entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.7F, 0.5F);
-								entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.BLUNT_HIT_HARD, SoundSource.PLAYERS, 0.7F, 0.7F);
-							}
-							for (int i = 0; i < 140; i++) {
-								entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
-									entitypatch.getOriginal().getX(),
-									entitypatch.getOriginal().getY(),
-									entitypatch.getOriginal().getZ(),
-									(new Random().nextFloat() - 0.5F) * 0.6f,
-									(new Random().nextFloat() * 0.8F) + 0.02f,
-									(new Random().nextFloat() - 0.5F) * 0.6f);
-							}
-							for (int i = 0; i < 60; i++) {
-								entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
-									entitypatch.getOriginal().getX(),
-									entitypatch.getOriginal().getY() + 0.2F,
-									entitypatch.getOriginal().getZ(),
-									((new Random().nextFloat() - 0.5F) * 0.9F),
-									((new Random().nextFloat()) * 0.01F) + 0.05F,
-									((new Random().nextFloat() - 0.5F) * 0.9F));
-							}
-						}, Side.CLIENT));
+				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT),
+					TimeStampedEvent.create(0.30F, (entitypatch, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
+				}, Side.CLIENT),
+					TimeStampedEvent.create(0.35F, (entitypatch, params) -> {
+					if (entitypatch instanceof PlayerPatch) {
+						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.7F, 0.5F);
+						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.BLUNT_HIT_HARD, SoundSource.PLAYERS, 0.7F, 0.7F);
+					}
+					for (int i = 0; i < 140; i++) {
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+							entitypatch.getOriginal().getX(),
+							entitypatch.getOriginal().getY(),
+							entitypatch.getOriginal().getZ(),
+							(new Random().nextFloat() - 0.5F) * 0.6f,
+							(new Random().nextFloat() * 0.8F) + 0.02f,
+							(new Random().nextFloat() - 0.5F) * 0.6f);
+					}
+					for (int i = 0; i < 60; i++) {
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+							entitypatch.getOriginal().getX(),
+							entitypatch.getOriginal().getY() + 0.2F,
+							entitypatch.getOriginal().getZ(),
+							((new Random().nextFloat() - 0.5F) * 0.9F),
+							((new Random().nextFloat()) * 0.01F) + 0.05F,
+							((new Random().nextFloat() - 0.5F) * 0.9F));
+					}
+				}, Side.CLIENT));
 		
 		ANTITHEUS_ASCENDED_BLINK = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.4F, 0.4F, EFColliders.ANTITHEUS_ASCENDED_BLINK, biped.rootJoint, "biped/skill/antitheus_ascended_blink", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.8F))
@@ -1875,9 +1832,9 @@ public class EFAnimations {
 				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, params) -> {
 							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
 							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
-						}, Side.CLIENT))
-				.addEvents(TimeStampedEvent.create(0.30F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER))
-				.addEvents(TimeStampedEvent.create(0.45F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
+						}, Side.CLIENT),
+					TimeStampedEvent.create(0.30F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
+					TimeStampedEvent.create(0.45F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
 		ANTITHEUS_ASCENDED_IDLE = new StaticAnimation(0.1f,true, "biped/living/antitheus_ascended_idle", biped);
 		ANTITHEUS_ASCENDED_RUN = new MovementAnimation(0.1f,true, "biped/living/antitheus_ascended_run", biped);
@@ -2243,6 +2200,34 @@ public class EFAnimations {
 					(new Random().nextFloat() - 0.5F) * 1.5,
 					(new Random().nextFloat() * 0.5) + 0.2f,
 					(new Random().nextFloat() - 0.5F) * 1.5);
+			}
+		};
+		
+		private static final BiConsumer<LivingEntityPatch<?>, Object[]> AGONY_GROUNDSLAM = (entitypatch, params) -> {
+			if (entitypatch instanceof PlayerPatch) {
+				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.BLUNT_HIT_HARD, SoundSource.PLAYERS, 0.7F, 0.7F);
+			}
+			OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0.0f), Armatures.BIPED.toolR);
+			transformMatrix.translate(new Vec3f(0,0.0F,-2.4F));
+			OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
+			OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
+			for (int i = 0; i < 50; i++) {
+				entitypatch.getOriginal().level.addParticle(ParticleTypes.CRIT,
+					(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+					(transformMatrix.m31 + entitypatch.getOriginal().getY()),
+					(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+					((new Random().nextFloat() - 0.5F)*2.5),
+					(new Random().nextFloat()*3.0F)+0.5f,
+					((new Random().nextFloat() - 0.5F)*2.5));
+			}
+			for (int i = 0; i < 30; i++) {
+				entitypatch.getOriginal().level.addParticle(ParticleTypes.CRIT,
+					(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+					(transformMatrix.m31 + entitypatch.getOriginal().getY()) + 0.2f,
+					(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+					((new Random().nextFloat() - 0.5F) * 4.0F),
+					((new Random().nextFloat()) * 0.05F) + 0.05F,
+					((new Random().nextFloat() - 0.5F) * 4.0F));
 			}
 		};
 		

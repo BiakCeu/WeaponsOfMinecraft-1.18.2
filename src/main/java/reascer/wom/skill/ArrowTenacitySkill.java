@@ -3,10 +3,10 @@ package reascer.wom.skill;
 import java.util.UUID;
 
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
-import yesman.epicfight.api.utils.ExtendedDamageSource.StunType;
 import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class ArrowTenacitySkill extends PassiveSkill {

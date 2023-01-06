@@ -23,8 +23,8 @@ import reascer.wom.gameasset.EFColliders;
 import reascer.wom.world.capabilities.item.WomWeaponCategories;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.Animations;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.gameasset.Skills;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.GuardSkill;
@@ -43,11 +43,11 @@ public class CounterAttack extends GuardSkill {
 	private static final SkillDataKey<Integer> LAST_ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Integer> PARRY_MOTION_COUNTER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
-	public static GuardSkill.Builder createBuilder(ResourceLocation resourceLocation) {
-		return GuardSkill.createBuilder(resourceLocation)
+	public static GuardSkill.Builder createCounterAttackBuilder() {
+		return GuardSkill.createGuardBuilder()
 				.addAdvancedGuardMotion(WeaponCategories.SWORD, (itemCap, playerpatch) -> itemCap.getStyle(playerpatch) == Styles.ONE_HAND ?
 					Animations.SWORD_DASH :
-					Animations.SWORD_DUAL_AUTO3)
+					Animations.SWORD_DUAL_COMBO3)
 				.addAdvancedGuardMotion(WeaponCategories.LONGSWORD, (itemCap, playerpatch) ->
 					Animations.LONGSWORD_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.TACHI, (itemCap, playerpatch) ->
@@ -107,7 +107,7 @@ public class CounterAttack extends GuardSkill {
 					penalty = 0.1F;
 					knockback *= 0.4F;
 				} else {
-					penalty += this.getPenaltyMultiplier(itemCapability);
+					penalty += this.getPenalizer(itemCapability);
 					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
 				}
 				
@@ -168,7 +168,7 @@ public class CounterAttack extends GuardSkill {
 	
 	@Override
 	public Skill getPriorSkill() {
-		return Skills.GUARD;
+		return EpicFightSkills.GUARD;
 	}
 	
 	@Override
@@ -178,9 +178,9 @@ public class CounterAttack extends GuardSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<Object> getTooltipArgs() {
-		List<Object> list = Lists.<Object>newArrayList();
-		list.add(String.format("%s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WomWeaponCategories.AGONY , WomWeaponCategories.RUINE, WomWeaponCategories.STAFF).toLowerCase());
+	public List<Object> getTooltipArgs(List<Object> list) {
+		list.clear();
+		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WomWeaponCategories.AGONY , WomWeaponCategories.RUINE, WomWeaponCategories.STAFF).toLowerCase());
 		return list;
 	}
 }

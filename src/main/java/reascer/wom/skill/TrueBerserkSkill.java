@@ -1,7 +1,6 @@
 package reascer.wom.skill;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
 
@@ -17,6 +16,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +25,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
+import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.main.WeaponOfMinecraft;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.main.EpicFightMod;
@@ -33,76 +34,24 @@ import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SpecialAttackSkill;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.WeaponInnateSkill;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 
-public class TrueBerserkSkill extends SpecialAttackSkill {
+public class TrueBerserkSkill extends WeaponInnateSkill {
 	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 
 	protected final StaticAnimation activateAnimation;
 	
-	public TrueBerserkSkill(Builder builder) {
-		super(builder);
+	public TrueBerserkSkill(Builder<?> builder) {
+		super(builder.setActivateType(ActivateType.DURATION_INFINITE));
 
-		this.activateAnimation = builder.activateAnimation;
-	}
-	
-	public static class Builder extends Skill.Builder<AgonyPlungeSkill> {
-		
-		protected StaticAnimation activateAnimation;
-		
-		public Builder(ResourceLocation resourceLocation) {
-			super(resourceLocation);
-		}
-		
-		public Builder setCategory(SkillCategories category) {
-			this.category = category;
-			return this;
-		}
-		
-		public Builder setConsumption(float consumption) {
-			this.consumption = consumption;
-			return this;
-		}
-		
-		public Builder setMaxDuration(int maxDuration) {
-			this.maxDuration = maxDuration;
-			return this;
-		}
-		
-		public Builder setMaxStack(int maxStack) {
-			this.maxStack = maxStack;
-			return this;
-		}
-		
-		public Builder setRequiredXp(int requiredXp) {
-			this.requiredXp = requiredXp;
-			return this;
-		}
-		
-		public Builder setActivateType(ActivateType activateType) {
-			this.activateType = activateType;
-			return this;
-		}
-		
-		public Builder setResource(Resource resource) {
-			this.resource = resource;
-			return this;
-		}
-		
-		public Builder setAnimations(StaticAnimation activateAnimation) {
-			this.activateAnimation = activateAnimation;
-			return this;
-		}
-	}
-	
-	public static Builder createBuilder(ResourceLocation resourceLocation) {
-		return (new Builder(resourceLocation)).setCategory(SkillCategories.WEAPON_SPECIAL_ATTACK).setResource(Resource.SPECIAL_GAUAGE);
+		this.activateAnimation = EFAnimations.TORMENT_BERSERK_CONVERT;
 	}
 	
 	@Override
@@ -171,12 +120,14 @@ public class TrueBerserkSkill extends SpecialAttackSkill {
 		if (executer.isLogicalClient()) {
 			return super.canExecute(executer);
 		} else {
-			return executer.getHoldingItemCapability(InteractionHand.MAIN_HAND).getSpecialAttack(executer) == this && executer.getOriginal().getVehicle() == null;
+			ItemStack itemstack = executer.getOriginal().getMainHandItem();
+			
+			return EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null;
 		}
 	}
 	
 	@Override
-	public SpecialAttackSkill registerPropertiesToAnimation() {
+	public WeaponInnateSkill registerPropertiesToAnimation() {
 		return this;
 	}
 	
@@ -194,7 +145,7 @@ public class TrueBerserkSkill extends SpecialAttackSkill {
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
 		if (playerpatch.getSkill(this.category).isActivated()) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, new ResourceLocation(EpicFightMod.MODID, "textures/gui/overlay/true_berserk.png"));
+			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponOfMinecraft.MODID, "textures/gui/overlay/true_berserk.png"));
 			GlStateManager._enableBlend();
 			GlStateManager._disableDepthTest();
 			GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
