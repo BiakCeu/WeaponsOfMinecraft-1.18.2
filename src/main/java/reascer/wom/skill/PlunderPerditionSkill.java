@@ -1,6 +1,7 @@
 package reascer.wom.skill;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,8 +13,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import reascer.wom.gameasset.EFAnimations;
-import reascer.wom.particle.EFEpicFightParticles;
+import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.particle.WOMParticles;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
@@ -39,7 +40,7 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 	
 	public PlunderPerditionSkill(Builder<? extends Skill> builder) {
 		super(builder);
-		this.attackAnimation = EFAnimations.RUINE_PLUNDER;
+		this.attackAnimation = WOMAnimations.RUINE_PLUNDER;
 	}
 	
 	@Override
@@ -69,26 +70,26 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 					event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() + (event.getPlayerPatch().getMaxStamina() * 0.05f));
 					event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth() + (event.getPlayerPatch().getOriginal().getMaxHealth() * 0.05f));
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.REVERSE_PORTAL, 
-							event.getTarget().xo, 
+							event.getTarget().xo + (new Random().nextDouble() - 0.5D), 
 							event.getTarget().yo + 1.0D, 
-							event.getTarget().zo, 
+							event.getTarget().zo + (new Random().nextDouble() - 0.5D), 
 							40, 0, 0, 0, 0.4);
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.PORTAL, 
 							event.getPlayerPatch().getOriginal().xo, 
 							event.getPlayerPatch().getOriginal().yo + 1.0D, 
 							event.getPlayerPatch().getOriginal().zo, 
 							10, 0, 0, 0, 0.8);
+					container.getExecuter().getOriginal().level.addParticle(WOMParticles.RUINE_PLUNDER_SWORD.get(), event.getTarget().xo, event.getTarget().yo, event.getTarget().zo, 0, 0, 0);
 					container.getExecuter().playSound(SoundEvents.CHAIN_BREAK, 2.0f, 1, 1);
 				}
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
-			container.getExecuter().getOriginal().level.addAlwaysVisibleParticle(EFEpicFightParticles.RUINE_PLUNDER_SWORD.get(), event.getTarget().xo, event.getTarget().yo, event.getTarget().zo, 0, 0, 0);
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
-			if (event.getAnimationId() == EFAnimations.RUINE_PLUNDER.getId() && container.getDataManager().getDataValue(STRENGHT) > 0) {
+			if (event.getAnimationId() == WOMAnimations.RUINE_PLUNDER.getId() && container.getDataManager().getDataValue(STRENGHT) > 0) {
 				if (!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(BUFFED, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(BUFFING, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
@@ -102,7 +103,7 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			if (event.getAnimation().getId() != EFAnimations.RUINE_PLUNDER.getId()) {
+			if (event.getAnimation().getId() != WOMAnimations.RUINE_PLUNDER.getId()) {
 				container.getDataManager().setData(BUFFING, false);
 			}
 		});

@@ -14,7 +14,7 @@ import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import reascer.wom.gameasset.EFEnchantment;
+import reascer.wom.gameasset.WOMEnchantment;
 import reascer.wom.main.WeaponOfMinecraft;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
@@ -39,7 +39,7 @@ public class EFLivingEntity {
 		EquipmentSlot slot = event.getSlotType();
 		if (slot == LivingEntity.getEquipmentSlotForItem(stack)) {
 			// boost from enchant
-			invigoration += EnchantmentHelper.getItemEnchantmentLevel(EFEnchantment.INVIGORATION.get(), stack);
+			invigoration += EnchantmentHelper.getItemEnchantmentLevel(WOMEnchantment.INVIGORATION.get(), stack);
 			//System.out.println("in. \n invig lvl = "+ invigoration);
 		}
 		//System.out.println("out. \n Stack:"+LivingEntity.getEquipmentSlotForItem(stack)+" Slot:"+slot.getName()+"\n");

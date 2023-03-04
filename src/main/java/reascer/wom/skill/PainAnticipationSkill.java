@@ -2,6 +2,8 @@ package reascer.wom.skill;
 
 import java.util.UUID;
 
+import net.minecraft.client.particle.DustParticle;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -83,11 +85,11 @@ public class PainAnticipationSkill extends PassiveSkill {
 					container.getDataManager().setDataSync(DUREE, maxduree,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().xo, container.getExecuter().getOriginal().yo, container.getExecuter().getOriginal().zo,
 			    			SoundEvents.SMALL_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 1.0F);
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
+					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(DustParticleOptions.REDSTONE, 
 							container.getExecuter().getOriginal().getX() - 0.2D, 
 							container.getExecuter().getOriginal().getY() + 1.3D, 
 							container.getExecuter().getOriginal().getZ() - 0.2D, 
-							20, 0.6D, 0.8D, 0.6D, 0.05);
+							30, 0.6D, 0.8D, 0.6D, 0.05);
 				}
 			}
 		}
@@ -95,11 +97,11 @@ public class PainAnticipationSkill extends PassiveSkill {
 			if (container.getDataManager().getDataValue(DUREE) > 0) {
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(DUREE, container.getDataManager().getDataValue(DUREE)-1,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
+					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( DustParticleOptions.REDSTONE, 
 							container.getExecuter().getOriginal().getX() - 0.2D, 
 							container.getExecuter().getOriginal().getY() + 1.3D, 
 							container.getExecuter().getOriginal().getZ() - 0.2D, 
-							2, 0.6D, 0.8D, 0.6D, 0.05);
+							4, 0.6D, 0.8D, 0.6D, 0.05);
 					if (container.getDataManager().getDataValue(DUREE) == 0) {
 						container.getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(TIMER, maxtimer,((ServerPlayerPatch) container.getExecuter()).getOriginal());

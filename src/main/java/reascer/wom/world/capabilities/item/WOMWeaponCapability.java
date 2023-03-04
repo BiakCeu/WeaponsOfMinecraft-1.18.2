@@ -10,16 +10,16 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.item.Style;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 
-public class EFWeaponCapability extends WeaponCapability{
+public class WOMWeaponCapability extends WeaponCapability{
 	protected final Map<Style, List<StaticAnimation>> heavyAutoAttackMotions;
 	
-	public EFWeaponCapability(WeaponCapability.Builder builder, EFWeaponCapability.Builder efbuilder) {
+	public WOMWeaponCapability(WeaponCapability.Builder builder, WOMWeaponCapability.Builder efbuilder) {
 		super(builder);
 		this.heavyAutoAttackMotions = efbuilder.heavyAutoAttackMotionMap;
 	}
 
-	public static EFWeaponCapability.Builder EFbuilder() {
-		return new EFWeaponCapability.Builder();
+	public static WOMWeaponCapability.Builder EFbuilder() {
+		return new WOMWeaponCapability.Builder();
 	}
 	
 	public static class Builder {

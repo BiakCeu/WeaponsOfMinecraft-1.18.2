@@ -4,7 +4,7 @@ import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.collider.MultiOBBCollider;
 import yesman.epicfight.api.collider.OBBCollider;
 
-public class EFColliders {
+public class WOMColliders {
 	public static final Collider STAFF = new MultiOBBCollider(4, 0.25D, 0.25D, 1.9D, 0D, 0D, 0D);
 	public static final Collider STAFF_CHARYBDIS = new MultiOBBCollider(4, 0.6D, 0.6D, 2.3D, 0D, 0D, 0D);
 	
@@ -37,14 +37,17 @@ public class EFColliders {
 	public static final Collider ENDER_DASH = new MultiOBBCollider(4, 1.0D, 1.0D, 1.0D, 0D, 1.0D, 1.0D);
 	public static final Collider ENDER_TISHNAW = new MultiOBBCollider(4, 1.5D, 1.5D, 1.5D, 0D, 1.0D, 1.0D);
 	public static final Collider KNEE = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.4D, 0D);
-	public static final Collider ENDER_BULLET = new OBBCollider( 0.2D, 10.0D, 0.2D, 0.0D, -10.2D, 0.0D);
+	public static final Collider ENDER_LASER = new MultiOBBCollider(4, 0.3D, 20.0D, 0.3D, 0.0D, -20.2D, 0.0D);
+	public static final Collider ENDER_SHOOT = new MultiOBBCollider(4, 0.3D, 4.0D, 0.3D, 0.0D, -4.2D, 0.0D);
 	public static final Collider ENDER_BULLET_DASH = new OBBCollider( 1.2D, 5.0D, 1.2D, 0.0D, -5.1D, 0.0D);
-	public static final Collider ENDER_BULLET_WIDE = new OBBCollider( 4.6D, 1.5D, 4.6D, 0.0D, 0.0D, -4.6D);
+	public static final Collider ENDER_BULLET_BACKANDFORTH = new OBBCollider( 2.5D, 10.0D, 2.5D, 0.0D, 1.0D, 0.0D);
+	public static final Collider ENDER_BULLET_WIDE = new OBBCollider( 7.5D, 1.5D, 5D, 0.0D, 0.75D, -5D);
 	public static final Collider ENDER_PISTOLERO = new OBBCollider( 2.5D, 2D, 2.5D, 0.0D, -1.5D, 0.0D);
 	
 	public static final Collider ANTITHEUS = new MultiOBBCollider(3, 0.4F, 1.0F, 1.6F, 0F, -0.4F, -0.9F);
 	public static final Collider ANTITHEUS_GUILLOTINE = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0F, 0F);
-	public static final Collider ANTITHEUS_ASCENDED_PUNCHES = new OBBCollider(1.0F, 1.0F, 1.0F, 0F, 1.0F, -1.0F);
-	public static final Collider ANTITHEUS_ASCENDED_BLINK = new OBBCollider(2.5F, 1.5F, 2.5F, 0F, 0.75F, 0.0F);
+	public static final Collider ANTITHEUS_ASCENDED_PUNCHES = new OBBCollider(1.0F, 1.0F, 2.0F, 0F, 1.0F, -1.25F);
+	public static final Collider ANTITHEUS_ASCENDED_BLINK = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0.75F, 0.0F);
+	public static final Collider ANTITHEUS_ASCENDED_DEATHFALL = new OBBCollider(4F, 3F, 4F, 0F, 0F, 0F);
 	
 }

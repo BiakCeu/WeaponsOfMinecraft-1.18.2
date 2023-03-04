@@ -2,7 +2,7 @@ package reascer.wom.skill;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.Skill;
@@ -15,13 +15,13 @@ public class KickSkill extends Skill {
 	
 	public KickSkill(Builder builder) {
 		super(builder);
-		this.animations = EFAnimations.KICK;
+		this.animations = WOMAnimations.KICK;
 	}
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.executeOnServer(executer, args);
-		executer.playAnimationSynchronized(EFAnimations.KICK, 0);
+		executer.playAnimationSynchronized(WOMAnimations.KICK, 0);
 		
 	}
 }

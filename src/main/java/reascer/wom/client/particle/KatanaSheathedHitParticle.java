@@ -7,7 +7,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.particle.EFEpicFightParticles;
+import reascer.wom.particle.WOMParticles;
 import yesman.epicfight.particle.EpicFightParticles;
 
 @OnlyIn(Dist.CLIENT)
@@ -17,7 +17,7 @@ public class KatanaSheathedHitParticle extends NoRenderParticle {
 		this.x = x + (this.random.nextDouble() - 0.5D) * width;
 		this.y = y + (this.random.nextDouble() + height) * 0.5;
 		this.z = z + (this.random.nextDouble() - 0.5D) * width;
-		this.level.addParticle(EFEpicFightParticles.KATANA_SHEATHED_CUT.get(), this.x, this.y, this.z, 0.0D, 0.0D, 0.0D);
+		this.level.addParticle(WOMParticles.KATANA_SHEATHED_CUT.get(), this.x, this.y, this.z, 0.0D, 0.0D, 0.0D);
 		double d = 0.2F;
 		
 		for(int i = 0; i < 6; i++) {

@@ -6,6 +6,10 @@
 		{
 			"livingmotion":"ALL",
 			"type":"arms"
+		},
+		{
+			"livingmotion":"run",
+			"type":"none"
 		}
 	]
 }

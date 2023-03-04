@@ -1,6 +1,7 @@
 package reascer.wom.world.item;
 
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
@@ -15,7 +16,7 @@ import yesman.epicfight.world.item.EpicFightItemGroup;
 import yesman.epicfight.world.item.SkillBookItem;
 import yesman.epicfight.main.EpicFightMod;
 
-public class EFECItems {
+public class WOMItems {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, EpicFightMod.MODID);
 	
 	public static final RegistryObject<Item> AGONY = ITEMS.register("agony", () -> new AgonySpearItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.RARE)));
@@ -23,6 +24,8 @@ public class EFECItems {
 	public static final RegistryObject<Item> RUINE = ITEMS.register("ruine", () -> new RuineItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> ENDER_BLASTER = ITEMS.register("ender_blaster", () -> new EnderBlasterItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> ANTITHEUS = ITEMS.register("antitheus", () -> new AntitheusItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> HERRSCHER = ITEMS.register("herrscher", () -> new HerscherItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> GESETZ = ITEMS.register("gesetz", () -> new ShieldItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS).rarity(Rarity.EPIC).defaultDurability(4157).durability(4157)));
 	
 	public static final RegistryObject<Item> IRON_GREATAXE = ITEMS.register("iron_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.IRON));
 	public static final RegistryObject<Item> GOLDEN_GREATAXE = ITEMS.register("golden_greataxe", () -> new GreataxeItem(new Item.Properties().tab(EpicFightItemGroup.ITEMS), Tiers.GOLD));

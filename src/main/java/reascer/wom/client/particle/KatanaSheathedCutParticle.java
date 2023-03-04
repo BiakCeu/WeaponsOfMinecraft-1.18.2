@@ -24,7 +24,7 @@ public class KatanaSheathedCutParticle extends HitParticle {
 		this.setSpriteFromAge(animatedSprite);
 		
 		Random rand = new Random();
-		float angle = (float)Math.toRadians(rand.nextFloat() * 90.0F);
+		float angle = (float)Math.toRadians(45.0F + ((rand.nextFloat() - 0.5F) * 45F) + (rand.nextBoolean() ? 0f : 180f));
 		this.oRoll = angle;
 		this.roll = angle;
 	}

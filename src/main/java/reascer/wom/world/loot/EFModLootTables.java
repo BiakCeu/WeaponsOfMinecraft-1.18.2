@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
-import reascer.wom.world.item.EFECItems;
+import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.data.loot.function.SetRandomSkillFunction;
 import yesman.epicfight.world.item.EpicFightItems;
 
@@ -25,7 +25,7 @@ public class EFModLootTables {
     		.build());
     		
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.RUINE.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
     		.build());
     	}
@@ -37,52 +37,77 @@ public class EFModLootTables {
     		.build());
     		
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.RUINE.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.SIMPLE_DUNGEON)) {
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.AGONY.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.AGONY.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.WOODLAND_MANSION)) {
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.TORMENTED_MIND.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.TORMENTED_MIND.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.PILLAGER_OUTPOST)) {
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.TORMENTED_MIND.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.TORMENTED_MIND.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.END_CITY_TREASURE)) {
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.ENDER_BLASTER.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.ENDER_BLASTER.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.NETHER_BRIDGE)) {
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.DEMON_SEAL.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.DEMON_SEAL.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.BASTION_TREASURE)) {
     		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(EFECItems.DEMON_SEAL.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(WOMItems.DEMON_SEAL.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
     		.build());
     	}
+    	
+    	if (event.getName().equals(BuiltInLootTables.UNDERWATER_RUIN_BIG)) {
+    		event.getTable().addPool(LootPool.lootPool()
+    			.add(LootItem.lootTableItem(WOMItems.HERRSCHER.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
+    		.build());
+    		
+    		event.getTable().addPool(LootPool.lootPool()
+        			.add(LootItem.lootTableItem(WOMItems.GESETZ.get()).setWeight(1))
+        			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
+        		.build());
+    	}
+    	
+    	if (event.getName().equals(BuiltInLootTables.UNDERWATER_RUIN_SMALL)) {
+    		event.getTable().addPool(LootPool.lootPool()
+    			.add(LootItem.lootTableItem(WOMItems.HERRSCHER.get()).setWeight(1))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(50))
+    		.build());
+    		
+    		event.getTable().addPool(LootPool.lootPool()
+        			.add(LootItem.lootTableItem(WOMItems.GESETZ.get()).setWeight(1))
+        			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
+        		.build());
+    	}
+    	
     }
 }
 

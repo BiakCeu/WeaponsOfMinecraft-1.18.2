@@ -19,8 +19,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.gameasset.EFAnimations;
-import reascer.wom.gameasset.EFColliders;
+import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMColliders;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -54,12 +54,12 @@ public class EnderFusionSkill extends ConditionalWeaponInnateSkill {
 			int combo = executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(COMBO);
 			return combo;
 			
-		},  EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_1, 
-			EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_2, 
-			EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_3,
-			EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_4,
-			EFAnimations.ENDERBLASTER_TWOHAND_PISTOLERO,
-			EFAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT);
+		},  WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_1, 
+			WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2, 
+			WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3,
+			WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4,
+			WOMAnimations.ENDERBLASTER_TWOHAND_PISTOLERO,
+			WOMAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT);
 	}
 	
 	@Override
@@ -74,10 +74,10 @@ public class EnderFusionSkill extends ConditionalWeaponInnateSkill {
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			if (event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_1.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_2.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_3.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_TWOHAND_SHOOT_4.getId()
+			if (event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_1.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4.getId()
 					) {
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(COOLDOWN, cooldown, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -168,7 +168,7 @@ public class EnderFusionSkill extends ConditionalWeaponInnateSkill {
 		}
 		this.setConsumptionSynchronize(executer,executer.getSkill(SkillCategories.WEAPON_INNATE).getResource()
 				+ (1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.MAIN_HAND)))
-				+ (executer.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCollider() == EFColliders.ENDER_BLASTER ? 
+				+ (executer.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCollider() == WOMColliders.ENDER_BLASTER ? 
 						(1.0F * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND))):
 						0));		
 		executer.getSkill(this.category).activate();

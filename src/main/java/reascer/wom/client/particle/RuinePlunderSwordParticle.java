@@ -64,8 +64,8 @@ public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 		float scale = (float)Mth.lerp((double)partialTicks, this.scaleO, this.scale);
 		poseStack.translate(x, y, z);
 		poseStack.mulPose(Vector3f.XP.rotationDegrees(this.pitch));
-		poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.roll));
 		poseStack.mulPose(Vector3f.YP.rotationDegrees(yaw));
+		poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.roll));
 		poseStack.scale(scale, scale, scale);
 	}
 	

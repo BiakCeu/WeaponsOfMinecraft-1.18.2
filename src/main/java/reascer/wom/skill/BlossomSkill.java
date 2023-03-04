@@ -1,7 +1,7 @@
 package reascer.wom.skill;
 
 import net.minecraft.network.FriendlyByteBuf;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.skill.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
@@ -19,9 +19,9 @@ public class BlossomSkill extends ConditionalWeaponInnateSkill {
 			int combo = executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(COMBO);
 			return combo;
 			
-		},  EFAnimations.TACHI_TWOHAND_BLOSSOM_CHARGE,
-			EFAnimations.TACHI_TWOHAND_BLOSSOM_SLASHES,
-			EFAnimations.TACHI_TWOHAND_BLOSSOM_FINAL);
+		},  WOMAnimations.TACHI_TWOHAND_BLOSSOM_CHARGE,
+			WOMAnimations.TACHI_TWOHAND_BLOSSOM_SLASHES,
+			WOMAnimations.TACHI_TWOHAND_BLOSSOM_FINAL);
 	}
 	
 	public void onInitiate(SkillContainer container) {

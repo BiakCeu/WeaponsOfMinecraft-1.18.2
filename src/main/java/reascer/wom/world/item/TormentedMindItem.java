@@ -47,7 +47,7 @@ public class TormentedMindItem extends WeaponItem {
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return repair.getItem() == Items.QUARTZ;
+		return repair.getItem() == Items.IRON_INGOT;
 	}
     
 	@OnlyIn(Dist.CLIENT)

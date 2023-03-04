@@ -48,7 +48,7 @@ public class AgonySpearItem extends WeaponItem {
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return repair.getItem() == Items.DEEPSLATE_REDSTONE_ORE;
+		return repair.getItem() == Items.QUARTZ;
 	}
     
 	@Override

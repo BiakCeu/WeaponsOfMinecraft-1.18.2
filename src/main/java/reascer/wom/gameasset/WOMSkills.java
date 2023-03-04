@@ -41,7 +41,7 @@ import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 import yesman.epicfight.world.damagesource.StunType;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
-public class EFSkills {
+public class WOMSkills {
 	public static Skill ENDERSTEP;
 	public static Skill DODGEMASTER;
 	public static Skill KNIGHT_ROLL;
@@ -120,7 +120,7 @@ public class EFSkills {
 		SkillManager.register(EnderFusionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"ender_fusion");
 
-		SkillManager.register(DemonMarkPassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
+		SkillManager.register(DemonMarkPassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.DURATION_INFINITE).setResource(Resource.COOLDOWN),
 				WeaponOfMinecraft.MODID,"demon_mark_passive");
 
 		SkillManager.register(DemonicAscensionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
@@ -161,7 +161,7 @@ public class EFSkills {
 		VAMPIRIZE = onBuild.build(WeaponOfMinecraft.MODID, "vampirize");
 		CRITICAL_KNOWLEDGE = onBuild.build(WeaponOfMinecraft.MODID, "critical_knowledge");
 		
-		WeaponInnateSkill charybdisSkill  = onBuild.build(WeaponOfMinecraft.MODID, "charybdis");
+		WeaponInnateSkill charybdisSkill = onBuild.build(WeaponOfMinecraft.MODID, "charybdis");
 		charybdisSkill.newProperty()
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35f))
 			.registerPropertiesToAnimation();
@@ -210,7 +210,6 @@ public class EFSkills {
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.7f))
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
 			.addProperty(AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(50))
-			.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 			.registerPropertiesToAnimation();
 			

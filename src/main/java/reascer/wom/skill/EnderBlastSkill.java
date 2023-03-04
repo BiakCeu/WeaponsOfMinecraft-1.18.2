@@ -15,7 +15,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -48,14 +48,14 @@ public class EnderBlastSkill extends ConditionalWeaponInnateSkill {
 			int combo = executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(COMBO);
 			return combo;
 			
-		},  EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_1, 
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2, 
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_3, 
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD, 
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT, 
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT,
-			EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH,
-			EFAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT);
+		},  WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1, 
+			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2, 
+			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3, 
+			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD, 
+			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT, 
+			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT,
+			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH,
+			WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT);
 	}
 	
 	@Override
@@ -69,12 +69,12 @@ public class EnderBlastSkill extends ConditionalWeaponInnateSkill {
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			if (event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_1.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_3.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT.getId() ||
-				event.getAnimation().getId() != EFAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT.getId()
+			if (event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT.getId() ||
+				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT.getId()
 					) {
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

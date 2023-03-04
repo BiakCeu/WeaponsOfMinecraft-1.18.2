@@ -9,7 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 import reascer.wom.enchantment.InvigorationEnchantment;
 import yesman.epicfight.main.EpicFightMod;
 
-public class EFEnchantment {
+public class WOMEnchantment {
 	public static final DeferredRegister<Enchantment> ENCHANTEMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, EpicFightMod.MODID);
     public static final RegistryObject<Enchantment> INVIGORATION = ENCHANTEMENTS.register("invigoration", () -> new InvigorationEnchantment(Rarity.RARE, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET));
 }

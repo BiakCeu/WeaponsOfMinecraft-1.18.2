@@ -1,11 +1,14 @@
 package reascer.wom.skill;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPPlayAnimation;
 import yesman.epicfight.skill.PassiveSkill;
@@ -18,8 +21,9 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class EFKatanaPassive extends PassiveSkill {
-	public static final SkillDataKey<Boolean> SHEATH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final UUID EVENT_UUID = UUID.fromString("010e5bfa-e6a2-11ec-8fea-0242ac120002");
+	public static final SkillDataKey<Boolean> SHEATH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	
 	
 	public EFKatanaPassive(Builder<? extends Skill> builder) {
 		super(builder);
@@ -29,6 +33,7 @@ public class EFKatanaPassive extends PassiveSkill {
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
 		container.getDataManager().registerData(SHEATH);
+		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			container.getSkill().setConsumptionSynchronize(event.getPlayerPatch(), 0.0F);
 			container.getSkill().setStackSynchronize(event.getPlayerPatch(), 0);
@@ -67,7 +72,7 @@ public class EFKatanaPassive extends PassiveSkill {
 			if (this.consumption < value) {
 				ServerPlayer serverPlayer = (ServerPlayer) executer.getOriginal();
 				if (!container.getDataManager().getDataValue(SHEATH)) {
-					SPPlayAnimation msg3 = new SPPlayAnimation(EFAnimations.KATANA_SHEATHE, serverPlayer.getId(), 0.0F);
+					SPPlayAnimation msg3 = new SPPlayAnimation(WOMAnimations.KATANA_SHEATHE, serverPlayer.getId(), 0.0F);
 					EpicFightNetworkManager.sendToAllPlayerTrackingThisEntityWithSelf(msg3, serverPlayer);
 				}
 				container.getDataManager().setDataSync(SHEATH, true, serverPlayer);

@@ -12,12 +12,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -36,6 +38,8 @@ import yesman.epicfight.skill.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
+import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 
@@ -47,7 +51,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	
 	public AgonyPlungeSkill(Builder builder) {
 		super(builder);
-		this.attackAnimations = EFAnimations.AGONY_PLUNGE_FORWARD;
+		this.attackAnimations = WOMAnimations.AGONY_PLUNGE_FORWARD;
 	}
 	
 	@Override
@@ -59,11 +63,11 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		container.getDataManager().setData(STACK, 0);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
-			container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunging: " + container.getDataManager().getDataValue(PLUNGING) + " | Stack: " + container.getDataManager().getDataValue(STACK) + " | Plunging: " + event.getAttackDamage() ), UUID.randomUUID());
+			//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunging: " + container.getDataManager().getDataValue(PLUNGING) + " | Stack: " + container.getDataManager().getDataValue(STACK) + " | Plunging: " + event.getAttackDamage() ), UUID.randomUUID());
 			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getAttackDamage() > 1.0F) {
 				float attackDamage = event.getAttackDamage();
 				event.setAttackDamage(attackDamage * container.getDataManager().getDataValue(STACK));
-				container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
+				//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
 		});
@@ -98,8 +102,13 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		executer.getSkill(this.category).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
 		executer.getSkill(this.category).getDataManager().setDataSync(STACK, executer.getSkill(this.category).getStack(), executer.getOriginal());
 		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this.category).getDataManager().getDataValue(STACK)), UUID.randomUUID());
-		executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
-		executer.getOriginal().setHealth(executer.getOriginal().getHealth() * (0.80f + (0.05f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
+		//executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
+		if (!executer.getOriginal().isCreative()) {
+			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
+	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
+			DamageSource damage = new IndirectEpicFightDamageSource("agonized_to_death", executer.getOriginal(), executer.getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
+			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
+		}
 		this.setStackSynchronize(executer, 0);
 		super.executeOnServer(executer, args);
 		executer.getSkill(this.category).deactivate();
@@ -108,8 +117,8 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	@Override
 	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
 		List<Component> list = super.getTooltipOnItem(itemStack, cap, playerCap);
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Jump :");
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Plunge :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Jump :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Plunge :");
 		
 		return list;
 	}
@@ -118,7 +127,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	public boolean isExecutableState(PlayerPatch<?> executer) {
 		executer.updateEntityState();
 		EntityState playerState = executer.getEntityState();
-		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill() || !executer.getEntityState().canBasicAttack() || executer.getStamina() < 4);
+		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill() || !executer.getEntityState().canBasicAttack());
 	}
 	
 	@Override

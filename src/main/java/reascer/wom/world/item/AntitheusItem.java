@@ -35,7 +35,7 @@ public class AntitheusItem extends WeaponItem {
 	private double attackSpeed;
 
 	public AntitheusItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -2.1F, build);
+		super(EpicFightItemTier.KATANA, 0, -2.1F, build.defaultDurability(6666));
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component>();
 			this.tooltipExpand.add(new TextComponent(""));
@@ -47,7 +47,7 @@ public class AntitheusItem extends WeaponItem {
 	
 	@Override
 	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-		return repair.getItem() == Items.QUARTZ;
+		return repair.getItem() == WOMItems.DEMON_SEAL.get();
 	}
     
 	@OnlyIn(Dist.CLIENT)

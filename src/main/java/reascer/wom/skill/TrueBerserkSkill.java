@@ -19,13 +19,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.main.WeaponOfMinecraft;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
@@ -40,6 +41,8 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
+import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 
 public class TrueBerserkSkill extends WeaponInnateSkill {
@@ -51,7 +54,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	public TrueBerserkSkill(Builder<?> builder) {
 		super(builder.setActivateType(ActivateType.DURATION_INFINITE));
 
-		this.activateAnimation = EFAnimations.TORMENT_BERSERK_CONVERT;
+		this.activateAnimation = WOMAnimations.TORMENT_BERSERK_CONVERT;
 	}
 	
 	@Override
@@ -90,7 +93,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 		} else {
 			executer.playAnimationSynchronized(this.activateAnimation, 0);
 			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
-	    			SoundEvents.DRAGON_FIREBALL_EXPLODE, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
+	    			SoundEvents.DRAGON_FIREBALL_EXPLODE, executer.getOriginal().getSoundSource(), 1.0F, 0.5F);
 			((ServerLevel) executer.getOriginal().level).sendParticles( ParticleTypes.LARGE_SMOKE, 
 					executer.getOriginal().getX() - 0.15D, 
 					executer.getOriginal().getY() + 1.2D, 
@@ -134,8 +137,8 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	@Override
 	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
 		List<Component> list = super.getTooltipOnItem(itemStack, cap, playerCap);
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Auto attack :");
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Dash attack :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Auto attack :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Dash attack :");
 		
 		return list;
 	}
@@ -174,15 +177,16 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 						}
 					} else {
 						if (container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.1f) > 0f) {
-							container.getExecuter().getOriginal().setHealth(container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.1f));
+							DamageSource damage = new IndirectEpicFightDamageSource("Heartattack_from_wrath", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
+							container.getExecuter().getOriginal().hurt(damage,(container.getExecuter().getOriginal().getMaxHealth() * 0.1f));
 							if(!container.getExecuter().isLogicalClient()) {
-								container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().xo, container.getExecuter().getOriginal().yo, container.getExecuter().getOriginal().zo,
-						    			SoundEvents.PLAYER_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 1.0F);
+								if (!container.getExecuter().getOriginal().isCreative()) {
 								((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
 										container.getExecuter().getOriginal().getX() - 0.2D, 
 										container.getExecuter().getOriginal().getY() + 1.3D, 
 										container.getExecuter().getOriginal().getZ() - 0.2D, 
 										40, 0.6D, 0.8D, 0.6D, 0.05);
+								}
 								this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),this.maxDuration + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()));
 							}
 						} else {

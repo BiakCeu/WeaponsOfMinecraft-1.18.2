@@ -32,7 +32,7 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 			
 			int chance = Math.abs(new Random().nextInt()) % 100;
 			//container.getExecuter().getOriginal().sendMessage(new TextComponent("chance: " + chance + " | thorn: " + thorn + " | Critchance: " + (((thorn/12f)*90f)+5f)), UUID.randomUUID());
-			if (chance < (((thorn/12f)*90f)+5f)) {
+			if (chance < (((thorn/12f)*80f)+20f)) {
 				event.getTarget().hurt((DamageSource) event.getDamageSource(), event.getAttackDamage()/2);
 				if(!event.getPlayerPatch().isLogicalClient()) {
 					ServerPlayerPatch executer = (ServerPlayerPatch) event.getPlayerPatch();

@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import reascer.wom.gameasset.EFAnimations;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -30,7 +30,7 @@ public class CharybdisSkill extends WeaponInnateSkill {
 	
 	public CharybdisSkill(Builder builder) {
 		super(builder);
-		this.attackAnimation = EFAnimations.STAFF_CHARYBDIS;
+		this.attackAnimation = WOMAnimations.STAFF_CHARYBDIS;
 	}
 	
 	@Override
@@ -45,7 +45,9 @@ public class CharybdisSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getStamina() - Formulars.getStaminarConsumePenalty(executer.getWeight(), this.consumption - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()), executer) >= 0 ) {
-			executer.setStamina(executer.getStamina() - Formulars.getStaminarConsumePenalty(executer.getWeight(), this.consumption - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()), executer));
+			if (!executer.getOriginal().isCreative()) {
+				executer.setStamina(executer.getStamina() - Formulars.getStaminarConsumePenalty(executer.getWeight(), this.consumption - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()), executer));
+			}
 			executer.playAnimationSynchronized(this.attackAnimation, 0);
 		super.executeOnServer(executer, args);
 		}
@@ -54,7 +56,7 @@ public class CharybdisSkill extends WeaponInnateSkill {
 	@Override
 	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
 		List<Component> list = super.getTooltipOnItem(itemStack, cap, playerCap);
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Each Strike:");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Each Strike:");
 		
 		return list;
 	}

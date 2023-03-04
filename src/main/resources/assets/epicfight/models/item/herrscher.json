@@ -1,0 +1,64 @@
+{
+	"loader": "forge:separate-perspective",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "epicfight:models/item/obj/herrscher.obj",
+  		"flip-v": true,
+		"display":
+  		{
+    		"thirdperson_righthand":
+    		{
+      			"translation": [8, -9.5, 11],
+      			"rotation": [80, 0, 0],
+      			"scale": [1, 1, 1]
+    		},
+    		"firstperson_righthand":
+    		{
+      			"translation": [13,-6,-0],
+      			"rotation": [75,0,0],
+      			"scale": [1, 1, 1]
+    		},
+			"thirdperson_lefthand":
+    		{
+      			"translation": [-8, -9.5, 11],
+      			"rotation": [80, 0, 0],
+      			"scale": [1, 1, 1]
+    		},
+    		"firstperson_lefthand":
+    		{
+      			"translation": [13,-6,-0],
+      			"rotation": [75,0,0],
+      			"scale": [1, 1, 1]
+    		}
+  		}
+	},
+	"perspectives":
+	{
+		"ground":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/herrscher"
+			}
+		},
+		"gui":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/herrscher"
+			},
+			"gui_light": "front"
+		},
+		"fixed":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/herrscher"
+			}
+		}
+	}
+}

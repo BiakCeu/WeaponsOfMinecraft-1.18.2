@@ -1,15 +1,9 @@
 package reascer.wom.skill;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-
+import java.util.Random;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,9 +12,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.gameasset.EFAnimations;
-import reascer.wom.gameasset.EFColliders;
-import reascer.wom.world.capabilities.item.WomWeaponCategories;
+import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMColliders;
+import reascer.wom.world.capabilities.item.WOMWeaponCategories;
+import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
@@ -46,7 +41,7 @@ public class CounterAttack extends GuardSkill {
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder()
 				.addAdvancedGuardMotion(WeaponCategories.SWORD, (itemCap, playerpatch) -> itemCap.getStyle(playerpatch) == Styles.ONE_HAND ?
-					Animations.SWORD_DASH :
+					WOMAnimations.SWORD_ONEHAND_AUTO_4 :
 					Animations.SWORD_DUAL_COMBO3)
 				.addAdvancedGuardMotion(WeaponCategories.LONGSWORD, (itemCap, playerpatch) ->
 					Animations.LONGSWORD_DASH)
@@ -54,14 +49,20 @@ public class CounterAttack extends GuardSkill {
 					Animations.TACHI_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.SPEAR, (itemCap, playerpatch) ->
 					Animations.SPEAR_DASH)
-				.addAdvancedGuardMotion(WomWeaponCategories.AGONY, (itemCap, playerpatch) ->
-					EFAnimations.AGONY_DASH)
-				.addAdvancedGuardMotion(WomWeaponCategories.RUINE, (itemCap, playerpatch) ->
-					EFAnimations.RUINE_COUNTER)
-				.addAdvancedGuardMotion(WomWeaponCategories.STAFF, (itemCap, playerpatch) ->
-					EFAnimations.STAFF_DASH)
+				.addAdvancedGuardMotion(WOMWeaponCategories.AGONY, (itemCap, playerpatch) ->
+					WOMAnimations.AGONY_CLAWSTRIKE)
+				.addAdvancedGuardMotion(WOMWeaponCategories.RUINE, (itemCap, playerpatch) ->
+					WOMAnimations.RUINE_COUNTER)
+				.addAdvancedGuardMotion(WOMWeaponCategories.STAFF, (itemCap, playerpatch) ->
+					WOMAnimations.STAFF_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.KATANA, (itemCap, playerpatch) ->
-					EFAnimations.KATANA_SHEATHED_COUNTER );
+					WOMAnimations.KATANA_SHEATHED_DASH )
+				.addAdvancedGuardMotion(WOMWeaponCategories.ANTITHEUS, (itemCap, playerpatch) ->
+				WOMAnimations.ANTITHEUS_GUARD_HIT_1)
+				.addGuardMotion(WOMWeaponCategories.ANTITHEUS, (item, player) -> 
+				WOMAnimations.ANTITHEUS_GUARD_HIT_3)
+				.addGuardBreakMotion(WOMWeaponCategories.ANTITHEUS, (item, player) -> Animations.COMMON_GUARD_BREAK)
+				;
 	}
 	
 	public CounterAttack(GuardSkill.Builder builder) {
@@ -82,7 +83,17 @@ public class CounterAttack extends GuardSkill {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 			
-			container.getDataManager().setData(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount);
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 20 && !(event.getPlayerPatch().getOriginal().isFallFlying() || event.getPlayerPatch().currentLivingMotion == LivingMotions.FALL || !event.getPlayerPatch().getEntityState().canUseSkill() || !event.getPlayerPatch().getEntityState().canBasicAttack())) {
+				StaticAnimation animation = Animations.SWORD_GUARD_ACTIVE_HIT1;
+				if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
+					animation = new Random().nextBoolean() ? WOMAnimations.AGONY_GUARD_HIT_1 : WOMAnimations.AGONY_GUARD_HIT_2;
+				}
+				
+				event.getPlayerPatch().playAnimationSynchronized(animation, -0.05f);
+				container.getDataManager().setData(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount);
+			} else {
+				container.getDataManager().setData(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount-3);
+			}
 		});
 	}
 	
@@ -98,7 +109,7 @@ public class CounterAttack extends GuardSkill {
 			
 			if (this.isBlockableSource(damageSource, true)) {
 				ServerPlayer playerentity = event.getPlayerPatch().getOriginal();
-				boolean successParrying = playerentity.tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 4;
+				boolean successParrying = playerentity.tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 3;
 				float penalty = container.getDataManager().getDataValue(PENALTY);
 				event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
 				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
@@ -124,7 +135,7 @@ public class CounterAttack extends GuardSkill {
 				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
 				
 				if (animation != null) {
-					event.getPlayerPatch().playAnimationSynchronized(animation, -0.2F);
+					event.getPlayerPatch().playAnimationSynchronized(animation, -0.1F);
 				}
 				
 				if (blockType == BlockType.GUARD_BREAK) {
@@ -148,12 +159,14 @@ public class CounterAttack extends GuardSkill {
 	@Nullable
 	protected StaticAnimation getGuardMotion(PlayerPatch<?> playerpatch, CapabilityItem itemCapability, BlockType blockType) {
 		if (blockType == BlockType.ADVANCED_GUARD) {
-			if (itemCapability.getWeaponCollider() == EFColliders.AGONY) {
-				return EFAnimations.AGONY_AUTO_2;
-			} else if (itemCapability.getWeaponCollider() == EFColliders.RUINE) {
-				return EFAnimations.RUINE_COUNTER;
-			} else if (itemCapability.getWeaponCollider() == EFColliders.STAFF) {
-				return EFAnimations.STAFF_DASH;
+			if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
+				return WOMAnimations.AGONY_COUNTER;
+			} else if (itemCapability.getWeaponCollider() == WOMColliders.RUINE) {
+				return WOMAnimations.RUINE_COUNTER;
+			} else if (itemCapability.getWeaponCollider() == WOMColliders.STAFF) {
+				return WOMAnimations.STAFF_AUTO_3;
+			} else if (itemCapability.getWeaponCollider() == WOMColliders.ANTITHEUS) {
+				return WOMAnimations.ANTITHEUS_GUARD_HIT_3;
 			}
 			
 			
@@ -163,6 +176,23 @@ public class CounterAttack extends GuardSkill {
 			}
 		}
 		
+		if (blockType == BlockType.GUARD) {
+			if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
+				return new Random().nextBoolean() ? WOMAnimations.AGONY_GUARD_HIT_1 : WOMAnimations.AGONY_GUARD_HIT_2;
+			}
+			
+			if (itemCapability.getWeaponCollider() == WOMColliders.ANTITHEUS) {
+				if (new Random().nextBoolean()) {
+					return WOMAnimations.ANTITHEUS_GUARD_HIT_1;
+				} else if (new Random().nextBoolean()) {
+					return WOMAnimations.ANTITHEUS_GUARD_HIT_2;
+				} else {
+					return WOMAnimations.ANTITHEUS_GUARD_HIT_3;
+				}
+			}
+		}
+		
+
 		return super.getGuardMotion(playerpatch, itemCapability, blockType);
 	}
 	
@@ -180,7 +210,7 @@ public class CounterAttack extends GuardSkill {
 	@Override
 	public List<Object> getTooltipArgs(List<Object> list) {
 		list.clear();
-		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WomWeaponCategories.AGONY , WomWeaponCategories.RUINE, WomWeaponCategories.STAFF).toLowerCase());
+		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WOMWeaponCategories.AGONY , WOMWeaponCategories.RUINE, WOMWeaponCategories.STAFF).toLowerCase());
 		return list;
 	}
 }

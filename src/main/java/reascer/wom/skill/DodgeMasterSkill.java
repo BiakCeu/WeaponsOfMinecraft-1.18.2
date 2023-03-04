@@ -119,7 +119,7 @@ public class DodgeMasterSkill extends DodgeSkill {
 		if (executer.getSkill(this.category).getDataManager().getDataValue(TIMER) > 0) {
 			executer.playAnimationSynchronized(this.animations[i], 0);
 			executer.changeModelYRot(yaw);
-			executer.setStamina(executer.getStamina() - 3f);
+			executer.setStamina(executer.getStamina() - 4f);
 		}
 		executer.getSkill(this.category).getDataManager().setDataSync(TIMER, 6,executer.getOriginal());
 		executer.getSkill(this.category).getDataManager().setDataSync(DIRECTION, i,executer.getOriginal());

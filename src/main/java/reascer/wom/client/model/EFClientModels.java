@@ -11,10 +11,12 @@ import yesman.epicfight.main.EpicFightMod;
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class EFClientModels{
 	public static RawMesh RUINE_PLUNDER_SWORD;
+	public static RawMesh ENDER_BULLET;
 	
 	@SubscribeEvent
 	public static void registerMeshes(ModelBuildEvent.MeshBuild event) {
-		RUINE_PLUNDER_SWORD = event.getRaw(EpicFightMod.MODID, "particle/ruine_plunder_sword", RawMesh::new);
+		RUINE_PLUNDER_SWORD = event.getRaw(WeaponOfMinecraft.MODID, "particle/ruine_plunder_sword", RawMesh::new);
+		ENDER_BULLET = event.getRaw(WeaponOfMinecraft.MODID, "entity/enderbullet", RawMesh::new);
 	}
 }
 	
