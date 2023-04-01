@@ -115,9 +115,9 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			}
 		});
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(CHARGED_ATTACK)) {
-				event.setAttackDamage(event.getAttackDamage()*2);
+		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
+			if (container.getDataManager().getDataValue(CHARGED_ATTACK) || container.getDataManager().getDataValue(CHARGED)) {
+				event.setDamage(event.getDamage()*2);
 			}
 		});
 		
@@ -181,7 +181,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
@@ -392,7 +392,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			}
 			if (container.getDataManager().getDataValue(CHARGING)) {
 				if (container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).getModifier(EVENT_UUID) == null) {
-					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(charging_Movementspeed);;
+					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(charging_Movementspeed);
 				}
 
 				container.getDataManager().setDataSync(CHARGING_TIME, container.getDataManager().getDataValue(CHARGING_TIME) +1, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

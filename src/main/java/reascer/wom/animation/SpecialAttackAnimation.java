@@ -169,7 +169,7 @@ public class SpecialAttackAnimation extends AttackAnimation {
 							if (attackResult.resultType.dealtDamage()) {
 								if (entitypatch instanceof ServerPlayerPatch) {
 									ServerPlayerPatch playerpatch = ((ServerPlayerPatch) entitypatch);
-									playerpatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent<>(playerpatch, trueEntity, source, attackResult.damage));
+									playerpatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(playerpatch, trueEntity, source, attackResult.damage));
 								}
 								
 								hitten.level.playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);

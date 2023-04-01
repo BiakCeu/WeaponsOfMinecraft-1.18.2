@@ -8,7 +8,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -36,6 +38,9 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 	protected final StaticAnimation attackAnimation;
 	protected Boolean registerdata = true;
 	
+	public AttributeModifier stolen_move_speed;
+	public AttributeModifier stolen_attack_speed;
+	
 	public PlunderPerditionSkill(Builder<? extends Skill> builder) {
 		super(builder);
 		this.attackAnimation = WOMAnimations.RUINE_PLUNDER;
@@ -46,9 +51,6 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 		container.getDataManager().registerData(BUFFED);
 		container.getDataManager().registerData(BUFFING);
 		container.getDataManager().registerData(STRENGHT);
-		
-		container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
-		container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).setBaseValue(4D);
 		
 		container.getDataManager().registerData(TIMER);
 		if (!container.getExecuter().isLogicalClient()) {
@@ -64,7 +66,10 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(BUFFING)) {
 				if (!container.getDataManager().getDataValue(BUFFED)) {
-					container.getDataManager().setData(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1);
+					if (container.getDataManager().getDataValue(STRENGHT) < 40) {
+						container.getDataManager().setData(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1);
+					}
+					
 					event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() + (event.getPlayerPatch().getMaxStamina() * 0.05f));
 					event.getPlayerPatch().getOriginal().heal(1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()));
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.REVERSE_PORTAL, 
@@ -92,10 +97,13 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 					container.getDataManager().setDataSync(BUFFED, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(BUFFING, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal())),((ServerPlayerPatch) container.getExecuter()).getOriginal());
-					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
-					container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).setBaseValue(4D);
-					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() * ( 1 + ( 0.03D * container.getDataManager().getDataValue(STRENGHT))));
-					container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).setBaseValue(Math.min(5.0F,container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).getBaseValue() * ( 1 + ( 0.015D * container.getDataManager().getDataValue(STRENGHT)))));
+					stolen_move_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_move_speed", (( 0.03D * container.getDataManager().getDataValue(STRENGHT))), Operation.MULTIPLY_TOTAL);
+					stolen_attack_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_attack_speed", (( 0.015D * container.getDataManager().getDataValue(STRENGHT))), Operation.MULTIPLY_TOTAL);
+					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(stolen_move_speed);
+					container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).removeModifier(stolen_attack_speed);
+					
+					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(stolen_move_speed);
+					container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(stolen_attack_speed);
 				}
 			}
 		});
@@ -117,8 +125,8 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getDataManager().setData(BUFFED, false);
 		container.getDataManager().setData(STRENGHT, 0);
-		container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
-		container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).setBaseValue(4D);
+		container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(stolen_move_speed);
+		container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).removeModifier(stolen_attack_speed);
 	}
 	
 	@Override
@@ -167,7 +175,7 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 							container.getExecuter().getOriginal().getZ() - 0.15D, 
 							4, 0.3D, 0.4D, 0.3D, 0.05);
 					if (container.getDataManager().getDataValue(TIMER) % 20 == 0) {
-						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).getBaseValue() == 5.0D ? ParticleTypes.END_ROD : ParticleTypes.SOUL_FIRE_FLAME, 
+						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( container.getDataManager().getDataValue(STRENGHT) == 40 ? ParticleTypes.END_ROD : ParticleTypes.SOUL_FIRE_FLAME, 
 								container.getExecuter().getOriginal().getX() - 0.15D, 
 								container.getExecuter().getOriginal().getY() + 1.05D, 
 								container.getExecuter().getOriginal().getZ() - 0.15D, 
