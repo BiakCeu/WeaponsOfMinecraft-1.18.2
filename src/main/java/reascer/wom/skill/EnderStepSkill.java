@@ -8,9 +8,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.EpicFightSkills;
-import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.StepSkill;
+import yesman.epicfight.skill.dodge.DodgeSkill;
+import yesman.epicfight.skill.dodge.StepSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 public class EnderStepSkill extends StepSkill {

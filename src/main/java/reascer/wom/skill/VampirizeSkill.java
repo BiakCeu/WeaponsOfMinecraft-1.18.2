@@ -2,9 +2,9 @@ package reascer.wom.skill;
 
 import java.util.UUID;
 
-import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class VampirizeSkill extends PassiveSkill {
@@ -17,8 +17,7 @@ public class VampirizeSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			container.getExecuter().getOriginal().setHealth( Math.min(container.getExecuter().getOriginal().getHealth() + (event.getAttackDamage() * 0.10f),
-					container.getExecuter().getOriginal().getMaxHealth()));
+			container.getExecuter().getOriginal().heal(event.getAttackDamage() * 0.10f);
         });
 	}
 	

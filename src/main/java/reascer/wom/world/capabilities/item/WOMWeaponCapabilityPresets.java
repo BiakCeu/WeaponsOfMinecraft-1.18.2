@@ -7,8 +7,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TieredItem;
-import net.minecraftforge.accesstransformer.generated.AtParser.Return_valueContext;
-import net.minecraftforge.event.enchanting.EnchantmentLevelSetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -25,6 +23,7 @@ import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -42,7 +41,7 @@ public class WOMWeaponCapabilityPresets {
 			.collider(ColliderPreset.SWORD)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_COMBO1, Animations.SWORD_DUAL_COMBO2, Animations.SWORD_DUAL_COMBO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.SWEEPING_EDGE)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
@@ -86,7 +85,7 @@ public class WOMWeaponCapabilityPresets {
 			.category(WeaponCategories.LONGSWORD)
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch<?>) {
-					if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getRemainDuration() > 0) {
+					if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getRemainDuration() > 0) {
 						return Styles.LIECHTENAUER;
 					}
 				}
@@ -128,7 +127,7 @@ public class WOMWeaponCapabilityPresets {
 			.collider(ColliderPreset.KATANA)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.TACHI_TWOHAND_AUTO_1, WOMAnimations.TACHI_TWOHAND_AUTO_2, WOMAnimations.TACHI_TWOHAND_AUTO_3, WOMAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_COMBO1, Animations.SWORD_DUAL_COMBO2, Animations.SWORD_DUAL_COMBO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.LETHAL_SLICE)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
@@ -196,7 +195,7 @@ public class WOMWeaponCapabilityPresets {
 				.category(WOMWeaponCategories.TORMENT)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
-						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getRemainDuration() > 0) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getRemainDuration() > 0) {
 							return Styles.LIECHTENAUER;
 						}
 					}
@@ -219,7 +218,7 @@ public class WOMWeaponCapabilityPresets {
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.TORMENT_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.TORMENT_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.TORMENT_CHARGE)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.IDLE, WOMAnimations.TORMENT_BERSERK_IDLE)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.WALK, WOMAnimations.TORMENT_BERSERK_WALK)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.CHASE, WOMAnimations.TORMENT_BERSERK_RUN)
@@ -260,8 +259,8 @@ public class WOMWeaponCapabilityPresets {
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch) {
 					PlayerPatch<?> playerpatch = (PlayerPatch<?>)entitypatch;
-					if (playerpatch.getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().hasData(EFKatanaPassive.SHEATH) && 
-							playerpatch.getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().getDataValue(EFKatanaPassive.SHEATH)) {
+					if (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(EFKatanaPassive.SHEATH) && 
+							playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(EFKatanaPassive.SHEATH)) {
 						return Styles.SHEATH;
 					}
 				}
@@ -297,7 +296,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.SWIM,  WOMAnimations.KATANA_SHEATHED_RUN)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.FLOAT,  WOMAnimations.KATANA_SHEATHED_IDLE)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.FALL, WOMAnimations.KATANA_SHEATHED_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.KATANA_GUARD);
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.KATANA_GUARD);
 		return builder;
 	};
 	
@@ -324,7 +323,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.SWIM, Animations.BIPED_SWIM)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FLOAT, WOMAnimations.ENDERBLASTER_ONEHAND_IDLE)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FALL, WOMAnimations.ENDERBLASTER_ONEHAND_IDLE)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
+			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, WOMAnimations.ENDERBLASTER_ONEHAND_AIMING)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
@@ -334,17 +333,17 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_SWIM)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FALL, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.ENDERBLASTER_TWOHAND_AIMING)
 			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCollider() == WOMColliders.ENDER_BLASTER);
 		return builder;
 	};
 	
 	public static final Function<Item, CapabilityItem.Builder> ANTITHEUS = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
-				.category(WeaponCategories.SPEAR)
+				.category(WOMWeaponCategories.ANTITHEUS)
 				.styleProvider((entitypatch) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
-						if (((PlayerPatch<?>)entitypatch).getSkill(SkillCategories.WEAPON_INNATE).getRemainDuration() > 0) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getRemainDuration() > 0) {
 							return Styles.LIECHTENAUER;
 						}
 					}
@@ -368,13 +367,12 @@ public class WOMWeaponCapabilityPresets {
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.ANTITHEUS_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.ANTITHEUS_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.ANTITHEUS_GUARD)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.ANTITHEUS_AIMING)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.IDLE, WOMAnimations.ANTITHEUS_ASCENDED_IDLE)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.WALK, WOMAnimations.ANTITHEUS_ASCENDED_WALK)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.CHASE, WOMAnimations.ANTITHEUS_ASCENDED_RUN)
 				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.RUN, WOMAnimations.ANTITHEUS_ASCENDED_RUN)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_SWIM)
-				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.BLOCK, WOMAnimations.ANTITHEUS_GUARD);
+				.livingMotionModifier(Styles.LIECHTENAUER, LivingMotions.SWIM, Animations.BIPED_SWIM);
 		return builder;
 	};
 		
@@ -390,11 +388,15 @@ public class WOMWeaponCapabilityPresets {
 					return Styles.ONE_HAND;
 				}
 			})
+			
 			.collider(ColliderPreset.SWORD)
 			.hitSound(EpicFightSounds.BLADE_HIT)
+			.comboCancel((style) -> {
+				return false;
+			})
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
 			.newStyleCombo(Styles.LIECHTENAUER, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_COMBO1, Animations.SWORD_DUAL_COMBO2, Animations.SWORD_DUAL_COMBO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.SWEEPING_EDGE)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
@@ -417,10 +419,6 @@ public class WOMWeaponCapabilityPresets {
 	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
-		event.getTypeEntry().put("sword", SWORD);
-		event.getTypeEntry().put("tachi", TACHI);
-		event.getTypeEntry().put("longsword", LONGSWORD);
-		event.getTypeEntry().put("greatsword", GREATSWORD);
 		event.getTypeEntry().put("staff", STAFF);
 		event.getTypeEntry().put("agony", AGONY);
 		event.getTypeEntry().put("torment", TORMENT);

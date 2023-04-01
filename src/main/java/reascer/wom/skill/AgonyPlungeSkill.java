@@ -1,40 +1,25 @@
 package reascer.wom.skill;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
-import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
-import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
-import yesman.epicfight.client.events.engine.ControllEngine;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.network.EpicFightNetworkManager;
-import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.WeaponInnateSkill;
+import yesman.epicfight.skill.SkillSlots;
+import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -99,9 +84,13 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		executer.playAnimationSynchronized(this.attackAnimations, 0);
-		executer.getSkill(this.category).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
-		executer.getSkill(this.category).getDataManager().setDataSync(STACK, executer.getSkill(this.category).getStack(), executer.getOriginal());
-		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this.category).getDataManager().getDataValue(STACK)), UUID.randomUUID());
+		executer.getSkill(this).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
+		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
+			executer.getSkill(this).getDataManager().setDataSync(STACK, executer.getSkill(this).getStack(), executer.getOriginal());
+		} else {
+			executer.getSkill(this).getDataManager().setDataSync(STACK, 1, executer.getOriginal());
+		}
+		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this).getDataManager().getDataValue(STACK)), UUID.randomUUID());
 		//executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		if (!executer.getOriginal().isCreative()) {
 			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
@@ -109,9 +98,12 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 			DamageSource damage = new IndirectEpicFightDamageSource("agonized_to_death", executer.getOriginal(), executer.getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
 		}
-		this.setStackSynchronize(executer, 0);
 		super.executeOnServer(executer, args);
-		executer.getSkill(this.category).deactivate();
+
+		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
+			this.setStackSynchronize(executer, 0);
+		}
+		//executer.getSkill(this).deactivate();
 	}
 	
 	@Override
@@ -127,7 +119,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	public boolean isExecutableState(PlayerPatch<?> executer) {
 		executer.updateEntityState();
 		EntityState playerState = executer.getEntityState();
-		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill() || !executer.getEntityState().canBasicAttack());
+		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill());
 	}
 	
 	@Override

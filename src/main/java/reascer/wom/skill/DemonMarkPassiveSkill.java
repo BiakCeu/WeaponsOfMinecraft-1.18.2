@@ -3,39 +3,28 @@ package reascer.wom.skill;
 import java.util.Random;
 import java.util.UUID;
 
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
-import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
-import yesman.epicfight.network.EpicFightNetworkManager;
-import yesman.epicfight.network.server.SPPlayAnimation;
-import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DemonMarkPassiveSkill extends PassiveSkill {
 	public static final SkillDataKey<Boolean> CATHARSIS = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Boolean> PARTICLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> WITHERCURSE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> BLINK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> BASIC_ATTACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
@@ -50,7 +39,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
 		container.getDataManager().registerData(CATHARSIS);
-		container.getDataManager().registerData(ACTIVE);
+		container.getDataManager().registerData(PARTICLE);
 		container.getDataManager().registerData(WITHERCURSE);
 		container.getDataManager().registerData(BLINK);
 		container.getDataManager().setData(WITHERCURSE,true);
@@ -74,6 +63,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
+			container.getDataManager().setDataSync(BASIC_ATTACK,false,event.getPlayerPatch().getOriginal());
 			
 			if (!container.getDataManager().getDataValue(WITHERCURSE)) {
 				container.getDataManager().setDataSync(WITHERCURSE,true,event.getPlayerPatch().getOriginal());
@@ -81,18 +71,6 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 			
 			if (container.getDataManager().getDataValue(BLINK)) {
 				container.getDataManager().setDataSync(BLINK,false,event.getPlayerPatch().getOriginal());
-			}
-			
-			if (event.getAnimation() == Animations.BIPED_HIT_LONG) {
-				container.getDataManager().setDataSync(BASIC_ATTACK,false,event.getPlayerPatch().getOriginal());
-			}
-			
-			if (event.getAnimation() == Animations.BIPED_HIT_SHORT) {
-				container.getDataManager().setDataSync(BASIC_ATTACK,false,event.getPlayerPatch().getOriginal());
-			}
-			
-			if (event.getAnimation() == Animations.BIPED_FALL) {
-				container.getDataManager().setDataSync(BASIC_ATTACK,false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_BLINK) {
@@ -114,6 +92,14 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
+			
+			if (event.getAnimation() == WOMAnimations.ANTITHEUS_SHOOT) {
+				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+			}
+			
+			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE) {
+				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+			}
 		});
 	}
 	
@@ -131,12 +117,11 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
-		if (container.getDataManager().getDataValue(ACTIVE)) {
+		if (container.getDataManager().getDataValue(PARTICLE)) {
 			PlayerPatch<?> entitypatch = container.getExecuter();
 			int numberOf = 3;
 			float partialScale = 1.0F / (numberOf - 1);
 			float interpolation = 0.0F;
-			Armature armature = entitypatch.getArmature();
 			OpenMatrix4f transformMatrix;
 			for (int i = 0; i < numberOf; i++) {
 				
@@ -187,24 +172,37 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					0);
 				interpolation += partialScale;
 			}
-			
+			// BLINK
 			if (container.getDataManager().getDataValue(BASIC_ATTACK)) {
-				int numberOf2 = 128;
-				float partialScale2 = 1.0F / (numberOf2 - 1);
-				float interpolation2 = 0.0F;
-				for (int i = 0; i < numberOf2; i++) {
-					transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation2), Armatures.BIPED.toolR);
-					transformMatrix2.translate(new Vec3f(0,0.0F,1.8F));
-					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-					transformMatrix2.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 4.0f)));
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
-						(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
-						(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
-						(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
-						0,
-						0,
-						0);
-					interpolation2 += partialScale2;
+				int n = 30; // set the number of particles to emit
+				double r = 4.8; // set the radius of the disk to 1
+				double t = 0.01; // set the thickness of the disk to 0.1
+				
+				for (int j = 0; j < n; j++) {
+				    double theta = 2 * Math.PI * (new Random().nextFloat()); // generate a random azimuthal angle
+				    double phi = (new Random().nextFloat() - 0.5f) * Math.PI * t / r; // generate a random angle within the disk thickness
+
+				    // calculate the emission direction in Cartesian coordinates using the polar coordinates
+				    double x = r * Math.cos(phi) * Math.cos(theta);
+				    double y = r * Math.cos(phi) * Math.sin(theta);
+				    double z = r * Math.sin(phi);
+				    
+				 // create a Vector3f object to represent the emission direction
+				    float randomVelocity =  (new Random().nextFloat()+ 0.4f) ;
+				    Vec3f direction = new Vec3f((float)x * randomVelocity, (float)y * randomVelocity, (float)z * randomVelocity);
+
+				 // rotate the direction vector to align with the forward vector
+				    OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+				    OpenMatrix4f.transform3v(rotation, direction, direction);
+				    
+				    // emit the particle in the calculated direction, with some random velocity added
+				    entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+				        (entitypatch.getOriginal().getX()) + direction.x,
+				        (entitypatch.getOriginal().getY()) + direction.y + 1.25f,
+				        (entitypatch.getOriginal().getZ()) + direction.z,
+				        (float)(0),
+				        (float)(-0.05f),
+				        (float)(0));
 				}
 			}
 			
@@ -229,7 +227,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
-					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
+					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() + 0.3F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(new Random().nextFloat() - 0.5F)*0.15f,
 					(new Random().nextFloat() - 1.0F)*0.55f,
@@ -449,8 +447,8 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					interpolation += partialScale2;
 				}
 			}
-			if (entitypatch.getOriginal().isUsingItem() && !(entitypatch.isUnstable() || entitypatch.getEntityState().hurt()) && entitypatch.isBattleMode()) {
-				int numberOf2 = 25;
+			if (entitypatch.getOriginal().isUsingItem() && !(entitypatch.isUnstable() || entitypatch.getEntityState().hurt()) && entitypatch.isBattleMode() && container.getExecuter().getEntityState().canBasicAttack() ) {
+				int numberOf2 = 20;
 				float partialScale2 = 1.0F / (numberOf2 - 1);
 				float interpolation2 = 0.0F;
 				for (int i = 0; i < numberOf2; i++) {
@@ -474,7 +472,8 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					    Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
 
 					    // rotate the direction vector to align with the forward vector
-					    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0));
+					    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().getViewYRot(1) + 180F), new Vec3f(0, 1, 0));
+					    rotation.rotate(-(float) ((transformMatrix.m11-0.07f)*1.5f), new Vec3f(1, 0, 0));
 					    OpenMatrix4f.transform3v(rotation, direction, direction);
 
 					    // emit the particle in the calculated direction, with some random velocity added

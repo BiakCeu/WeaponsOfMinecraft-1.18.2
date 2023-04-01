@@ -1,43 +1,33 @@
 package reascer.wom.skill;
 
+import java.util.Random;
 import java.util.UUID;
-
-import com.ibm.icu.util.BytesTrie.Result;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.utils.AttackResult.ResultType;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.EpicFightSkills;
-import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPExecuteSkill;
-import yesman.epicfight.particle.EpicFightParticles;
-import yesman.epicfight.skill.DodgeSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
-import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.dodge.DodgeSkill;
+import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DodgeMasterSkill extends DodgeSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("691d9d1e-05ce-11ed-b939-0242ac120002");
 	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> DIRECTION = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Float> ROTATION = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
+	private static final SkillDataKey<Boolean> DODGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	public DodgeMasterSkill(Builder builder) {
 		super(builder);
@@ -46,16 +36,16 @@ public class DodgeMasterSkill extends DodgeSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(DIRECTION);
-		container.getDataManager().registerData(ROTATION);
+		container.getDataManager().registerData(DODGE);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				container.getDataManager().setDataSync(TIMER, 6,event.getPlayerPatch().getOriginal());
-				event.getPlayerPatch().playAnimationSynchronized(this.animations[container.getDataManager().getDataValue(DIRECTION)], 0);
-				event.getPlayerPatch().changeModelYRot(container.getDataManager().getDataValue(ROTATION));
+			if (container.getDataManager().getDataValue(TIMER) > 4) {
+				if (!container.getDataManager().getDataValue(DODGE)) {
+					//event.getPlayerPatch().playAnimationSynchronized(this.animations[Math.abs((new Random().nextInt() % 3)+1)], 0);
+					container.getDataManager().setDataSync(DODGE, true,event.getPlayerPatch().getOriginal());
+				}
 				event.setCanceled(true);
-				event.setResult(ResultType.FAILED);
+				event.setResult(ResultType.MISSED);
 			}
         });
 	}
@@ -104,7 +94,7 @@ public class DodgeMasterSkill extends DodgeSkill {
 			animation = vertic >= 0 ? 0 : 1;
 		}
 		
-		CPExecuteSkill packet = new CPExecuteSkill(this.category.universalOrdinal());
+		CPExecuteSkill packet = new CPExecuteSkill(executer.getSkill(this).getSlotId());
 		packet.getBuffer().writeInt(animation);
 		packet.getBuffer().writeFloat(degree);
 		
@@ -113,17 +103,19 @@ public class DodgeMasterSkill extends DodgeSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		super.executeOnServer(executer, args);
 		int i = args.readInt();
 		float yaw = args.readFloat();
-		if (executer.getSkill(this.category).getDataManager().getDataValue(TIMER) > 0) {
+		if (executer.getSkill(this).getDataManager().getDataValue(TIMER) > 0 && !executer.getSkill(this).getDataManager().getDataValue(DODGE)) {
 			executer.playAnimationSynchronized(this.animations[i], 0);
 			executer.changeModelYRot(yaw);
-			executer.setStamina(executer.getStamina() - 4f);
+			if(executer.getStamina() - 6 < 0){
+				executer.setStamina(0);
+			} else {
+				executer.setStamina(((ServerPlayerPatch) executer).getStamina() - 6f);
+			}
 		}
-		executer.getSkill(this.category).getDataManager().setDataSync(TIMER, 6,executer.getOriginal());
-		executer.getSkill(this.category).getDataManager().setDataSync(DIRECTION, i,executer.getOriginal());
-		executer.getSkill(this.category).getDataManager().setDataSync(ROTATION, yaw,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(TIMER, 8,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(DODGE, false, executer.getOriginal());
 	}
 	
 	@Override
@@ -132,12 +124,36 @@ public class DodgeMasterSkill extends DodgeSkill {
 	}
 	
 	@Override
+	public boolean isExecutableState(PlayerPatch<?> executer) {
+		EntityState playerState = executer.getEntityState();
+		if (!(executer.isUnstable() || !playerState.canUseSkill()) && !executer.getOriginal().isInWater() && !executer.getOriginal().onClimbable() && !(executer.getStamina() == 0)) {
+			executer.getOriginal().playSound(SoundEvents.BLAZE_SHOOT, 0.3f, 2);
+			return true;
+		} else {
+			executer.getOriginal().playSound(SoundEvents.LAVA_EXTINGUISH, 1, 2f);
+			return false;
+		}
+	}
+	
+	@Override
 	public void updateContainer(SkillContainer container) {
 	super.updateContainer(container);
 		if (container.getDataManager().getDataValue(TIMER) > 0) {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER)-1,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-				if (container.getDataManager().getDataValue(TIMER) == 0) {
+				if (((ServerPlayerPatch) container.getExecuter()).getStamina() > 0) {
+					if (container.getDataManager().getDataValue(TIMER) < 7 && container.getDataManager().getDataValue(DODGE)) {
+						container.getExecuter().playAnimationSynchronized(this.animations[Math.abs((new Random().nextInt() % 2)+2)], 0);
+						container.getDataManager().setDataSync(TIMER, 12,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						if(((ServerPlayerPatch) container.getExecuter()).getStamina() - 3 < 0){
+							((ServerPlayerPatch) container.getExecuter()).setStamina(0);
+						} else {
+							((ServerPlayerPatch) container.getExecuter()).setStamina(((ServerPlayerPatch) container.getExecuter()).getStamina() - 3f);
+						}
+					}
+					if (container.getDataManager().getDataValue(TIMER) > 5 && container.getDataManager().getDataValue(DODGE)) {
+						container.getDataManager().setDataSync(DODGE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					}
 				}
 			}
 		}

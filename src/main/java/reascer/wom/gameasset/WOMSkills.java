@@ -25,20 +25,19 @@ import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.skill.VampirizeSkill;
+import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.data.reloader.SkillManager;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.api.utils.math.ValueModifier;
-import yesman.epicfight.main.EpicFightMod;
-import yesman.epicfight.skill.DodgeSkill;
-import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
-import yesman.epicfight.skill.WeaponInnateSkill;
 import yesman.epicfight.skill.Skill.ActivateType;
 import yesman.epicfight.skill.Skill.Resource;
+import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.skill.dodge.DodgeSkill;
+import yesman.epicfight.skill.passive.PassiveSkill;
+import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
-import yesman.epicfight.world.damagesource.StunType;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class WOMSkills {
@@ -163,20 +162,17 @@ public class WOMSkills {
 		
 		WeaponInnateSkill charybdisSkill = onBuild.build(WeaponOfMinecraft.MODID, "charybdis");
 		charybdisSkill.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35f))
-			.registerPropertiesToAnimation();
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35f));
 		CHARYBDIS = charybdisSkill;
 		
 		WeaponInnateSkill AgonyPlungeSkill = onBuild.build(WeaponOfMinecraft.MODID, "agony_plunge");
 		AgonyPlungeSkill.newProperty()
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10))
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 			.newProperty()
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(10))
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5f))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.registerPropertiesToAnimation();
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.2f)));
 		AGONY_PLUNGE = AgonyPlungeSkill;
 		
 		WeaponInnateSkill trueBerserkSkill = onBuild.build(WeaponOfMinecraft.MODID, "true_berserk");
@@ -185,10 +181,9 @@ public class WOMSkills {
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(8))
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 			.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.4f))
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2f))
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(10))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.registerPropertiesToAnimation();
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()));
 		TRUE_BERSERK = trueBerserkSkill;
 		
 		WeaponInnateSkill plunderPerditionSkill = onBuild.build(WeaponOfMinecraft.MODID, "plunder_perdition");
@@ -198,16 +193,15 @@ public class WOMSkills {
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 			.newProperty()
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.3f))
-			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(20))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.registerPropertiesToAnimation();
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()));
 		PLUNDER_PERDITION = plunderPerditionSkill;
 		
 		KATANA_PASSIVE_EF = onBuild.build(WeaponOfMinecraft.MODID, "katana_passive_ef");
 		
 		WeaponInnateSkill fatalDrawEFsSkill = onBuild.build(WeaponOfMinecraft.MODID, "fatal_draw_ef");
 		fatalDrawEFsSkill.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.7f))
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5f))
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
 			.addProperty(AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(50))
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
@@ -217,33 +211,28 @@ public class WOMSkills {
 		
 		WeaponInnateSkill enderblastSkill = onBuild.build(WeaponOfMinecraft.MODID, "ender_blast");
 		enderblastSkill.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6f))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.newProperty()
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7f))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.7f)))
 			.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85f))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.6f)))
 			.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.5f))
-			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(8))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.registerPropertiesToAnimation();
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.1f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(4.0F))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.05f)));
 		ENDER_BLAST = enderblastSkill;
 		
 		WeaponInnateSkill enderfusionSkill = onBuild.build(WeaponOfMinecraft.MODID, "ender_fusion");
 		enderfusionSkill.newProperty()
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7f))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.7f)))
+			.newProperty()
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6f))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.6f)))
 			.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85f))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.5f))
-			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(8))
-			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-			.registerPropertiesToAnimation();
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(4.2f))
+			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(4.0F))
+			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(2.1f)));
 		ENDER_FUSION = enderfusionSkill;
 		
 		DEMON_MARK_PASSIVE = onBuild.build(WeaponOfMinecraft.MODID, "demon_mark_passive");

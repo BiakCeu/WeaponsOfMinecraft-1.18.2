@@ -1,5 +1,6 @@
 package reascer.wom.client.particle;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
@@ -8,9 +9,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,10 +22,13 @@ import yesman.epicfight.api.client.model.Mesh.RawMesh;
 import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
 import yesman.epicfight.client.particle.TexturedCustomModelParticle;
 import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 @OnlyIn(Dist.CLIENT)
 public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 	private float yO;
+	private float yB;
 	
 	public RuinePlunderSwordParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, RawMesh particleMesh, ResourceLocation texture) {
 		super(level, x, y-10.0f, z, xd, yd, zd, particleMesh, texture);
@@ -34,24 +40,37 @@ public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 		this.yawO = this.yaw;
 		this.scale = -1;
 		this.yO = (float) y-1.5f;
+		this.yB = (float) y-10f;
 	}
 	
 	@Override
 	public ParticleRenderType getRenderType() {
-		return EpicFightParticleRenderTypes.PARTICLE_MODELED;
+		RenderSystem.enableDepthTest();
+		return EpicFightParticleRenderTypes.PARTICLE_MODEL_NO_NORMAL;
 	}
 	
 	@Override
 	public void tick() {
 		super.tick();
-		if (((float) this.y + 2.0f) < yO) {
-			this.yo = this.y;
-			this.y += 2.0f;
-		} else {
-			this.y = this.yO;
-			this.yo = this.y;
-		}
 		this.alpha = (float)(this.lifetime - this.age) / (float)this.lifetime;
+		if (this.age < 10) {
+			if (((float) this.y + 2.0f) < yO) {
+				this.yo = this.y;
+				this.y += 2.0f;
+			} else {
+				this.y = this.yO;
+				this.yo = this.y;
+			}
+		} else {
+			if (((float) this.y) > yB) {
+				this.yo = this.y;
+				this.y -= 2.0f;
+			} else {
+				this.y = this.yB;
+				this.yo = this.y;
+			}
+		}
+		
 	}
 	
 	@Override

@@ -1,11 +1,9 @@
 package reascer.wom.skill;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.antlr.v4.parse.ANTLRParser.id_return;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -16,7 +14,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -33,17 +30,17 @@ import reascer.wom.particle.WOMParticles;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.main.EpicFightMod;
-import yesman.epicfight.skill.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillSlots;
+import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
@@ -65,18 +62,18 @@ public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
 	public FatalDrawSkill(Builder<? extends Skill> builder) {
 		super(builder, (executer) -> {
 			if (executer.getOriginal().isSprinting()) {
-				executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, false, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, false, executer.getOriginal());
 				return 2;
-			} else if (executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(ACTIVE)) {
-				if (executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().getDataValue(SECOND_DRAW)) {
-					executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, false, executer.getOriginal());
+			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(ACTIVE)) {
+				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SECOND_DRAW)) {
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, false, executer.getOriginal());
 					return 1;
 				} else {
-					executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, true, executer.getOriginal());
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, true, executer.getOriginal());
 					return 0;
 				}
 			} else {
-				executer.getSkill(SkillCategories.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, true, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, true, executer.getOriginal());
 				return 0;
 			}
 		}, WOMAnimations.KATANA_FATAL_DRAW, WOMAnimations.KATANA_FATAL_DRAW_SECOND, WOMAnimations.KATANA_FATAL_DRAW_DASH);
@@ -115,10 +112,18 @@ public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
 				this.resetTimedSlashes(container, serverPlayer);
 			}
 			
+			if (event.getAnimation() == WOMAnimations.KATANA_FATAL_DRAW_DASH) {
+				this.resetTimedSlashes(container, serverPlayer);
+			}
+			
 			for (StaticAnimation staticAnimation : resetAnimations) {
 				if (event.getAnimation() == staticAnimation) {
-					container.getDataManager().setDataSync(TIMER, 40,serverPlayer);
-					container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+					if (container.getExecuter().getStamina() > 0) {
+						container.getDataManager().setDataSync(TIMER, 30,serverPlayer);
+					}
+					if (staticAnimation != WOMAnimations.KATANA_FATAL_DRAW) {
+						container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+					}
 				}
 			}
 			
@@ -148,18 +153,11 @@ public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
 
 	protected void resetTimedSlashes(SkillContainer container, ServerPlayer serverPlayer) {
 		container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
-		container.getDataManager().setDataSync(TIMER, 40,serverPlayer);
 		container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
-		container.getDataManager().setDataSync(ATTACKS, 5,serverPlayer);
+		container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
 		container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
-		
 		if (container.getExecuter().getStamina() > 0) {
-			prevTimedSlashEntities.clear();
-			if (timedSlashEntities.size() > 0) {
-				prevTimedSlashEntities.clear();
-				prevTimedSlashEntities = new ArrayList<Integer>(timedSlashEntities);
-			}
-			//timedSlashEntities.clear();
+			container.getDataManager().setDataSync(TIMER, 30,serverPlayer);
 		}
 	}
 	
@@ -172,35 +170,41 @@ public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		if (executer.getSkill(this.category).getDataManager().getDataValue(COOLDOWN) < 79) {
-			executer.getSkill(this.category).getDataManager().setData(COOLDOWN, 80);
-			boolean isSheathed = executer.getSkill(SkillCategories.WEAPON_PASSIVE).getDataManager().getDataValue(EFKatanaPassive.SHEATH);
-			if (isSheathed || executer.getSkill(this.category).getDataManager().getDataValue(ACTIVE)) {
+		if (executer.getSkill(this).getDataManager().getDataValue(COOLDOWN) < 80) {
+			executer.getSkill(this).getDataManager().setData(COOLDOWN, 80);
+			boolean isSheathed = executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(EFKatanaPassive.SHEATH);
+			if (isSheathed || executer.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], -0.45F);
 			} else {
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], 0);
 			}
 			if (!executer.getOriginal().isCreative()) {
-				this.setConsumptionSynchronize(executer, 0);
+				//this.setConsumptionSynchronize(executer, 0);
 				this.setDurationSynchronize(executer, 0);
+				SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+				executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
+				
+				if (!event.isCanceled()) {
+					this.resource.consume.accept(this, executer);
+				}
 			}
 			
-			if (!executer.getSkill(this.category).getDataManager().getDataValue(ACTIVE)) {
-				//executer.getOriginal().sendMessage(new TextComponent("katana stack:"+Math.round(Math.min(6,executer.getSkill(this.category).getStack()+1) * (1.0f + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3.0f))-1)), UUID.randomUUID());
-				this.setStackSynchronize(executer, (int) Math.min(12,Math.round(Math.min(6,executer.getSkill(this.category).getStack()+1)* (1.0f + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3.0f)))-1));
-				executer.getSkill(this.category).getDataManager().setDataSync(ACTIVE, true, executer.getOriginal());
+			if (!executer.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
+				//executer.getOriginal().sendMessage(new TextComponent("katana stack:"+Math.round(Math.min(6,executer.getSkill(this).getStack()+1) * (1.0f + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3.0f))-1)), UUID.randomUUID());
+				this.setStackSynchronize(executer, (int) Math.min(12,Math.round(Math.min(6,executer.getSkill(this).getStack()+1)* (1.0f + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3.0f)))-1));
+				executer.getSkill(this).getDataManager().setDataSync(ACTIVE, true, executer.getOriginal());
 			}
-			if (executer.getSkill(this.category).getStack() == 0) {
-				executer.getSkill(this.category).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
+			if (executer.getSkill(this).getStack() == 0) {
+				executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
 			}
-			executer.getSkill(this.category).activate();
+			executer.getSkill(this).activate();
 		}
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
-		if (playerpatch.getSkill(this.category).getDataManager().getDataValue(ACTIVE)) {
+		if (playerpatch.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponOfMinecraft.MODID, "textures/gui/overlay/katana_eternity.png"));
 			GlStateManager._enableBlend();
@@ -226,7 +230,7 @@ public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
 			if (container.getDataManager().getDataValue(ACTIVE)) {
 				if(!container.getExecuter().isLogicalClient()) {
 					this.setStackSynchronize((ServerPlayerPatch)container.getExecuter(),0);
-					container.getExecuter().getSkill(this.category).getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getExecuter().getSkill(this).getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		}
@@ -253,15 +257,16 @@ public class FatalDrawSkill extends ConditionalWeaponInnateSkill {
 									epicFightDamageSource.setStunType(StunType.HOLD);
 									DamageSource damage = epicFightDamageSource;
 									e.invulnerableTime = 0;
-									e.hurt(damage, container.getDataManager().getDataValue(DAMAGE) * 0.35f);
-									e.playSound(EpicFightSounds.BLADE_HIT, 1, 1);
-									WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) container.getExecuter().getOriginal().level), null, null, e, container.getExecuter().getOriginal());
+									if (e.hurt(damage, container.getDataManager().getDataValue(DAMAGE) * 0.25f)) {
+										e.playSound(EpicFightSounds.BLADE_HIT, 1, 1);
+										WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) container.getExecuter().getOriginal().level), null, null, e, container.getExecuter().getOriginal());
+									}
 								}
 							}
 						}
 					} else {
-						if (timedSlashEntities.size() > 0) {
-							timedSlashEntities.clear();
+						if (AttackedSlashEntities.size() > 0) {
+							AttackedSlashEntities.clear();
 						}
 					}
 				}

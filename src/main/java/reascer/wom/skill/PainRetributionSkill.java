@@ -2,8 +2,6 @@ package reascer.wom.skill;
 
 import java.util.UUID;
 
-import reascer.wom.gameasset.WOMSkills;
-import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -33,10 +31,5 @@ public class PainRetributionSkill extends PainAnticipationSkill {
 	public void onRemoved(SkillContainer container) {
 		super.onRemoved(container);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID);
-	}
-	
-	@Override
-	public Skill getPriorSkill() {
-		return WOMSkills.PAIN_ANTICIPATION;
 	}
 }

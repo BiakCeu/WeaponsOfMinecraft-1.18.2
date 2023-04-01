@@ -1,7 +1,6 @@
 package reascer.wom.skill;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,13 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.WOMAnimations;
-import reascer.wom.particle.WOMParticles;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.WeaponInnateSkill;
+import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -68,19 +66,19 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 				if (!container.getDataManager().getDataValue(BUFFED)) {
 					container.getDataManager().setData(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1);
 					event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() + (event.getPlayerPatch().getMaxStamina() * 0.05f));
-					event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth() + (event.getPlayerPatch().getOriginal().getMaxHealth() * 0.05f));
+					event.getPlayerPatch().getOriginal().heal(1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()));
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.REVERSE_PORTAL, 
-							event.getTarget().xo + (new Random().nextDouble() - 0.5D), 
-							event.getTarget().yo + 1.0D, 
-							event.getTarget().zo + (new Random().nextDouble() - 0.5D), 
-							40, 0, 0, 0, 0.4);
+							event.getTarget().xo, 
+							event.getTarget().yo + 0.2f, 
+							event.getTarget().zo, 
+							20, 0, 0, 0, 0.4);
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.PORTAL, 
-							event.getPlayerPatch().getOriginal().xo, 
-							event.getPlayerPatch().getOriginal().yo + 1.0D, 
-							event.getPlayerPatch().getOriginal().zo, 
-							10, 0, 0, 0, 0.8);
-					container.getExecuter().getOriginal().level.addParticle(WOMParticles.RUINE_PLUNDER_SWORD.get(), event.getTarget().xo, event.getTarget().yo, event.getTarget().zo, 0, 0, 0);
-					container.getExecuter().playSound(SoundEvents.CHAIN_BREAK, 2.0f, 1, 1);
+							event.getTarget().xo, 
+							event.getTarget().yo+ 0.2f, 
+							event.getTarget().zo, 
+							20, 0, 0, 0, 0.4);
+					 event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+				    			SoundEvents.CHAIN_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 0.5F);
 				}
 			}
 		});
@@ -127,18 +125,18 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.executeOnServer(executer, args);
 		executer.playAnimationSynchronized(this.attackAnimation, 0);
-		executer.getSkill(this.category).getDataManager().setData(BUFFING, true);
-		executer.getSkill(this.category).getDataManager().setData(BUFFED, false);
-		executer.getSkill(this.category).getDataManager().setData(STRENGHT, 0);
-		executer.getSkill(this.category).getDataManager().setData(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
-		executer.getSkill(this.category).deactivate();
+		executer.getSkill(this).getDataManager().setData(BUFFING, true);
+		executer.getSkill(this).getDataManager().setData(BUFFED, false);
+		executer.getSkill(this).getDataManager().setData(STRENGHT, 0);
+		executer.getSkill(this).getDataManager().setData(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
+		executer.getSkill(this).deactivate();
 	}
 	
 	@Override
 	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
 		List<Component> list = super.getTooltipOnItem(itemStack, cap, playerCap);
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Plunder :");
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Harvest :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Thrust :");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Rip out :");
 		
 		return list;
 	}
@@ -151,8 +149,8 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 	@Override
 	public void cancelOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.cancelOnServer(executer, args);
-		executer.getSkill(this.category).getDataManager().setData(BUFFED, false);
-		executer.getSkill(this.category).getDataManager().setData(STRENGHT, 0);
+		executer.getSkill(this).getDataManager().setData(BUFFED, false);
+		executer.getSkill(this).getDataManager().setData(STRENGHT, 0);
 		executer.getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
 		executer.getOriginal().getAttribute(Attributes.ATTACK_SPEED).setBaseValue(4D);
 	}

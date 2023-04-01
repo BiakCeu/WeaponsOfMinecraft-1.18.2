@@ -1,0 +1,20 @@
+{
+    "sfx.enderblaster_reload":
+    {
+        "category":"master",
+        "subtitle":"sfx.enderblaster_reload",
+        "sounds":[{"name":"wom:sfx/enderblaster_reload", "stream":true, "attenuation_distance":50}]
+    },
+    "sfx.antitheus_blackhole":
+    {
+        "category":"master",
+        "subtitle":"sfx.antitheus_blackhole",
+        "sounds":[{"name":"wom:sfx/antitheus_blackhole", "stream":true, "attenuation_distance":50}]
+    },
+    "sfx.antitheus_blackhole_chargeup":
+    {
+        "category":"master",
+        "subtitle":"sfx.antitheus_blackhole_chargeup",
+        "sounds":[{"name":"wom:sfx/antitheus_blackhole_chargeup", "stream":true, "attenuation_distance":50}]
+    }
+}

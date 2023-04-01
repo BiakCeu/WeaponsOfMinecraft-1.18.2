@@ -8,10 +8,9 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.world.item.WOMItems;
-import yesman.epicfight.data.loot.function.SetRandomSkillFunction;
+import yesman.epicfight.data.loot.function.SetSkillFunction;
 import yesman.epicfight.world.item.EpicFightItems;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID)
@@ -19,11 +18,6 @@ public class EFModLootTables {
 	@SubscribeEvent
 	public static void modifyVanillaLootPools(final LootTableLoadEvent event) {
     	if (event.getName().equals(BuiltInLootTables.STRONGHOLD_CORRIDOR)) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
-    			.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).setWeight(1).apply(SetRandomSkillFunction.builder()))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(1))
-    		.build());
-    		
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
@@ -31,11 +25,6 @@ public class EFModLootTables {
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.STRONGHOLD_CROSSING)) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
-    			.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).setWeight(1).apply(SetRandomSkillFunction.builder()))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(1))
-    		.build());
-    		
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))

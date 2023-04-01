@@ -1,35 +1,43 @@
 package reascer.wom.world.entity.projectile;
 
+import java.util.Iterator;
 import java.util.Random;
 
+import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeConfig.Server;
 import reascer.wom.particle.WOMParticles;
-import yesman.epicfight.api.utils.AttackResult;
-import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
 import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 
 public class EnderBullet extends AbstractHurtingProjectile {
 
    public EnderBullet(EntityType<? extends EnderBullet> p_37598_, Level p_37599_) {
-      super(p_37598_, p_37599_);
+	   super(p_37598_, p_37599_);
    }
-
+   
    public EnderBullet(Level p_37609_, LivingEntity p_37610_, double p_37611_, double p_37612_, double p_37613_) {
       super(WOMEntities.ENDERBLAST.get(), p_37610_, p_37611_, p_37612_, p_37613_, p_37609_);
    }
@@ -69,7 +77,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
          this.setDeltaMovement(vec3.add(this.xPower, this.yPower, this.zPower).scale((double)f));
          this.level.addParticle(this.getTrailParticle(), d0 + ((new Random().nextFloat() - 0.5f)*0.1f), d1 + ((new Random().nextFloat() - 0.5f)*0.17f), d2 + ((new Random().nextFloat() - 0.5f)*0.1f), 0.0D, 0.0D, 0.0D);
          this.setPos(d0, d1, d2);
-         if ( Math.abs(getDeltaMovement().x) + Math.abs(getDeltaMovement().y) + Math.abs(getDeltaMovement().z) < 0.2 || this.touchingUnloadedChunk()) {
+         if ( Math.abs(getDeltaMovement().x) + Math.abs(getDeltaMovement().y) + Math.abs(getDeltaMovement().z) < 0.5 || this.touchingUnloadedChunk()) {
         	 this.discard();
          }
       } else {
@@ -79,7 +87,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
    
    @Override
    protected float getInertia() {
-		return 0.97f;
+		return 0.98f;
    }
    
    
@@ -95,15 +103,25 @@ public class EnderBullet extends AbstractHurtingProjectile {
             DamageSource damage = new IndirectEpicFightDamageSource("Ender blast", entity1, this, StunType.SHORT);
             int prevInvulTime = entity.invulnerableTime;
             entity.invulnerableTime = 0;
-            flag = entity.hurt(damage, 6.0F * (1 +( EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, livingentity) / 6)));
-            entity.level.addParticle(WOMParticles.ENDERBLASTER_BULLET.get(),
-			        (this.getX()),
-			        (this.getY()),
-			        (this.getZ()),
-			        0,
-			        0,
-			        0);
-            this.playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 0.8F, 0.5f);
+            float entity1damage = 7f;
+            float enchantmentDamage = 0;
+            if (entity instanceof LivingEntity) {
+            	enchantmentDamage = EnchantmentHelper.getDamageBonus(livingentity.getItemInHand(InteractionHand.MAIN_HAND), ((LivingEntity) entity).getMobType());
+            	entity1damage += enchantmentDamage;
+            }
+            flag = entity.hurt(damage, (entity1damage) * (1 +(EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, livingentity) / 4)));
+            if (enchantmentDamage != 0) {
+            	((ServerLevel) this.level).sendParticles(ParticleTypes.ENCHANTED_HIT,
+            			(this.getX()),
+            			(this.getY()),
+            			(this.getZ()),
+            			20,
+            			0,
+            			0,
+            			0,
+            			0.5f);
+            }
+            
             entity.invulnerableTime = prevInvulTime;
             if (flag) {
                if (entity.isAlive()) {
@@ -111,7 +129,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
                }
             }
          } else {
-            flag = entity.hurt(DamageSource.MAGIC, 5.0F);
+            flag = entity.hurt(DamageSource.MAGIC, 6.0F);
          }
       }
    }
@@ -121,17 +139,20 @@ public class EnderBullet extends AbstractHurtingProjectile {
 		return ParticleTypes.DRAGON_BREATH;
 	}
    
-   protected void onHit(HitResult p_37628_) {
-      super.onHit(p_37628_);
-      this.getOwner().level.addParticle(WOMParticles.ENDERBLASTER_BULLET.get(),
-		        (this.getX()),
-		        (this.getY()),
-		        (this.getZ()),
-		        0,
-		        0,
-		        0);
-      this.playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 0.8F, 0.5f);
+   protected void onHit(HitResult hitResult) {
+      super.onHit(hitResult);
       if (!this.level.isClientSide) {
+    	  ((ServerLevel) this.level).sendParticles(WOMParticles.ENDERBLASTER_BULLET.get(),
+  		        (this.getX()),
+  		        (this.getY()),
+  		        (this.getZ()),
+  		        1,
+  		        0,
+  		        0,
+  		        0,
+  		        0);
+        ((ServerLevel) this.level).playSound(null, this.getX(), this.getY(), this.getZ(),
+    			SoundEvents.FIREWORK_ROCKET_BLAST, this.getSoundSource(), 0.8F, 0.5F);
          this.discard();
       }
 

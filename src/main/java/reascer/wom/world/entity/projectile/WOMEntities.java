@@ -17,6 +17,11 @@ public class WOMEntities {
 	
 	public static final RegistryObject<EntityType<EnderBullet>> ENDERBLAST = ENTITIES.register("enderblast", () ->
 		EntityType.Builder.<EnderBullet>of(EnderBullet::new, MobCategory.MISC)
-		.sized(1f, 1f).clientTrackingRange(4).updateInterval(20).build("enderblast")
+		.sized(1f, 1f).clientTrackingRange(12).updateInterval(20).build("enderblast")
 		);
+	
+	public static final RegistryObject<EntityType<AntitheusDarkness>> ANTITHEUS_DARKNESS = ENTITIES.register("antitheus_darkness", () ->
+	EntityType.Builder.<AntitheusDarkness>of(AntitheusDarkness::new, MobCategory.MISC)
+	.sized(1f, 1f).clientTrackingRange(12).updateInterval(20).build("antitheus_darkness")
+	);
 }

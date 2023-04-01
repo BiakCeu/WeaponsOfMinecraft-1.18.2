@@ -19,14 +19,12 @@ public class AntitheusCutParticle extends HitParticle {
 	    this.rCol = 1.0F;
 	    this.gCol = 1.0F;
 	    this.bCol = 1.0F;
-	    this.quadSize = 2.0F;
-		this.lifetime = 10;
+	    this.quadSize = 1.5F;
+		this.lifetime = 9;
 		this.setSpriteFromAge(animatedSprite);
 		
-		Random rand = new Random();
-		float angle = (float)Math.toRadians(rand.nextFloat() * 90.0F);
-		this.oRoll = angle;
-		this.roll = angle;
+		this.oRoll = 0;
+		this.roll = 0;
 	}
 	
 	@Override
@@ -55,6 +53,14 @@ public class AntitheusCutParticle extends HitParticle {
 				return null;
 			}
 			AntitheusCutParticle particle = new AntitheusCutParticle(worldIn, x, y, z, spriteSet);
+			Float rand = new Random().nextFloat();
+			particle.roll = (float)Math.toRadians(45.0F + ((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
+			particle.oRoll = (float)Math.toRadians(45.0F + ((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
+			if (xSpeed == -90) {
+				particle.oRoll = (float)Math.toRadians(45.0F - 90F);
+				particle.roll = (float)Math.toRadians(45.0F - 90F);
+			}
+			
 			return particle;
 		}
 	}

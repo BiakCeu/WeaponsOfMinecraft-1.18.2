@@ -1,28 +1,19 @@
 package reascer.wom.animation;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Maps;
 import com.mojang.math.Vector3f;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.PartEntity;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.world.entity.projectile.EnderBullet;
 import reascer.wom.world.entity.projectile.WOMEntities;
@@ -32,16 +23,12 @@ import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
-import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.LinkAnimation;
-import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
-import yesman.epicfight.api.utils.AttackResult;
-import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -49,10 +36,6 @@ import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.MobPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
-import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	public EnderblasterShootAttackAnimation(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
@@ -86,8 +69,8 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	}
 	
 	@Override
-	protected Vec3f getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
-		Vec3f vec3 = super.getCoordVector(entitypatch, dynamicAnimation);
+	protected Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
+		Vec3 vec3 = super.getCoordVector(entitypatch, dynamicAnimation);
 		
 		if (entitypatch.shouldBlockMoving() && this.getProperty(ActionAnimationProperty.CANCELABLE_MOVE).orElse(true)) {
 			vec3.scale(0.0F);
@@ -128,7 +111,25 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 					float prevPoseTime = prevElapsedTime;
 					float poseTime = elapsedTime;
 					List<Entity> list = collider.updateAndSelectCollideEntity(entitypatch, this, prevPoseTime, poseTime, phase.getColliderJoint(), this.getPlaySpeed(entitypatch));
-					if (list.size() == 0) {
+					List<Entity> list2 = new ArrayList<Entity>(list);
+					for (Entity entity : list) {
+						if (entity instanceof Projectile) {
+							list2.remove(entity);
+							continue;
+						}
+						if (!(entity instanceof LivingEntity)) {
+							list2.remove(entity);
+							continue;
+						}
+					}
+					/*
+					System.out.println("list 1");
+					System.out.println(list);
+					System.out.println("list 2");
+					System.out.println(list2);
+					System.out.println();
+					*/
+					if (list2.size() == 0) {
 						if (phase.getColliderJoint() != Armatures.BIPED.head && phase.getColliderJoint() != Armatures.BIPED.rootJoint && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_LASER && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_PISTOLERO && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_DASH && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_BULLET_WIDE) {
 							Joint joint = phase.getColliderJoint();
 							
@@ -148,7 +149,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			                		direction.x,
 			                		direction.y,
 			                		direction.z,
-			                		4.0f, 1.0f);
+			                		4.0f, 0.0f);
 			                
 			                worldIn.addFreshEntity(projectile);
 						}

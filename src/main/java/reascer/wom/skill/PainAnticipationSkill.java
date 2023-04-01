@@ -2,16 +2,15 @@ package reascer.wom.skill;
 
 import java.util.UUID;
 
-import net.minecraft.client.particle.DustParticle;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import yesman.epicfight.skill.PassiveSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -36,36 +35,34 @@ public class PainAnticipationSkill extends PassiveSkill {
 		container.getDataManager().registerData(TIMER);
 		container.getDataManager().registerData(ACTIVE);
 		container.getDataManager().registerData(DUREE);
+		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(TIMER) == 0 || container.getDataManager().getDataValue(ACTIVE)) {
                 event.getDamageSource().setStunType(StunType.NONE);
-                if(!container.getExecuter().isLogicalClient()) {
-                	container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-			    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 1.0F);
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
-							container.getExecuter().getOriginal().getX() - 0.2D, 
-							container.getExecuter().getOriginal().getY() + 1.3D, 
-							container.getExecuter().getOriginal().getZ() - 0.2D, 
-							10, 0.6D, 0.8D, 0.6D, 0.05);
-					container.getDataManager().setDataSync(ACTIVE, true,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-                }
+                event.setAmount(event.getAmount()*0.8f);
+                event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+		    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 1.0F);
+				((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
+						container.getExecuter().getOriginal().getX() - 0.2D, 
+						container.getExecuter().getOriginal().getY() + 1.3D, 
+						container.getExecuter().getOriginal().getZ() - 0.2D, 
+						10, 0.6D, 0.8D, 0.6D, 0.1f);
+				container.getDataManager().setDataSync(ACTIVE, true,event.getPlayerPatch().getOriginal());
             }
         });
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(TIMER) == 0) {
-                if(!container.getExecuter().isLogicalClient()) {
-                	container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-			    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 1.0F);
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
-							container.getExecuter().getOriginal().getX() - 0.2D, 
-							container.getExecuter().getOriginal().getY() + 1.3D, 
-							container.getExecuter().getOriginal().getZ() - 0.2D, 
-							10, 0.6D, 0.8D, 0.6D, 0.05);
-					container.getDataManager().setDataSync(ACTIVE, true,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-                }
+				 event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+			    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 1.0F);
+				((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
+						container.getExecuter().getOriginal().getX() - 0.2D, 
+						container.getExecuter().getOriginal().getY() + 1.3D, 
+						container.getExecuter().getOriginal().getZ() - 0.2D, 
+						10, 0.6D, 0.8D, 0.6D, 0.05f);
+				container.getDataManager().setDataSync(ACTIVE, true,event.getPlayerPatch().getOriginal());
             }
-			container.getDataManager().setDataSync(TIMER, maxtimer,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(TIMER, maxtimer,event.getPlayerPatch().getOriginal());
 		});
 	}
 	
@@ -78,13 +75,13 @@ public class PainAnticipationSkill extends PassiveSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 	super.updateContainer(container);
-		if (container.getDataManager().getDataValue(TIMER) > 0) {
+		if (container.getDataManager().getDataValue(TIMER) > 0 && container.getDataManager().getDataValue(DUREE)  == 0) {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER)-1,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				if (container.getDataManager().getDataValue(TIMER) == 0) {
 					container.getDataManager().setDataSync(DUREE, maxduree,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-					container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().xo, container.getExecuter().getOriginal().yo, container.getExecuter().getOriginal().zo,
-			    			SoundEvents.SMALL_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 1.0F);
+					((ServerLevel) container.getExecuter().getOriginal().level).playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+				    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 2.0F);
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(DustParticleOptions.REDSTONE, 
 							container.getExecuter().getOriginal().getX() - 0.2D, 
 							container.getExecuter().getOriginal().getY() + 1.3D, 
@@ -103,6 +100,8 @@ public class PainAnticipationSkill extends PassiveSkill {
 							container.getExecuter().getOriginal().getZ() - 0.2D, 
 							4, 0.6D, 0.8D, 0.6D, 0.05);
 					if (container.getDataManager().getDataValue(DUREE) == 0) {
+						((ServerLevel) container.getExecuter().getOriginal().level).playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+				    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 0.5F);
 						container.getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(TIMER, maxtimer,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					}

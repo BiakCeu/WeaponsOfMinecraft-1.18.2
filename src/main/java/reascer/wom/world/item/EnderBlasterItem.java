@@ -37,14 +37,14 @@ public class EnderBlasterItem extends WeaponItem {
 	private final double attackSpeed;
 	
 	public EnderBlasterItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -1.00F, build.defaultDurability(EpicFightItemTier.KATANA.getUses()*2));
+		super(EpicFightItemTier.KATANA, 0, -2.00F, build.defaultDurability(EpicFightItemTier.KATANA.getUses()*2));
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
 			this.tooltipExpand.add(new TextComponent(""));
 			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".ender_blaster.tooltip"));
 		}
 		this.attackDamage = 6F;
-		this.attackSpeed = -1.0F;
+		this.attackSpeed = -2.0F;
 	}
 	
 	@Override
