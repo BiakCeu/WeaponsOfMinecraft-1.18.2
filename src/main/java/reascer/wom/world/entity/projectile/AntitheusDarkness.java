@@ -113,7 +113,7 @@ public class AntitheusDarkness extends AbstractHurtingProjectile {
          d1 = this.getY() + vec3.y;
          d2 = this.getZ() + vec3.z;
          this.setPos(d0, d1, d2);
-         if ( Math.abs(getDeltaMovement().x) + Math.abs(getDeltaMovement().y) + Math.abs(getDeltaMovement().z) < 0.5 || this.touchingUnloadedChunk()) {
+         if (this.tickCount > 60 || this.touchingUnloadedChunk()) {
         	 this.discard();
          }
       } else {

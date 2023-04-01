@@ -31,6 +31,7 @@ import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.guard.GuardSkill;
+import yesman.epicfight.skill.guard.GuardSkill.BlockType;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
@@ -104,10 +105,8 @@ public class CounterAttack extends GuardSkill {
 							//WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) event.getPlayerPatch().getOriginal().level), null, null, event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal());
 					}
 					
-					if(event.getPlayerPatch().getStamina() - 3 < 0){
+					if(!event.getPlayerPatch().consumeStamina(3)){
 						event.getPlayerPatch().setStamina(0);
-					} else {
-						event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() - 3f);
 					}
 					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 			    			EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
@@ -204,10 +203,9 @@ public class CounterAttack extends GuardSkill {
 				
 				event.getPlayerPatch().knockBackEntity(damageSource.getDirectEntity().position(), knockback);
 				
-				float stamina = event.getPlayerPatch().getStamina() - penalty * impact;
-				event.getPlayerPatch().setStamina(stamina);
+				boolean enoughStamina = event.getPlayerPatch().consumeStamina(penalty * impact);
 				
-				BlockType blockType = successParrying ? BlockType.ADVANCED_GUARD : stamina >= 0.0F ? BlockType.GUARD : BlockType.GUARD_BREAK;
+				BlockType blockType = successParrying ? BlockType.ADVANCED_GUARD : enoughStamina ? BlockType.GUARD : BlockType.GUARD_BREAK;
 				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
 				
 				if (animation != null) {

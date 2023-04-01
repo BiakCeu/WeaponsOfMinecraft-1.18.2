@@ -19,7 +19,7 @@ import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderStepSkill;
-import reascer.wom.skill.FatalDrawSkill;
+import reascer.wom.skill.WOMFatalDrawSkill;
 import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
@@ -34,8 +34,10 @@ import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.Skill.ActivateType;
 import yesman.epicfight.skill.Skill.Resource;
 import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.dodge.DodgeSkill;
 import yesman.epicfight.skill.passive.PassiveSkill;
+import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 
@@ -110,7 +112,26 @@ public class WOMSkills {
 		SkillManager.register(EFKatanaPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
 				WeaponOfMinecraft.MODID,"katana_passive_ef");
 
-		SkillManager.register(FatalDrawSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+		SkillManager.register(WOMFatalDrawSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setSelector((executer) -> {
+			if (executer.getOriginal().isSprinting()) {
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, false, executer.getOriginal());
+				return 2;
+			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMFatalDrawSkill.ACTIVE)) {
+				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMFatalDrawSkill.SECOND_DRAW)) {
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, false, executer.getOriginal());
+					return 1;
+				} else {
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, true, executer.getOriginal());
+					return 0;
+				}
+			} else {
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, true, executer.getOriginal());
+				return 0;
+			}
+		}).setAnimations(
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/katana_fatal_draw"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/katana_fatal_draw_second"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/katana_fatal_draw_dash")),
 				WeaponOfMinecraft.MODID,"fatal_draw_ef");
 
 		SkillManager.register(EnderBlastSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),

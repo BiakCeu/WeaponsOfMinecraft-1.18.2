@@ -252,8 +252,7 @@ public class WOMWeaponCapabilityPresets {
 				.livingMotionModifier(Styles.OCHS, LivingMotions.WALK, WOMAnimations.TORMENT_BERSERK_WALK)
 				.livingMotionModifier(Styles.OCHS, LivingMotions.CHASE, WOMAnimations.TORMENT_BERSERK_RUN)
 				.livingMotionModifier(Styles.OCHS, LivingMotions.RUN, WOMAnimations.TORMENT_BERSERK_RUN)
-				.livingMotionModifier(Styles.OCHS, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD);
+				.livingMotionModifier(Styles.OCHS, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR);
 		return builder;
 	};
 	

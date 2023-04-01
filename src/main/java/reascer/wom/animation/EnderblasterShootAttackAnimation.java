@@ -20,13 +20,18 @@ import reascer.wom.world.entity.projectile.WOMEntities;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.JointTransform;
+import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.Pose;
+import yesman.epicfight.api.animation.TransformSheet;
+import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
+import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.LinkAnimation;
+import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.MathUtils;
@@ -43,17 +48,41 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	}
 	
 	public EnderblasterShootAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-		super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, path, armature);
+		this(convertTime, path, armature, new Phase(0.0F, antic, preDelay, contact, recovery, Float.MAX_VALUE, colliderJoint, collider));
 	}
 	
 	public EnderblasterShootAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-		super(convertTime, antic, antic, contact, recovery, hand, collider, colliderJoint, path, armature);
+		this(convertTime, path, armature, new Phase(0.0F, antic, antic, contact, recovery, Float.MAX_VALUE, hand, colliderJoint, collider));
+	}
+	
+	// something is going to be wrong with this one 
+	public EnderblasterShootAttackAnimation(float convertTime, String path, Armature armature, boolean Coordsetter, Phase... phases) {
+		super(convertTime, path, armature, phases);
 	}
 	
 	public EnderblasterShootAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
 		super(convertTime, path, armature, phases);
+		
+		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch) -> {
+			float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
+			
+			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
+			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+			
+			if (((AttackAnimation) self).getPhaseByTime(1).getColliderJoint() != Armatures.BIPED.armR) {
+				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
+				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+			}
+			
+			JointTransform chest = pose.getOrDefaultTransform("Chest");
+			chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
+			
+			if (entitypatch instanceof PlayerPatch) {
+				JointTransform head = pose.getOrDefaultTransform("Head");
+				MathUtils.mulQuaternion(Vector3f.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
+			}
+		});
 	}
-	
 	@Override
 	public void setLinkAnimation(Pose pose1, float timeModifier, LivingEntityPatch<?> entitypatch, LinkAnimation dest) {
 		float extTime = Math.max(this.convertTime + timeModifier, 0);

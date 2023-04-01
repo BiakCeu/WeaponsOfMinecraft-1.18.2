@@ -117,7 +117,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(CHARGED_ATTACK) || container.getDataManager().getDataValue(CHARGED)) {
-				event.setDamage(event.getDamage()*2);
+				event.setDamage(event.getDamage()*3);
 			}
 		});
 		
@@ -156,7 +156,6 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			if (container.getDataManager().getDataValue(CHARGED)) {
 				container.getDataManager().setDataSync(CHARGED_ATTACK, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			event.getPlayerPatch().getOriginal().stopUsingItem();
 			container.getDataManager().setDataSync(CHARGING, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			if (container.getDataManager().getDataValue(SAVED_CHARGE) < 20) {
 				container.getDataManager().setDataSync(SAVED_CHARGE, container.getDataManager().getDataValue(CHARGING_TIME) , ((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -219,10 +218,10 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			executer.modifyLivingMotionByCurrentItem();
 			SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
 			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
-			
 			if (!event.isCanceled()) {
 				this.resource.consume.accept(this, executer);
 			}
+			this.setStackSynchronize(executer, 1);
 		}
 	}
 	
@@ -232,6 +231,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 		executer.getOriginal().removeEffect(EpicFightMobEffects.STUN_IMMUNITY.get());
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
+		this.setDurationSynchronize(executer, 0);
 		executer.modifyLivingMotionByCurrentItem();
 	}
 	
@@ -263,7 +263,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
-		if (playerpatch.getSkill(this).isActivated()) {
+		if (playerpatch.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponOfMinecraft.MODID, "textures/gui/overlay/true_berserk.png"));
 			GlStateManager._enableBlend();
@@ -321,9 +321,9 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 							this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(), container.getRemainDuration()-1);
 						}
 					} else {
-						if (container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.02f) > 0f) {
+						if (container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.08f) > 0f) {
 							DamageSource damage = new IndirectEpicFightDamageSource("Heartattack_from_wrath", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
-							container.getExecuter().getOriginal().hurt(damage,(container.getExecuter().getOriginal().getMaxHealth() * 0.02f));
+							container.getExecuter().getOriginal().hurt(damage,(container.getExecuter().getOriginal().getMaxHealth() * 0.08f));
 							if(!container.getExecuter().isLogicalClient()) {
 								if (!container.getExecuter().getOriginal().isCreative()) {
 								((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
@@ -366,6 +366,11 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 							container.getExecuter().getOriginal().getZ(),
 							EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
 							1.0F, 1.2F);
+					if (!container.getExecuter().getOriginal().isCreative()) {
+						if (!container.getExecuter().consumeStamina(3)) {
+							container.getExecuter().setStamina(0);
+						}
+					}
 				} else if (animation_timer >= 80) {
 					container.getExecuter().playAnimationSynchronized(WOMAnimations.TORMENT_CHARGED_ATTACK_3, 0);
 				} else if (animation_timer >= 50) {
@@ -379,15 +384,15 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 							container.getExecuter().getOriginal().getZ(),
 							EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
 							1.0F, 1.2F);
+					if (!container.getExecuter().getOriginal().isCreative()) {
+						if (!container.getExecuter().consumeStamina(3)) {
+							container.getExecuter().setStamina(0);
+						}
+					}
 				}
 				container.getDataManager().setDataSync(CHARGING, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(CHARGING_TIME, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(SAVED_CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				if (!container.getExecuter().getOriginal().isCreative()) {
-					if (!container.getExecuter().consumeStamina(5)) {
-						container.getExecuter().setStamina(0);
-					}
-				}
 				container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(charging_Movementspeed);
 			}
 			if (container.getDataManager().getDataValue(CHARGING)) {
@@ -404,6 +409,11 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 								container.getExecuter().getOriginal().getZ(),
 								SoundEvents.ANVIL_LAND, SoundSource.PLAYERS,
 								1.0F, 0.6F);
+						if (!container.getExecuter().getOriginal().isCreative()) {
+							if (!container.getExecuter().consumeStamina(3)) {
+								container.getExecuter().setStamina(0);
+							}
+						}
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 50) {
 						container.getExecuter().getOriginal().level.playSound(null,
@@ -412,6 +422,11 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 								container.getExecuter().getOriginal().getZ(),
 								SoundEvents.ANVIL_LAND, SoundSource.PLAYERS,
 								1.0F, 0.65F);
+						if (!container.getExecuter().getOriginal().isCreative()) {
+							if (!container.getExecuter().consumeStamina(3)) {
+								container.getExecuter().setStamina(0);
+							}
+						}
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 80) {
 						container.getExecuter().getOriginal().level.playSound(null,
@@ -420,6 +435,11 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 								container.getExecuter().getOriginal().getZ(),
 								SoundEvents.ANVIL_LAND, SoundSource.PLAYERS,
 								1.0F, 0.7F);
+						if (!container.getExecuter().getOriginal().isCreative()) {
+							if (!container.getExecuter().consumeStamina(3)) {
+								container.getExecuter().setStamina(0);
+							}
+						}
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 110) {
 						container.getDataManager().setDataSync(CHARGED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -435,6 +455,11 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 								container.getExecuter().getOriginal().getZ(),
 								SoundEvents.BELL_BLOCK, SoundSource.MASTER,
 								2.5F, 0.5F);
+						if (!container.getExecuter().getOriginal().isCreative()) {
+							if (!container.getExecuter().consumeStamina(3)) {
+								container.getExecuter().setStamina(0);
+							}
+						}
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 130) {
 						container.getDataManager().setDataSync(CHARGING_TIME, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

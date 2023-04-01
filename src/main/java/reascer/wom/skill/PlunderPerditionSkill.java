@@ -3,6 +3,8 @@ package reascer.wom.skill;
 import java.util.List;
 import java.util.UUID;
 
+import org.antlr.v4.parse.GrammarTreeVisitor.outerAlternative_return;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -38,8 +40,8 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 	protected final StaticAnimation attackAnimation;
 	protected Boolean registerdata = true;
 	
-	public AttributeModifier stolen_move_speed;
-	public AttributeModifier stolen_attack_speed;
+	public AttributeModifier stolen_move_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_move_speed", 0, Operation.MULTIPLY_TOTAL);
+	public AttributeModifier stolen_attack_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_move_speed", 0, Operation.MULTIPLY_TOTAL);
 	
 	public PlunderPerditionSkill(Builder<? extends Skill> builder) {
 		super(builder);
@@ -159,8 +161,8 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 		super.cancelOnServer(executer, args);
 		executer.getSkill(this).getDataManager().setData(BUFFED, false);
 		executer.getSkill(this).getDataManager().setData(STRENGHT, 0);
-		executer.getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
-		executer.getOriginal().getAttribute(Attributes.ATTACK_SPEED).setBaseValue(4D);
+		executer.getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(stolen_move_speed);
+		executer.getOriginal().getAttribute(Attributes.ATTACK_SPEED).removeModifier(stolen_attack_speed);
 	}
 	
 	@Override

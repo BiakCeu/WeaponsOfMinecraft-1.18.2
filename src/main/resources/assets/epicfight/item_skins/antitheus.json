@@ -4,8 +4,8 @@
     	"begin_pos": [0.0, 0.3, -1.7],
     	"end_pos": [0.0, 0.9, -2.2],
     	"lifetime": 10,
-		"interpolations": 8,
-    	"texture_path": "epicfight:particle/swing_trail.png",
+		"interpolations": 12,
+    	"texture_path": "epicfight:textures/particle/swing_trail.png",
     	"particle_type": "epicfight:swing_trail"
     }
 }

@@ -3,6 +3,8 @@ package reascer.wom.gameasset;
 import java.util.Random;
 import java.util.Set;
 
+import com.mojang.math.Vector3f;
+
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
@@ -34,6 +36,7 @@ import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import reascer.wom.world.item.WOMItems;
+import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.TransformSheet;
 import yesman.epicfight.api.animation.property.AnimationEvent;
@@ -42,6 +45,7 @@ import yesman.epicfight.api.animation.property.AnimationEvent.TimeStampedEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
+import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.animation.types.AimAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation;
@@ -53,6 +57,7 @@ import yesman.epicfight.api.animation.types.MovementAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.api.utils.TimePairList;
+import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -670,11 +675,9 @@ public class WOMAnimations {
 		
 		TORMENT_AUTO_1 = new BasicMultipleAttackAnimation(0.20F, 0.2F, 0.5F, 0.6F, null, biped.toolR, "biped/combat/torment_auto_1", biped)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.10F);
 		
 		TORMENT_AUTO_2 = new BasicMultipleAttackAnimation(0.25F, 0.05F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/torment_auto_2", biped)
-
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.2F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.9F))
@@ -687,15 +690,16 @@ public class WOMAnimations {
 				new Phase(0.4F, 0.4F, 0.55F, 0.9F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.8F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.7F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
 
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.20F)
 				.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 	
 		TORMENT_AUTO_4 = new BasicMultipleAttackAnimation(0.20F, 0.2F, 0.65F, 0.70F, null, biped.toolR, "biped/combat/torment_auto_4", biped)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
-
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.10F);
 		
 		TORMENT_DASH = new BasicMultipleAttackAnimation(0.05F, 0.25F, 0.25F, 0.5F, 0.75F, null, biped.toolR, "biped/combat/torment_dash", biped)
@@ -732,17 +736,17 @@ public class WOMAnimations {
 		TORMENT_CHARGED_ATTACK_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/torment_charged_attack_1", biped,
 				new Phase(0.0F, 0.2F, 0.5F, 0.55F, 0.55F, biped.toolR, null),
 				new Phase(0.55F, 0.6F, 0.85F, 0.9F, 0.9F, biped.toolR, null),
-				new Phase(0.9F, 1.25F, 1.3F, 1.85F, Float.MAX_VALUE, biped.toolR, WOMColliders.TORMENT_BERSERK_AIRSLAM))
+				new Phase(0.9F, 1.25F, 1.3F, 1.85F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.TORMENT_BERSERK_AIRSLAM))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.4F),1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),2)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(2F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(2F),1)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(2F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.7F),2)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
-
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.20F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
@@ -759,12 +763,11 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.15F, 0.65F))
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false);
 		
-		TORMENT_CHARGED_ATTACK_3 = new BasicMultipleAttackAnimation(0.05F, 1.1F, 1.15F, 1.50F, WOMColliders.TORMENT_BERSERK_AIRSLAM, biped.toolR, "biped/combat/torment_charged_attack_3", biped)
+		TORMENT_CHARGED_ATTACK_3 = new BasicMultipleAttackAnimation(0.05F, 1.1F, 1.15F, 1.50F, WOMColliders.TORMENT_BERSERK_AIRSLAM, biped.rootJoint, "biped/combat/torment_charged_attack_3", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(3.0F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.4F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(3F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.KNOCKDOWN)
-
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.10F)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.35F, 1.35F))
@@ -1528,7 +1531,6 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.0F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.00F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
 		

@@ -20,10 +20,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.crafting.ConditionalAdvancement;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.particle.WOMParticles;
@@ -39,15 +41,17 @@ import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
+import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class FatalDrawSkill extends WomMultipleAnimationSkill {
+public class WOMFatalDrawSkill extends ConditionalWeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("1a56d169-416a-4206-ba3d-e7100d55d603");
-	private static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> SECOND_DRAW = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Boolean> SECOND_DRAW = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	public static final SkillDataKey<Boolean> TIMEDSLASH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -59,24 +63,8 @@ public class FatalDrawSkill extends WomMultipleAnimationSkill {
 	private List<Integer> AttackedSlashEntities = new ArrayList<Integer>();
 	private List<Integer> prevTimedSlashEntities = new ArrayList<Integer>();
 	
-	public FatalDrawSkill(Builder<? extends Skill> builder) {
-		super(builder, (executer) -> {
-			if (executer.getOriginal().isSprinting()) {
-				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, false, executer.getOriginal());
-				return 2;
-			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(ACTIVE)) {
-				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SECOND_DRAW)) {
-					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, false, executer.getOriginal());
-					return 1;
-				} else {
-					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, true, executer.getOriginal());
-					return 0;
-				}
-			} else {
-				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SECOND_DRAW, true, executer.getOriginal());
-				return 0;
-			}
-		}, WOMAnimations.KATANA_FATAL_DRAW, WOMAnimations.KATANA_FATAL_DRAW_SECOND, WOMAnimations.KATANA_FATAL_DRAW_DASH);
+	public WOMFatalDrawSkill(ConditionalWeaponInnateSkill.Builder builder) {
+		super(builder);
 	}
 	
 	@Override
@@ -129,23 +117,25 @@ public class FatalDrawSkill extends WomMultipleAnimationSkill {
 			
 		});
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
-			container.getDataManager().setData(DAMAGE, event.getAttackDamage());
+		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
+			container.getDataManager().setData(DAMAGE, event.getDamage());
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			if (container.getExecuter().getStamina() > 0) {
-				if(container.getDataManager().getDataValue(TIMEDSLASH)){
-					timedSlashEntities.add(event.getTarget().getId());
-					/*
-					if (prevTimedSlashEntities.size() > 0) {
-						for (Integer e : prevTimedSlashEntities) {
-							if (e == event.getTarget().getId()) {
-								timedSlashEntities.add(event.getTarget().getId());
+			if (event.getDamageSource().cast().getMsgId() != "timed_katana_slashes") {
+				if (container.getExecuter().getStamina() > 0) {
+					if(container.getDataManager().getDataValue(TIMEDSLASH)){
+						timedSlashEntities.add(event.getTarget().getId());
+						/*
+						if (prevTimedSlashEntities.size() > 0) {
+							for (Integer e : prevTimedSlashEntities) {
+								if (e == event.getTarget().getId()) {
+									timedSlashEntities.add(event.getTarget().getId());
+								}
 							}
 						}
+						*/
 					}
-					*/
 				}
 			}
 		});
@@ -164,7 +154,7 @@ public class FatalDrawSkill extends WomMultipleAnimationSkill {
 	@Override
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
 	}
 	
@@ -252,12 +242,14 @@ public class FatalDrawSkill extends WomMultipleAnimationSkill {
 							Entity e = container.getExecuter().getOriginal().getLevel().getEntity(entityID);
 							if (e != null) {
 								if(e.isAlive()) {
-									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_Katana_slashes", container.getExecuter().getOriginal(),WOMAnimations.KATANA_SHEATHED_DASH);
+									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_katana_slashes", container.getExecuter().getOriginal(),WOMAnimations.KATANA_SHEATHED_DASH);
 									epicFightDamageSource.setImpact(2.0f);
 									epicFightDamageSource.setStunType(StunType.HOLD);
+									epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 									DamageSource damage = epicFightDamageSource;
 									e.invulnerableTime = 0;
-									if (e.hurt(damage, container.getDataManager().getDataValue(DAMAGE) * 0.25f)) {
+									if (e.hurt(damage,(float) Math.max(1.0f, container.getDataManager().getDataValue(DAMAGE) * 0.25f))) {
+										container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(((ServerPlayerPatch)container.getExecuter()), (LivingEntity) e, epicFightDamageSource, (float) Math.max(1.0f, container.getDataManager().getDataValue(DAMAGE) * 0.25f)));
 										e.playSound(EpicFightSounds.BLADE_HIT, 1, 1);
 										WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) container.getExecuter().getOriginal().level), null, null, e, container.getExecuter().getOriginal());
 									}
