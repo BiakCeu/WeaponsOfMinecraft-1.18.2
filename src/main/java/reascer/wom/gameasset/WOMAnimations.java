@@ -524,11 +524,13 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.00F);
 		
 		RUINE_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/ruine_auto_2", biped,
-				new Phase(0.0F, 0.05F, 0.3F, 0.65F, 0.65F, biped.toolR, null),
+				new Phase(0.0F, 0.05F, 0.3F, 0.35F, 0.35F, biped.toolR, null),
+				new Phase(0.35F, 0.4F, 0.6F, 0.65F, 0.65F, biped.toolR, null),
 				new Phase(0.65F, 0.65F, 0.75F, 0.80F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F),2)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1 )				
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
 		
@@ -702,7 +704,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.10F);
 		
-		TORMENT_DASH = new BasicMultipleAttackAnimation(0.05F, 0.25F, 0.25F, 0.5F, 0.75F, null, biped.toolR, "biped/combat/torment_dash", biped)
+		TORMENT_DASH = new BasicMultipleAttackAnimation(0.05F, 0.25F, 0.5F, 0.75F, null, biped.toolR, "biped/combat/torment_dash", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.2F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
@@ -777,7 +779,7 @@ public class WOMAnimations {
 		
 		TORMENT_BERSERK_IDLE = new StaticAnimation(true, "biped/living/torment_berserk_idle", biped);
 		
-		TORMENT_BERSERK_AUTO_1 = new BasicMultipleAttackAnimation(0.2F, 0.1F, 0.1F, 0.35F, 0.65F, null, biped.toolR, "biped/skill/torment_berserk_auto_1", biped)
+		TORMENT_BERSERK_AUTO_1 = new BasicMultipleAttackAnimation(0.2F, 0.1F, 0.35F, 0.65F, null, biped.toolR, "biped/skill/torment_berserk_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.1F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(3F))
@@ -787,7 +789,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 0.75F)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.50F);
 		
-		TORMENT_BERSERK_AUTO_2 = new BasicMultipleAttackAnimation(0.2F, 0.1F, 0.1F, 0.55F, 0.70F, null, biped.toolR, "biped/skill/torment_berserk_auto_2", biped)
+		TORMENT_BERSERK_AUTO_2 = new BasicMultipleAttackAnimation(0.2F, 0.1F, 0.55F, 0.70F, null, biped.toolR, "biped/skill/torment_berserk_auto_2", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.1F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(3F))
