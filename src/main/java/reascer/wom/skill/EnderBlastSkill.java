@@ -81,6 +81,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		container.getDataManager().registerData(NOFALLDAMAGE);
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 10,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
@@ -108,15 +109,15 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			
-			if (event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT.getId()
+			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT)
 					) {
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -124,12 +125,12 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				}
 			}
 			
-			if (event.getAnimation().getId() == WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT.getId()) {
+			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT)) {
 				container.getDataManager().setDataSync(NOFALLDAMAGE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				
 			}
 			
-			if (event.getAnimation().getId() == WOMAnimations.ENDERBLASTER_ONEHAND_JUMPKICK.getId()) {
+			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)) {
 				container.getDataManager().setDataSync(NOFALLDAMAGE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

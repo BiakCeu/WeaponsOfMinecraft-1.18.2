@@ -150,9 +150,9 @@ public class EnderBullet extends AbstractHurtingProjectile {
       super.onHit(hitResult);
       if (!this.level.isClientSide) {
     	  ((ServerLevel) this.level).sendParticles(WOMParticles.ENDERBLASTER_BULLET.get(),
-    			(hitResult.getLocation().x),
-      			(hitResult.getLocation().y),
-      			(hitResult.getLocation().z),
+    			(this.getX()),
+      			(this.getY()),
+      			(this.getZ()),
   		        1,
   		        0,
   		        0,
@@ -160,7 +160,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
   		        0);
         ((ServerLevel) this.level).playSound(null,
         		(hitResult.getLocation().x),
-      			(hitResult.getLocation().y),
+      			(this.getY()),
       			(hitResult.getLocation().z),
     			SoundEvents.FIREWORK_ROCKET_BLAST, this.getSoundSource(), 0.8F, 0.5F);
          this.discard();

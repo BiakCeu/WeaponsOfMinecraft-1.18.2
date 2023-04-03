@@ -489,7 +489,7 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.5F, ReuseableEvents.FAST_SPINING, Side.CLIENT));
 		
 		AGONY_PLUNGE_FORWARD = new SpecialAttackAnimation(0.05F, "biped/skill/agony_plunge_forward", biped,
-				new Phase(0.0F, 0.166F, 0.20F, 0.2F, 0.2F, biped.rootJoint, WOMColliders.AGONY_PLUNGE), 
+				new Phase(0.0F, 0.15F, 0.20F, 0.2F, 0.2F, biped.rootJoint, WOMColliders.AGONY_PLUNGE), 
 				new Phase(0.2F, 1.1F, 1.45F, 1.65F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.AGONY_PLUNGE))
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.WHOOSH_BIG,0)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,0)
@@ -531,7 +531,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),2)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F),2)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1 )				
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)				
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
 		
 		RUINE_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/ruine_auto_3", biped,
@@ -542,8 +542,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.90F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1 )
-
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
 		
 		RUINE_AUTO_4 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/ruine_auto_4", biped,
 				new Phase(0.0F, 0.3F, 0.5F, 0.55F, 0.55F, biped.toolR, WOMColliders.RUINE_COMET),
@@ -2152,51 +2151,106 @@ public class WOMAnimations {
 				new Phase(0.5F, 0.55F, 0.7F, 0.7F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.40F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.40F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.20F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.40F),2)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.40F),3)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.50F),3)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,3)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,3)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
 		
 		STAFF_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_2", biped,
-				new Phase(0.0F, 0.15F, 0.25F, 0.35F, 0.35F, biped.toolR, null),
-				new Phase(0.35F, 0.35F, 0.45F, 0.55F, 0.55F, biped.toolR, null),
-				new Phase(0.55F, 0.55F, 0.65F, 0.65F, Float.MAX_VALUE, biped.toolR, null))
+				new Phase(0.0F, 0.15F, 0.25F, 0.35F, 0.35F, biped.toolR, WOMColliders.STAFF_EXTENTION),
+				new Phase(0.35F, 0.35F, 0.45F, 0.55F, 0.55F, biped.toolR, WOMColliders.STAFF_EXTENTION),
+				new Phase(0.55F, 0.55F, 0.65F, 0.65F, Float.MAX_VALUE, biped.toolR, WOMColliders.STAFF_EXTENTION))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.60F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.60F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.20F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.60F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.50F),2)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
-				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
 		
 		STAFF_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_3", biped,
-				new Phase(0.0F, 0.15F, 0.45F, 0.65F, 0.65F, biped.toolR, null),
-				new Phase(0.65F, 0.65F, 0.85F, 0.85F, Float.MAX_VALUE, biped.toolR, null))
+				new Phase(0.0F, 0.15F, 0.45F, 0.50F, 0.50F, biped.toolR, null),
+				new Phase(0.50F, 0.55F, 0.85F, 0.85F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.95F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.20F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.95F),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.20F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.80F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F)
+				.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, (self, entitypatch, transformSheet) -> {
+					LivingEntity attackTarget = entitypatch.getTarget();
+					
+					if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
+						TransformSheet transform = self.getTransfroms().get("Root").copyAll();
+						Keyframe[] keyframes = transform.getKeyframes();
+						int startFrame = 0;
+						int endFrame = transform.getKeyframes().length - 1;
+						Vec3f keyLast = keyframes[endFrame].transform().translation();
+						Vec3 pos = entitypatch.getOriginal().getEyePosition();
+						Vec3 targetpos = attackTarget.position();
+						float horizontalDistance = Math.max((float)targetpos.subtract(pos).horizontalDistance() * 1.75f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+						Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
+						float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
+						
+						for (int i = startFrame; i <= endFrame; i++) {
+							Vec3f translation = keyframes[i].transform().translation();
+							translation.z *= scale;
+						}
+						
+						transformSheet.readFrom(transform);
+					} else {
+						transformSheet.readFrom(self.getTransfroms().get("Root"));
+					}
+				}).addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
+					LivingEntity attackTarget = entitypatch.getTarget();
+					
+					if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
+						TransformSheet transform = self.getTransfroms().get("Root").copyAll();
+						Keyframe[] keyframes = transform.getKeyframes();
+						int startFrame = 0;
+						int endFrame = transform.getKeyframes().length - 1;
+						Vec3f keyLast = keyframes[endFrame].transform().translation();
+						Vec3 pos = entitypatch.getOriginal().getEyePosition();
+						Vec3 targetpos = attackTarget.position();
+						float horizontalDistance = Math.max((float)targetpos.subtract(pos).horizontalDistance()*2f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+						Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
+						float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
+						
+						for (int i = startFrame; i <= endFrame; i++) {
+							Vec3f translation = keyframes[i].transform().translation();
+							translation.z *= scale;
+						}
+						
+						transformSheet.readFrom(transform);
+					} else {
+						transformSheet.readFrom(self.getTransfroms().get("Root"));
+					}
+				});
 		
 		STAFF_DASH = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_dash", biped,
-				new Phase(0.0F, 0.15F, 0.25F, 0.3F, 0.3F, biped.toolR, null),
-				new Phase(0.30F, 0.30F, 0.40F, 0.50F, Float.MAX_VALUE, biped.toolR, null))
+				new Phase(0.0F, 0.15F, 0.19F, 0.2F, 0.2F, biped.toolR, WOMColliders.STAFF_EXTENTION),
+				new Phase(0.2F, 0.25F, 0.40F, 0.50F, Float.MAX_VALUE, biped.toolR, WOMColliders.STAFF_EXTENTION))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.40F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85F),1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.20F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
@@ -2211,17 +2265,15 @@ public class WOMAnimations {
 				new Phase(0.7F, 0.75F, 0.79F, 0.8F, 0.8F, biped.toolR, WOMColliders.STAFF_CHARYBDIS),
 				new Phase(0.8F, 0.85F, 0.89F, 0.9F, Float.MAX_VALUE, biped.toolR, WOMColliders.STAFF_CHARYBDIS))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F))
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),2)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),3)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,3)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),4)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),5)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),6)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.35F),7)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.8F),7)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,7)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
@@ -2230,14 +2282,6 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,5)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,6)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,7)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),2)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),3)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),4)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),5)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),6)
-				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),7)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.65F);
 		

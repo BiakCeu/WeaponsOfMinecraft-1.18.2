@@ -138,6 +138,7 @@ public class CounterAttack extends GuardSkill {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(event.getPlayerPatch().getOriginal().getUsedItemHand());
 			
 			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 10 && container.getDataManager().getDataValue(PARRYING) && !event.getPlayerPatch().getOriginal().isUsingItem()) {
+				container.getDataManager().setDataSync(PARRYING, false,event.getPlayerPatch().getOriginal());
 				DamageSource damageSource = event.getDamageSource();
 				boolean isFront = false;
 				Vec3 sourceLocation = damageSource.getSourcePosition();

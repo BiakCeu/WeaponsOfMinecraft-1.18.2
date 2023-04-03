@@ -81,6 +81,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			container.getDataManager().setDataSync(SIDE, true,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 10,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
@@ -104,16 +105,18 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80, event.getPlayerPatch().getOriginal());
-			if (event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT.getId() && event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_RIGHT.getId() && event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT.getId()	) {
+			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_RIGHT) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT)) {
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			if (event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_1.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_PISTOLERO.getId() &&
-				event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT.getId()
+			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_1) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_PISTOLERO) &&
+				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT)
 					) {
 				container.getDataManager().setDataSync(COOLDOWN, cooldown, event.getPlayerPatch().getOriginal());
 				container.getDataManager().setDataSync(ZOOM, false, event.getPlayerPatch().getOriginal());

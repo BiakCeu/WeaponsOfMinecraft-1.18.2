@@ -165,10 +165,10 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
-			if (event.getAnimationId() != WOMAnimations.TORMENT_AUTO_1.getId() &&
-				event.getAnimationId() != WOMAnimations.TORMENT_AUTO_2.getId() &&
-				event.getAnimationId() != WOMAnimations.TORMENT_AUTO_3.getId() &&
-				event.getAnimationId() != WOMAnimations.TORMENT_AUTO_4.getId()) {
+			if (event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_1) &&
+				event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_2) &&
+				event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_3) &&
+				event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_4)) {
 			}
 			container.getDataManager().setDataSync(CHARGED_ATTACK, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

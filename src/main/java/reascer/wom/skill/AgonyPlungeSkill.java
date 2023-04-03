@@ -49,23 +49,24 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunging: " + container.getDataManager().getDataValue(PLUNGING) + " | Stack: " + container.getDataManager().getDataValue(STACK) + " | Plunging: " + event.getAttackDamage() ), UUID.randomUUID());
-			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0 && event.getDamage() > 1.0F) {
+			if (container.getDataManager().getDataValue(PLUNGING) && event.getDamage() > 1.0F) {
 				float attackDamage = event.getDamage();
 				event.setDamage(attackDamage * container.getDataManager().getDataValue(STACK));
 				//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
+				
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0) {
+			if (container.getDataManager().getDataValue(PLUNGING)) {
 				container.getDataManager().setData(PLUNGING, false);
 				container.getDataManager().setData(STACK, 0);
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(PLUNGING) && container.getDataManager().getDataValue(STACK) > 0) {
+			if (container.getDataManager().getDataValue(PLUNGING)) {
 				container.getDataManager().setData(PLUNGING, false);
 				container.getDataManager().setData(STACK, 0);
 			}
@@ -100,10 +101,10 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		}
 		super.executeOnServer(executer, args);
 
-		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
+		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null && !executer.getOriginal().isCreative()) {
 			this.setStackSynchronize(executer, 0);
 		}
-		//executer.getSkill(this).deactivate();
+		executer.getSkill(this).deactivate();
 	}
 	
 	@Override

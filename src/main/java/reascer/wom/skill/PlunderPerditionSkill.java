@@ -94,7 +94,7 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
-			if (event.getAnimationId() == WOMAnimations.RUINE_PLUNDER.getId() && container.getDataManager().getDataValue(STRENGHT) > 0) {
+			if (event.getAnimation().equals(WOMAnimations.RUINE_PLUNDER) && container.getDataManager().getDataValue(STRENGHT) > 0) {
 				if (!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(BUFFED, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(BUFFING, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());

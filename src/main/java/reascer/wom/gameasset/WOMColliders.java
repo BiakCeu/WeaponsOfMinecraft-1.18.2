@@ -5,7 +5,8 @@ import yesman.epicfight.api.collider.MultiOBBCollider;
 import yesman.epicfight.api.collider.OBBCollider;
 
 public class WOMColliders {
-	public static final Collider STAFF = new MultiOBBCollider(4, 0.25D, 0.25D, 1.9D, 0D, 0D, 0D);
+	public static final Collider STAFF = new MultiOBBCollider(4, 0.5D, 0.5D, 1.9D, 0D, 0D, 0D);
+	public static final Collider STAFF_EXTENTION = new MultiOBBCollider(4, 0.5D, 0.5D, 2.5D, 0D, 0D, 0D);
 	public static final Collider STAFF_CHARYBDIS = new MultiOBBCollider(4, 0.6D, 0.6D, 2.3D, 0D, 0D, 0D);
 	
 	public static final Collider GREATSWORD = new MultiOBBCollider(3, 0.2D, 0.8D, 1.0D, 0D, 0D, -1.2D);
