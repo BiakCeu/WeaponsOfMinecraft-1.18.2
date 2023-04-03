@@ -1,8 +1,8 @@
 {
     "trail": {
     	"color": [49, 32, 10],
-    	"begin_pos": [0.0, 0.0, 2.0],
-    	"end_pos": [0.0, 0.0, -2.0],
+    	"begin_pos": [0.0, 0.0, 1.9],
+    	"end_pos": [0.0, 0.0, -1.9],
     	"lifetime": 4,
 		"interpolations": 12,
     	"texture_path": "wom:textures/particle/staff/weapon_trail/basic.png",

@@ -753,7 +753,6 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							entity.hasImpulse = true;
 							Vec3 vec3 = entity.getDeltaMovement();
 							Vec3 vec31 = (new Vec3(d1, d2, d0)).normalize().scale(power);
-							entity.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 							
 							if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 10 == 0 && entity instanceof LivingEntity) {
 								LivingEntity target = (LivingEntity) entity;
@@ -773,7 +772,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							
 							if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 1 && entity instanceof LivingEntity) {
 								LivingEntity target = (LivingEntity) entity;
-								IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("demon_fee", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.HOLD);
+								IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("demon_fee", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.LONG);
 								float WitherCatharsis = 0;
 								if (target.hasEffect(MobEffects.WITHER)) {
 									damage.setImpact(2.5f);
@@ -799,6 +798,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								}
 								target.hurt(damage,4 + (WitherCatharsis));
 							}
+
+							entity.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 						}
 						
 					}

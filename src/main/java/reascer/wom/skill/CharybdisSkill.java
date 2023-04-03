@@ -37,12 +37,9 @@ public class CharybdisSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		if (executer.getStamina() - Formulars.getStaminarConsumePenalty(executer.getWeight(), this.consumption - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()), executer) >= 0 ) {
-			if (!executer.getOriginal().isCreative()) {
-				executer.setStamina(executer.getStamina() - Formulars.getStaminarConsumePenalty(executer.getWeight(), this.consumption - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()), executer));
-			}
+		if (executer.consumeStamina(this.consumption) || executer.getOriginal().isCreative()) {
 			executer.playAnimationSynchronized(this.attackAnimation, 0);
-		super.executeOnServer(executer, args);
+			super.executeOnServer(executer, args);
 		}
 	}
 	
