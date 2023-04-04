@@ -11,8 +11,8 @@ public class WOMColliders {
 	
 	public static final Collider GREATSWORD = new MultiOBBCollider(3, 0.2D, 0.8D, 1.0D, 0D, 0D, -1.2D);
 	
-	public static final Collider AGONY = new MultiOBBCollider(5, 0.45D, 0.45D, 1.4D, 0D, 0D, -1.2D);
-	public static final Collider AGONY_AIRSLASH = new MultiOBBCollider(4, 0.55D, 0.55D, 1.4D, 0D, 0D, -1.2D);
+	public static final Collider AGONY = new MultiOBBCollider(5, 0.45D, 0.45D, 1.4D, 0D, 0D, -1.0D);
+	public static final Collider AGONY_AIRSLASH = new MultiOBBCollider(4, 0.55D, 0.55D, 1.6D, 0D, 0D, -0.8D);
 	public static final Collider AGONY_PLUNGE = new OBBCollider(5.0F, 2.0F, 5.0F, 0F, 0F, 0F);
 	
 	public static final Collider PLUNDER_PERDITION = new OBBCollider(8.0F, 4.0F, 8.0F, 0F, 0F, 0F);
