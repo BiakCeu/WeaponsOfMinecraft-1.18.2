@@ -234,7 +234,7 @@ public class WOMWeaponCapabilityPresets {
 				.hitSound(EpicFightSounds.BLADE_HIT)
 				.swingSound(EpicFightSounds.WHOOSH_BIG)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.TORMENT_AUTO_4, WOMAnimations.TORMENT_AUTO_1, WOMAnimations.TORMENT_AUTO_2, WOMAnimations.TORMENT_AUTO_3, WOMAnimations.TORMENT_DASH, WOMAnimations.TORMENT_AIRSLAM)
+				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.TORMENT_AUTO_1, WOMAnimations.TORMENT_AUTO_2, WOMAnimations.TORMENT_AUTO_3, WOMAnimations.TORMENT_AUTO_4, WOMAnimations.TORMENT_DASH, WOMAnimations.TORMENT_AIRSLAM)
 				.newStyleCombo(Styles.OCHS, WOMAnimations.TORMENT_BERSERK_AUTO_1, WOMAnimations.TORMENT_BERSERK_AUTO_2, WOMAnimations.TORMENT_BERSERK_DASH, WOMAnimations.TORMENT_BERSERK_AIRSLAM)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.TRUE_BERSERK)
