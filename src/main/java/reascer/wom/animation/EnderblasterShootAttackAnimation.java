@@ -98,7 +98,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	}
 	
 	@Override
-	protected Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
+	public Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
 		Vec3 vec3 = super.getCoordVector(entitypatch, dynamicAnimation);
 		
 		if (entitypatch.shouldBlockMoving() && this.getProperty(ActionAnimationProperty.CANCELABLE_MOVE).orElse(true)) {

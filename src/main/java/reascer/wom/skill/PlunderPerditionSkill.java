@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import org.antlr.v4.parse.GrammarTreeVisitor.outerAlternative_return;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -16,8 +19,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
@@ -32,10 +38,10 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class PlunderPerditionSkill extends WeaponInnateSkill{
 	private static final UUID EVENT_UUID = UUID.fromString("b9d719ba-bcb8-11ec-8422-0242ac120002");
-	private static final SkillDataKey<Boolean> BUFFED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> BUFFING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> STRENGHT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Boolean> BUFFED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Boolean> BUFFING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Integer> STRENGHT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
 	protected final StaticAnimation attackAnimation;
 	protected Boolean registerdata = true;
@@ -69,7 +75,7 @@ public class PlunderPerditionSkill extends WeaponInnateSkill{
 			if (container.getDataManager().getDataValue(BUFFING)) {
 				if (!container.getDataManager().getDataValue(BUFFED)) {
 					if (container.getDataManager().getDataValue(STRENGHT) < 40) {
-						container.getDataManager().setData(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1);
+						container.getDataManager().setDataSync(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1,event.getPlayerPatch().getOriginal());
 					}
 					
 					event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() + (event.getPlayerPatch().getMaxStamina() * 0.05f));

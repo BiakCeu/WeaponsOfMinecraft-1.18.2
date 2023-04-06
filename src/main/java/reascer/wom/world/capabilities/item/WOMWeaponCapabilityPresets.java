@@ -239,6 +239,7 @@ public class WOMWeaponCapabilityPresets {
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.TRUE_BERSERK)
 				.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.TRUE_BERSERK)
+				.passiveSkill(WOMSkills.TORMENT_PASSIVE)
 				.comboCancel((style) -> {
 					return false;
 				})
@@ -266,6 +267,7 @@ public class WOMWeaponCapabilityPresets {
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.RUINE_AUTO_1, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.RUINE_AUTO_4, WOMAnimations.RUINE_DASH, WOMAnimations.RUINE_COMET)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.PLUNDER_PERDITION)
+			.passiveSkill(WOMSkills.RUINE_PASSIVE)
 			.comboCancel((style) -> {
 				return false;
 			})

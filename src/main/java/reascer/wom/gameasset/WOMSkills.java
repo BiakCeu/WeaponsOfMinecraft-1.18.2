@@ -23,6 +23,8 @@ import reascer.wom.skill.WOMFatalDrawSkill;
 import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
+import reascer.wom.skill.RuinePassive;
+import reascer.wom.skill.TormentPassiveSkill;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.skill.VampirizeSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
@@ -61,6 +63,8 @@ public class WOMSkills {
 	
 	public static Skill KATANA_PASSIVE_EF;
 	public static Skill DEMON_MARK_PASSIVE;
+	public static Skill RUINE_PASSIVE;
+	public static Skill TORMENT_PASSIVE;
 
 	public static Skill FATAL_DRAW_EF;
 	public static Skill ARROW_TENACITY;
@@ -106,12 +110,18 @@ public class WOMSkills {
 		SkillManager.register(TrueBerserkSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"true_berserk");
 		
+		SkillManager.register(TormentPassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
+				WeaponOfMinecraft.MODID,"torment_passive");
+		
 		SkillManager.register(PlunderPerditionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"plunder_perdition");
 	
+		SkillManager.register(RuinePassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
+				WeaponOfMinecraft.MODID,"ruine_passive");
+		
 		SkillManager.register(EFKatanaPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
 				WeaponOfMinecraft.MODID,"katana_passive_ef");
-
+		
 		SkillManager.register(WOMFatalDrawSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setSelector((executer) -> {
 			if (executer.getOriginal().isSprinting()) {
 				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, false, executer.getOriginal());
@@ -196,6 +206,8 @@ public class WOMSkills {
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.2f)));
 		AGONY_PLUNGE = AgonyPlungeSkill;
 		
+		TORMENT_PASSIVE = onBuild.build(WeaponOfMinecraft.MODID, "torment_passive");
+		
 		WeaponInnateSkill trueBerserkSkill = onBuild.build(WeaponOfMinecraft.MODID, "true_berserk");
 		trueBerserkSkill.newProperty()
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f))
@@ -206,6 +218,8 @@ public class WOMSkills {
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(10))
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()));
 		TRUE_BERSERK = trueBerserkSkill;
+		
+		RUINE_PASSIVE = onBuild.build(WeaponOfMinecraft.MODID, "ruine_passive");
 		
 		WeaponInnateSkill plunderPerditionSkill = onBuild.build(WeaponOfMinecraft.MODID, "plunder_perdition");
 		plunderPerditionSkill.newProperty()
