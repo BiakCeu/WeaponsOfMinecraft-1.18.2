@@ -48,15 +48,17 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 		container.getDataManager().setData(IDLE,false);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(WITHERCURSE)) {
-				int chance = Math.abs(new Random().nextInt()) % 100;
-				int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
-				if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
-					if (event.getTarget().hasEffect(MobEffects.WITHER)) {
-						event.getTarget().removeEffect(MobEffects.WITHER);
-						event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 2, false, true));
-					} else {
-						event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 1, false, true));
+			if (event.getDamageSource().cast().getMsgId() != "demon_fee") {
+				if (container.getDataManager().getDataValue(WITHERCURSE)) {
+					int chance = Math.abs(new Random().nextInt()) % 100;
+					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
+					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
+						if (event.getTarget().hasEffect(MobEffects.WITHER)) {
+							event.getTarget().removeEffect(MobEffects.WITHER);
+							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 2, false, true));
+						} else {
+							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 1, false, true));
+						}
 					}
 				}
 			}

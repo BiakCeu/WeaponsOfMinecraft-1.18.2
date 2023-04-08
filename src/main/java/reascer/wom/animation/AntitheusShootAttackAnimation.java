@@ -16,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -179,7 +180,16 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 		                worldIn.addFreshEntity(projectile);
 					} else {
 						if (list2.get(list2.size()-1) != null) {
-							entitypatch.getOriginal().addTag("antitheus_pull:"+ list2.get(list2.size()-1).getId());
+							int entityId = list2.get(list2.size()-1).getId();
+							for (Entity entity : list2) {
+								if (entity instanceof LivingEntity) {
+									LivingEntity livingEntity = (LivingEntity) entity;
+									if (livingEntity.getEffect(MobEffects.WITHER) != null) {
+										entityId = livingEntity.getId();
+									}
+								}
+							}
+							entitypatch.getOriginal().addTag("antitheus_pull:"+entityId);
 							((ServerLevel) entitypatch.getOriginal().level).playSound(null, entitypatch.getOriginal().getX(), entitypatch.getOriginal().getY(), entitypatch.getOriginal().getZ(),
 				        			SoundEvents.WITHER_AMBIENT, (list2.get(list2.size()-1)).getSoundSource(), 0.4F, 2.0F);
 							((ServerLevel) entitypatch.getOriginal().level).sendParticles(ParticleTypes.LARGE_SMOKE,
@@ -195,10 +205,12 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 								HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(entity, HurtableEntityPatch.class);
 								if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
-										hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1), entitypatch.getImpact(phase.hand) * 0.25F);
 										float stunTime = (float) (0.83f * (1.0F - ((LivingEntity) entity).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
-										hitHurtableEntityPatch.setStunReductionOnHit();
-										hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
+										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
+											hitHurtableEntityPatch.setStunReductionOnHit();
+											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
+											hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),3 * 0.25f);
+										}
 									}
 								}
 							}

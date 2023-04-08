@@ -11,6 +11,7 @@ import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillSlot;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
+import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class RuinePassive extends PassiveSkill {
 	public RuinePassive(Builder<? extends Skill> builder) {
@@ -20,7 +21,10 @@ public class RuinePassive extends PassiveSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(PlunderPerditionSkill.TIMER) > 0;
+		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() instanceof PlunderPerditionSkill) {
+			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(PlunderPerditionSkill.TIMER) > 0;
+		}
+		return false;
 	}
 	
 	@OnlyIn(Dist.CLIENT)

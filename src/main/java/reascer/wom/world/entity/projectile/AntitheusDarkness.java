@@ -151,7 +151,9 @@ public class AntitheusDarkness extends AbstractHurtingProjectile {
             
             flag = entity.hurt(damage, (entity1damage) * (1 + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, livingentity) / 3)));
             HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(entity, HurtableEntityPatch.class);
-			hitHurtableEntityPatch.knockBackEntity(livingentity.getPosition(1), 2f * 0.25F);
+            if (hitHurtableEntityPatch != null) {
+            	hitHurtableEntityPatch.knockBackEntity(livingentity.getPosition(1), 2f * 0.25F);
+			}
             if (enchantmentDamage != 0) {
             	((ServerLevel) this.level).sendParticles(ParticleTypes.ENCHANTED_HIT,
             			(this.getX()),
@@ -171,8 +173,10 @@ public class AntitheusDarkness extends AbstractHurtingProjectile {
                }
             }
             if (entity instanceof LivingEntity) {
-            	livingentity.setLastHurtMob(entity);
-            	livingentity.addTag("antitheus_pull:"+ entity.getId());
+            	if (!((LivingEntity) entity).isDeadOrDying()) {
+					livingentity.setLastHurtMob(entity);
+					livingentity.addTag("antitheus_pull:"+ entity.getId());
+				}
             }
          } else {
             flag = entity.hurt(DamageSource.MAGIC, 4.0F);
@@ -207,7 +211,7 @@ public class AntitheusDarkness extends AbstractHurtingProjectile {
       			0,
       			0.1f);
         ((ServerLevel) this.level).playSound(null, this.getX(), this.getY(), this.getZ(),
-    			SoundEvents.WITHER_BREAK_BLOCK, this.getSoundSource(), 1.0F, 1.0F);
+    			SoundEvents.WITHER_BREAK_BLOCK, this.getSoundSource(), 0.8F, 1.0F);
          this.discard();
       }
 

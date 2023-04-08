@@ -5,7 +5,7 @@
 		{
 			"armor_negation":20.0,
 			"impact":2.1,
-			"max_strikes":4
+			"max_strikes":6
 		}
 	},
 	"type":"antitheus"

@@ -355,7 +355,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	public void cancelOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.cancelOnServer(executer, args);
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
-		if (!executer.getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
+		executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false,executer.getOriginal());
+		if (executer.getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
 			executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());
 		}
 		executer.getOriginal().removeEffect(EpicFightMobEffects.STUN_IMMUNITY.get());
@@ -504,6 +505,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		if (container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER) > 0) {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level.getEntity(container.getDataManager().getDataValue(DARKNESS_TARGET));
+				if (target.isDeadOrDying()) {
+					container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				}
 				if (container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER) == 0) {
 					container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -622,7 +627,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					}
 					if (container.getDataManager().getDataValue(DARKNESS_TARGET_HITED)) {
 						container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_PULL, 0);
+						
+						if (container.getExecuter().getEntityState().canBasicAttack()) {
+							container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_PULL, 0);
+						}
+						
+						
 						IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("demon_fee", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.HOLD);
 						container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 				    			SoundEvents.WITHER_BREAK_BLOCK, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 2.0F);
@@ -651,7 +661,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							float ressource = container.getExecuter().getSkill(this).getResource();
 							float ressource_after_consumption = ressource + ((48f * (1f - sweeping_edge/6f)/2) * target.getEffect(MobEffects.WITHER).getAmplifier());
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
-							container.getExecuter().getOriginal().heal(WitherCatharsis*0.2f);
+							container.getExecuter().getOriginal().heal(WitherCatharsis*0.3f);
 							target.removeEffect(MobEffects.WITHER);
 						}
 						float dpx = container.getDataManager().getDataValue(DARKNESS_PORTAL_X);
@@ -660,14 +670,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						container.getDataManager().setDataSync(DARKNESS_TARGET_REAPED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						if (target.hurt(damage,1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f))) {
+						if (target.hurt(damage,1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.7f))) {
 							container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent((ServerPlayerPatch)container.getExecuter(), target, damage, 1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f)));
 							if (target.isAlive()) {
-								target.teleportTo(dpx, dpy + (target instanceof Player ? 500:120), dpz);
+								target.teleportTo(dpx,(target instanceof Player ? 0:dpy - 100), dpz);
 							}
 						}
-						
-						
 					} else {
 						if (container.getDataManager().getDataValue(SHOOT_COOLDOWN) == 0 || container.getExecuter().getOriginal().isCreative()) {
 							if ((container.getResource() >= (48f * (1f - sweeping_edge/6f)) || container.getStack() == 1 || container.getExecuter().getOriginal().isCreative())) {
@@ -696,7 +704,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								container.getDataManager().setDataSync(DARKNESS_PORTAL_Y, dpy, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getDataManager().setDataSync(DARKNESS_PORTAL_Z, dpz, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getDataManager().setDataSync(DARKNESS_PORTAL_ANGLE, -(float) Math.toRadians(container.getExecuter().getOriginal().getViewYRot(1) + 180F), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-								container.getDataManager().setDataSync(SHOOT_COOLDOWN, 20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								container.getDataManager().setDataSync(SHOOT_COOLDOWN, 10, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_SHOOT, 0);
 							}
 						}

@@ -36,11 +36,16 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.animation.BasicMultipleAttackAnimation;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.world.item.WOMItems;
+import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
+import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.animation.types.AttackAnimation;
+import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -102,6 +107,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.TORMENTED_MIND.get() && container.getExecuter().getEntityState().canBasicAttack()) {
 				if (container.getExecuter().getStamina() > 0) {
 					event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
+					container.getExecuter().getOriginal().setSprinting(false);
 				}
 			}
 		});
@@ -112,6 +118,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 					event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 					if(!container.getExecuter().isLogicalClient()) {
 						container.getDataManager().setDataSync(CHARGING, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getExecuter().getOriginal().setSprinting(false);
 					}
 				}
 			}
@@ -124,7 +131,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(CHARGED_ATTACK)) {
+			ServerPlayerPatch entitypatch = event.getPlayerPatch();
+			AttackAnimation anim = ((AttackAnimation) event.getDamageSource().getAnimation());
+			AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(event.getDamageSource().getAnimation());
+			float elapsedTime = player.getElapsedTime();
+			Phase phase = anim.getPhaseByTime(elapsedTime);
+			
+			if (container.getDataManager().getDataValue(CHARGED_ATTACK) && phase == anim.phases[0]) {
 				container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
 						event.getTarget().getX() - 0.15D, 
@@ -138,6 +151,9 @@ public class TormentPassiveSkill extends PassiveSkill {
 						event.getTarget().getZ() - 0.15D, 
 						25, 0.0D, 0.0D, 0.0D,
 						1.0D);
+			} else {
+				container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(CHARGED_ATTACK, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		});
 		
@@ -180,6 +196,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
+		super.onRemoved(container);
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
@@ -192,7 +209,10 @@ public class TormentPassiveSkill extends PassiveSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		return (container.getDataManager().getDataValue(CHARGING) || container.getDataManager().getDataValue(CHARGED) || container.getDataManager().getDataValue(SAVED_CHARGE) > 0) && !container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE);
+		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() instanceof TrueBerserkSkill) {
+			return (container.getDataManager().getDataValue(CHARGING) || container.getDataManager().getDataValue(CHARGED) || container.getDataManager().getDataValue(SAVED_CHARGE) > 0) && !container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE);
+		}
+		return false;
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -213,10 +233,10 @@ public class TormentPassiveSkill extends PassiveSkill {
 		}
 			
 		if (container.getDataManager().getDataValue(CHARGED)) {
-			gui.font.drawShadow(matStackIn, String.valueOf(charge), ((float)width - x+7), ((float)height - y+4), 16777215);
+			gui.font.drawShadow(matStackIn, String.valueOf(charge), ((float)width - x+8), ((float)height - y+4), 16777215);
 			gui.font.drawShadow(matStackIn, "x3", ((float)width - x+5), ((float)height - y+13), 16777215);
 		} else {
-			gui.font.drawShadow(matStackIn, String.valueOf(charge), ((float)width - x+7), ((float)height - y+6), 16777215);
+			gui.font.drawShadow(matStackIn, String.valueOf(charge), ((float)width - x+8), ((float)height - y+6), 16777215);
 		}
 		matStackIn.popPose();
 	}
@@ -252,7 +272,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 			}
 		}
 		if(!container.getExecuter().isLogicalClient()) {
-			AttributeModifier charging_Movementspeed = new AttributeModifier(EVENT_UUID, "torment.charging_movespeed", 2, Operation.MULTIPLY_TOTAL);
+			AttributeModifier charging_Movementspeed = new AttributeModifier(EVENT_UUID, "torment.charging_movespeed", 3, Operation.MULTIPLY_TOTAL);
 			ServerPlayerPatch executer = (ServerPlayerPatch) container.getExecuter();
 			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal());
 			
@@ -283,7 +303,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 				} else {
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE)) {
 
-						container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 2,true,false,false));
+						container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 1,true,false,false));
 						container.getExecuter().getOriginal().level.playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),

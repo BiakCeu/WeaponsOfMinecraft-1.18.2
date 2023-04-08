@@ -236,9 +236,9 @@ public class WOMSkills {
 		
 		WeaponInnateSkill fatalDrawEFsSkill = onBuild.build(WeaponOfMinecraft.MODID, "fatal_draw_ef");
 		fatalDrawEFsSkill.newProperty()
-			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5f))
+			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f))
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
-			.addProperty(AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(50))
+			.addProperty(AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(30))
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 			.registerPropertiesToAnimation();
 			

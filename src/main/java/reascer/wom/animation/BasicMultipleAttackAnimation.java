@@ -196,7 +196,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
 											double power = source.getImpact() * 0.25f;
 											double d1 = entity.getX() - hitten.getX();
-											double d2 = entity.getY()-3 - hitten.getY();
+											double d2 = entity.getY()-10 - hitten.getY();
 											double d0;
 											
 											for (d0 = entity.getZ() - hitten.getZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {
