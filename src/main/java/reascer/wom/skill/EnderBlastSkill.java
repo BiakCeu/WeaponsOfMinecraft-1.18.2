@@ -109,15 +109,15 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			
-			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT)
+			if (!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_LEFT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_RIGHT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_DASH) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT)
 					) {
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

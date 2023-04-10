@@ -7,11 +7,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.skill.AdrenalineSkill;
 import reascer.wom.skill.AgonyPlungeSkill;
 import reascer.wom.skill.ArrowTenacitySkill;
 import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
 import reascer.wom.skill.CriticalKnowledgeSkill;
+import reascer.wom.skill.DancingBladeSkill;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.DodgeMasterSkill;
@@ -19,7 +21,9 @@ import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderStepSkill;
+import reascer.wom.skill.MindSetSkill;
 import reascer.wom.skill.WOMFatalDrawSkill;
+import reascer.wom.skill.heartShieldSkill;
 import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
@@ -73,6 +77,10 @@ public class WOMSkills {
 	public static Skill PAIN_RETRIBUTION;
 	public static Skill VAMPIRIZE;
 	public static Skill CRITICAL_KNOWLEDGE;
+	public static Skill HEART_SHIELD;
+	public static Skill MINDSET;
+	public static Skill ADRENALINE;
+	public static Skill DANCING_BLADE;
 	
 	public static Skill ENDER_BLAST;
 	public static Skill ENDER_FUSION;
@@ -175,6 +183,18 @@ public class WOMSkills {
 
 		SkillManager.register(CriticalKnowledgeSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponOfMinecraft.MODID,"critical_knowledge");
+		
+		SkillManager.register(heartShieldSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"heart_shield");
+		
+		SkillManager.register(MindSetSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"mindset");
+		
+		SkillManager.register(AdrenalineSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"adrenaline");
+		
+		SkillManager.register(DancingBladeSkill::new, PassiveSkill.createPassiveBuilder(),
+				WeaponOfMinecraft.MODID,"dancing_blade");
 	}
 	
 	@SubscribeEvent
@@ -190,6 +210,10 @@ public class WOMSkills {
 		PAIN_RETRIBUTION = onBuild.build(WeaponOfMinecraft.MODID, "pain_retribution");
 		VAMPIRIZE = onBuild.build(WeaponOfMinecraft.MODID, "vampirize");
 		CRITICAL_KNOWLEDGE = onBuild.build(WeaponOfMinecraft.MODID, "critical_knowledge");
+		HEART_SHIELD = onBuild.build(WeaponOfMinecraft.MODID, "heart_shield");
+		MINDSET = onBuild.build(WeaponOfMinecraft.MODID, "mindset");
+		ADRENALINE = onBuild.build(WeaponOfMinecraft.MODID, "adrenaline");
+		DANCING_BLADE = onBuild.build(WeaponOfMinecraft.MODID, "dancing_blade");
 		
 		WeaponInnateSkill charybdisSkill = onBuild.build(WeaponOfMinecraft.MODID, "charybdis");
 		charybdisSkill.newProperty()

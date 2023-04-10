@@ -506,12 +506,14 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level.getEntity(container.getDataManager().getDataValue(DARKNESS_TARGET));
-				if (target.isDeadOrDying()) {
-					container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				}
-				if (container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER) == 0) {
-					container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (target != null) {
+					if (target.isDeadOrDying()) {
+						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					}
+					if (container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER) == 0) {
+						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					}
 				}
 			}
 			if(container.getExecuter().isLogicalClient()) {

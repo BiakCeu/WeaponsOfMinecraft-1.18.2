@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -151,6 +153,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 				
 				if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(trueEntity) && !entitypatch.isTeammate(hitten)) {
 					if (hitten instanceof LivingEntity || hitten instanceof PartEntity) {
+						HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(hitten, HurtableEntityPatch.class);
 						if (entity.hasLineOfSight(hitten)) {
 							EpicFightDamageSource source;
 							if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
@@ -162,6 +165,26 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 								}
 							} else {
 								source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
+							}
+							if (hitHurtableEntityPatch.isStunned()) {
+								float anti_stunlock = 1;
+								for (String tag : hitten.getTags()) {
+									if (tag.contains("anti_stunlock:")) {
+										anti_stunlock = Float.valueOf(tag.substring(14)) * 0.90f;
+										hitten.removeTag(tag);
+										break;
+									}
+								}
+								source.setImpact(source.getImpact() * anti_stunlock);
+								hitten.addTag("anti_stunlock:"+anti_stunlock);
+							} else {
+								for (String tag : hitten.getTags()) {
+									if (tag.contains("anti_stunlock:")) {
+										hitten.removeTag(tag);
+										break;
+									}
+								}
+								//entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);
 							}
 							int prevInvulTime = hitten.invulnerableTime;
 							hitten.invulnerableTime = 0;
@@ -177,10 +200,9 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 								hitten.level.playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
 								this.spawnHitParticle(((ServerLevel) hitten.level), entitypatch, hitten, phase);
 								
-								HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(hitten, HurtableEntityPatch.class);
 								if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
-										float stunTime = (float) (0.83f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+										float stunTime = (float) (source.getImpact() * 0.3f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 											hitHurtableEntityPatch.setStunReductionOnHit();
 											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
@@ -190,13 +212,13 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 									}
 									
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.FALL) {
-										float stunTime = (float) (source.getImpact() * 0.5f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+										float stunTime = (float) (source.getImpact() * 0.3f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 											hitHurtableEntityPatch.setStunReductionOnHit();
-											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
+											hitHurtableEntityPatch.applyStun(StunType.SHORT, stunTime);
 											double power = source.getImpact() * 0.25f;
 											double d1 = entity.getX() - hitten.getX();
-											double d2 = entity.getY()-10 - hitten.getY();
+											double d2 = entity.getY()-5 - hitten.getY();
 											double d0;
 											
 											for (d0 = entity.getZ() - hitten.getZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {

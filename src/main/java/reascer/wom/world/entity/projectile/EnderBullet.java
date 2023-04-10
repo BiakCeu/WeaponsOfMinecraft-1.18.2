@@ -96,7 +96,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
          boolean flag;
          if (entity1 instanceof LivingEntity) {
             LivingEntity livingentity = (LivingEntity)entity1;
-            IndirectEpicFightDamageSource damage = new IndirectEpicFightDamageSource("Ender blast", entity1, this, StunType.SHORT);
+            IndirectEpicFightDamageSource damage = new IndirectEpicFightDamageSource("ender_bullet", entity1, this, StunType.SHORT);
             damage.addTag(SourceTags.WEAPON_INNATE);
             int prevInvulTime = entity.invulnerableTime;
             entity.invulnerableTime = 0;

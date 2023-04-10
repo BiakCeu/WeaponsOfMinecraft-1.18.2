@@ -105,18 +105,20 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80, event.getPlayerPatch().getOriginal());
-			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_RIGHT) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT)) {
+			if (!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_RIGHT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT)) {
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_1) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_PISTOLERO) &&
-				event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT)
+			if (!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_1) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_PISTOLERO) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT)
 					) {
 				container.getDataManager().setDataSync(COOLDOWN, cooldown, event.getPlayerPatch().getOriginal());
 				container.getDataManager().setDataSync(ZOOM, false, event.getPlayerPatch().getOriginal());

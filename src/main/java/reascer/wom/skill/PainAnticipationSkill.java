@@ -2,13 +2,20 @@ package reascer.wom.skill;
 
 import java.util.UUID;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -70,6 +77,42 @@ public class PainAnticipationSkill extends PassiveSkill {
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public boolean shouldDraw(SkillContainer container) {
+		return true;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack matStackIn, float x, float y, float scale, int width, int height) {
+		matStackIn.pushPose();
+		matStackIn.scale(scale, scale, 1.0F);
+		matStackIn.translate(0, (float)gui.getSlidingProgression() * 1.0F / scale, 0);
+		RenderSystem.setShaderTexture(0, this.getSkillTexture());
+		float scaleMultiply = 1.0f / scale;
+		if (container.getDataManager().getDataValue(ACTIVE)) {
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
+			matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
+			gui.font.drawShadow(matStackIn, String.valueOf((container.getDataManager().getDataValue(DUREE)/20)+1), ((float)width - x+7), ((float)height - y+13), 16777215);
+		} else {
+			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
+			} else {
+
+				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			}
+			gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
+			matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
+			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				gui.font.drawShadow(matStackIn, String.valueOf((container.getDataManager().getDataValue(TIMER)/20)+1), ((float)width - x+7), ((float)height - y+13), 16777215);
+			}
+		}
+		
+		matStackIn.popPose();
 	}
 	
 	@Override

@@ -1,20 +1,9 @@
 package reascer.wom.gameasset;
 
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import javax.naming.spi.StateFactory;
-
-import org.lwjgl.system.CallbackI.B;
-import org.openjdk.nashorn.internal.runtime.regexp.joni.ApplyCaseFoldArg;
-
-import com.mojang.math.Vector3f;
-
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,14 +11,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.DesertPyramidPiece;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,13 +28,9 @@ import reascer.wom.particle.WOMParticles;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.EFKatanaPassive;
-import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import reascer.wom.world.item.WOMItems;
-import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Keyframe;
-import yesman.epicfight.api.animation.LivingMotion;
-import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.TransformSheet;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationEvent.Side;
@@ -59,23 +39,16 @@ import yesman.epicfight.api.animation.property.AnimationEvent.TimeStampedEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
-import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.animation.types.AimAnimation;
-import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
-import yesman.epicfight.api.client.animation.Layer.Priority;
-import yesman.epicfight.api.animation.types.BasicAttackAnimation;
 import yesman.epicfight.api.animation.types.DodgeAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.EntityState.StateFactor;
 import yesman.epicfight.api.animation.types.GuardAnimation;
 import yesman.epicfight.api.animation.types.MovementAnimation;
-import yesman.epicfight.api.animation.types.ReboundAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.api.utils.TimePairList;
-import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -507,7 +480,7 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.4F, ReuseableEvents.FAST_SPINING, Side.CLIENT));
 		
 		AGONY_PLUNGE_FORWARD = new SpecialAttackAnimation(0.05F, "biped/skill/agony_plunge_forward", biped,
-				new Phase(0.0F, 0.15F, 0.20F, 0.2F, 0.2F, biped.rootJoint, WOMColliders.AGONY_PLUNGE), 
+				new Phase(0.0F, 0.10F, 0.20F, 0.2F, 0.2F, biped.rootJoint, WOMColliders.AGONY_PLUNGE), 
 				new Phase(0.2F, 1.1F, 1.45F, 1.7F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.AGONY_PLUNGE))
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.WHOOSH_BIG,0)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,0)

@@ -19,10 +19,10 @@ public class PainRetributionSkill extends PainAnticipationSkill {
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
 		
-		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID, (event) -> {
+		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(ACTIVE)) {
-				float attackDamage = event.getAttackDamage();
-				event.setAttackDamage(attackDamage * 1.2f);
+				float attackDamage = event.getDamage();
+				event.setDamage(attackDamage * 1.2f);
 			}
 		});
 	}
@@ -30,6 +30,6 @@ public class PainRetributionSkill extends PainAnticipationSkill {
 	@Override
 	public void onRemoved(SkillContainer container) {
 		super.onRemoved(container);
-		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
 	}
 }

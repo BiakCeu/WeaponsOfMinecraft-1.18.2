@@ -37,7 +37,7 @@ public class RuinePassive extends PassiveSkill {
 		float scaleMultiply = 1.0f / scale;
 		gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
 		matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
-		gui.font.drawShadow(matStackIn, String.valueOf(container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(PlunderPerditionSkill.TIMER)/20), ((float)width - x+4), ((float)height - y+13), 16777215);
+		gui.font.drawShadow(matStackIn, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(PlunderPerditionSkill.TIMER)/20)+1), ((float)width - x+4), ((float)height - y+13), 16777215);
 		gui.font.drawShadow(matStackIn, (String.valueOf((int)((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(PlunderPerditionSkill.STRENGHT)/40.0f)*100f)) + "%"), ((float)width - x+4), ((float)height - y+4), 16777215);
 		matStackIn.popPose();
 	}
