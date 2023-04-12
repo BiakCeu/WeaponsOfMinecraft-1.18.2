@@ -3,9 +3,9 @@
 	{
 		"common":
 		{
-			"impact":0.6,
+			"impact":0.8,
 			"max_strikes":1
 		}
 	},
-	"type":"katana"
+	"type":"satsujin"
 }

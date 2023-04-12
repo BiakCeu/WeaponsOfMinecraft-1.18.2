@@ -37,6 +37,8 @@
 	"skill.wom.plunder_perdition" : "Essence Reaper",
 	"skill.wom.plunder_perdition.tooltip" : "\"Perform the enderman ritual of stealing things form others.\"\n\nThe condensed endpower of the cristal in the hilt\nwill steal the life force of all enemy in the area.\nEach enemy hit will give you 5% of your max stamina and\n1 health back (+1 heart per Sweeping edge level).\nThen, the cristal will give you increased overall\nspeed for 10sec x (1 + (Sweeping edge level)).\nThe strenght of the speed depens on the number of enemy hit.\n",
 
+	"item.epicfight.satsujin" : "Satsujin",
+	"item.epicfight.satsujin.tooltip" : "The demon is sealed inside this blade.\nStrengthening the blade and increasing it's effectivness\nbut, as the demon is still sealed, he can't provide much more power...\n",
 	"skill.wom.fatal_draw_ef" : "Sakura slash",
 	"skill.wom.fatal_draw_ef.tooltip" : "\"The thinnest slash performed in absolute serenity\"\n\nDraw your blade at an invisible speed to cut down enemies.\nCast while sprinting to perform a fast dash that slice enemies along the path.\nThis can be stack for up to 8 and each level of sweeping edge you have\nwill increase the number of stack by 1/3 on the first draw.\nAfter the first draw, you'll enter sakura state.\nIf you don't draw a Sakura slash again within 4 seconds, you loose all your stacks and get out of sakura state.\n",
 
@@ -53,7 +55,7 @@
 	"skill.wom.demonic_ascension.tooltip" : "\"The scythe takes possession of your body\n and use it to perform terrible things....\"\n\nAscenscion :\n on a large area, try to Apply Wither effect\n before applying 50% CATHARIS* on affected entity.\n\nIn Demon form:\n Base Duration is equal to 20s x (1 + (Sweeping edge level) / 3).\n Dash attack have twice the chance to apply wither effect but\n will consume more and more health if used multiple times.\n Other attacks will cause 80% CATHARSIS* on withered entitys if they hit.\n\n*CATHARIS: Reap of the wither effect from the target\ndealing the remaining damage depending on the CATHARIS percentage at once\nand heal you for the remaining of that percentage.\nCATHARIS also increase the Demon form\nduration depending on their wither state\n(+3s for wither II and +6s for wither III).\n",
 
 	"item.epicfight.demon_seal" : "Demon Seal",
-	"item.epicfight.demon_seal.tooltip" : "An old demon is sealed inside this.\n",
+	"item.epicfight.demon_seal.tooltip" : "An old demon is sealed inside this.",
 
 	"item.epicfight.stone_greataxe" : "Stone Greataxe",
 	"item.epicfight.golden_greataxe" : "Golden Greataxe",
@@ -95,7 +97,7 @@
 	"skill.wom.adrenaline" : "Adrenanline",
 	"skill.wom.adrenaline.tooltip" : "While under 20% Health,\ngain adrenaline wich will increase your damage by 60% and decrease the damage recieved by 40%",
 	"skill.wom.dancing_blade" : "Dancing Blade",
-	"skill.wom.dancing_blade.tooltip" : "\"turn yourself into a Storm of blade that is dancing on the song of death\"\n\n Every 4 successful attack, your next attack gain 60% damage",
+	"skill.wom.dancing_blade.tooltip" : "\"turn yourself into a storm of blade that is dancing on the music of death\"\n\nGain 60% damage on every 4th successfull attack.",
 
 	"skill.epicfight.passive.category" : "Passive Skill",
 	"skill.epicfight.dodge.category" : "Dodge Skill",

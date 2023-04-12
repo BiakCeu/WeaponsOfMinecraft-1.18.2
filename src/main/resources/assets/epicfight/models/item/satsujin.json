@@ -3,7 +3,7 @@
 	"base":
 	{
 		"loader": "forge:obj",
-  		"model": "epicfight:models/item/obj/katana.obj",
+  		"model": "epicfight:models/item/obj/satsujin.obj",
   		"flip-v": true,
 		"display":
   		{
@@ -28,7 +28,7 @@
 			"parent": "item/generated",
 			"textures":
 			{
-				"layer0": "epicfight:item/katana"
+				"layer0": "epicfight:item/satsujin"
 			}
 		},
 		"gui":
@@ -36,7 +36,7 @@
 			"parent": "item/generated",
 			"textures":
 			{
-				"layer0": "epicfight:item/katana"
+				"layer0": "epicfight:item/satsujin"
 			},
 			"gui_light": "front"
 		},
@@ -45,7 +45,7 @@
 			"parent": "item/generated",
 			"textures":
 			{
-				"layer0": "epicfight:item/katana"
+				"layer0": "epicfight:item/satsujin"
 			}
 		}
 	}

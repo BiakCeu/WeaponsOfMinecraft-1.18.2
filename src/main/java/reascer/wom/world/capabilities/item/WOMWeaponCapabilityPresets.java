@@ -283,7 +283,7 @@ public class WOMWeaponCapabilityPresets {
 		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem.Builder> EFKATANA = (item) -> {
+	public static final Function<Item, CapabilityItem.Builder> SATSUJIN = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 			.category(WeaponCategories.KATANA)
 			.styleProvider((entitypatch) -> {
@@ -455,7 +455,7 @@ public class WOMWeaponCapabilityPresets {
 		event.getTypeEntry().put("agony", AGONY);
 		event.getTypeEntry().put("torment", TORMENT);
 		event.getTypeEntry().put("ruine", RUINE);
-		event.getTypeEntry().put("katana", EFKATANA);
+		event.getTypeEntry().put("satsujin", SATSUJIN);
 		event.getTypeEntry().put("ender_blaster", ENDER_BLASTER);
 		event.getTypeEntry().put("antitheus", ANTITHEUS);
 		event.getTypeEntry().put("herrscher", HERRSCHER);

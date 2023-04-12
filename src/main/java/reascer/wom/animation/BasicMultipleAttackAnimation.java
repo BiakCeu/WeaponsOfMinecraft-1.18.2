@@ -184,7 +184,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										break;
 									}
 								}
-								//entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);
+								entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);
 							}
 							int prevInvulTime = hitten.invulnerableTime;
 							hitten.invulnerableTime = 0;
