@@ -36,6 +36,8 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.ClientEngine;
+import yesman.epicfight.gameasset.EpicFightSkills;
+import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
@@ -640,7 +642,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				    			SoundEvents.WITHER_BREAK_BLOCK, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 2.0F);
 						float WitherCatharsis = 0;
 						if (target.hasEffect(MobEffects.WITHER)) {
-							damage.setImpact(12f);
+							damage.setImpact(6f);
 							damage.addTag(SourceTags.WEAPON_INNATE);
 							WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * target.getEffect(MobEffects.WITHER).getAmplifier());
 							((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL, 
@@ -661,7 +663,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							}
 
 							float ressource = container.getExecuter().getSkill(this).getResource();
-							float ressource_after_consumption = ressource + ((48f * (1f - sweeping_edge/6f)/2) * target.getEffect(MobEffects.WITHER).getAmplifier());
+							float ressource_after_consumption = ressource + ((66.6f * (1f - sweeping_edge/6f)/2) * target.getEffect(MobEffects.WITHER).getAmplifier());
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
 							container.getExecuter().getOriginal().heal(WitherCatharsis*0.3f);
 							target.removeEffect(MobEffects.WITHER);
@@ -680,15 +682,25 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						}
 					} else {
 						if (container.getDataManager().getDataValue(SHOOT_COOLDOWN) == 0 || container.getExecuter().getOriginal().isCreative()) {
-							if ((container.getResource() >= (48f * (1f - sweeping_edge/6f)) || container.getStack() == 1 || container.getExecuter().getOriginal().isCreative())) {
+							boolean tag = (container.getResource() >= (66.6f * (1f - sweeping_edge/6f)));
+							if (container.getExecuter().getSkill(EpicFightSkills.HYPERVITALITY) != null) {
+								if (container.getResource() >= (33.3f * (1f - sweeping_edge/6f)) && container.getExecuter().getStamina() > 0) {
+									tag = true;
+								}
+							}
+							if (tag || container.getStack() == 1 || container.getExecuter().getOriginal().isCreative()) {
 								if (!container.getExecuter().getOriginal().isCreative()) {
 									float ressource = container.getExecuter().getSkill(this).getResource();
 									if (container.getStack() == 1) {
-										ressource = 240f;
+										ressource = 666f;
 										this.setStackSynchronize((ServerPlayerPatch) executer,container.getStack()-1);	
 									}
-									float ressource_after_consumption = ressource - (48f * (1f - sweeping_edge/6f));
+									float ressource_after_consumption = ressource - (66.6f * (1f - sweeping_edge/6f));
 									
+									if (container.getExecuter().getSkill(EpicFightSkills.HYPERVITALITY) != null) {
+										ressource_after_consumption = ressource - (33.3f * (1f - sweeping_edge/6f));
+										container.getExecuter().consumeStamina((33.3f * (1f - sweeping_edge/6f))*0.5f);
+									}
 									this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
 								}
 								OpenMatrix4f transformMatrix =  new OpenMatrix4f();

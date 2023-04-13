@@ -48,11 +48,17 @@ public class DodgeMasterSkill extends DodgeSkill {
 				event.setResult(ResultType.MISSED);
 			}
         });
+		
+		container.getExecuter().getEventListener().addEventListener(EventType.BASIC_ATTACK_EVENT, EVENT_UUID, (event) -> {
+					container.getDataManager().setDataSync(DODGE, false,event.getPlayerPatch().getOriginal());
+        });
 	}
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
+		super.onRemoved(container);
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.BASIC_ATTACK_EVENT, EVENT_UUID);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -108,10 +114,8 @@ public class DodgeMasterSkill extends DodgeSkill {
 		if (executer.getSkill(this).getDataManager().getDataValue(TIMER) > 0 && !executer.getSkill(this).getDataManager().getDataValue(DODGE)) {
 			executer.playAnimationSynchronized(this.animations[i], 0);
 			executer.changeModelYRot(yaw);
-			if(executer.getStamina() - 6 < 0){
+			if(!executer.consumeStamina(6)){
 				executer.setStamina(0);
-			} else {
-				executer.setStamina(((ServerPlayerPatch) executer).getStamina() - 6f);
 			}
 		}
 		executer.getSkill(this).getDataManager().setDataSync(TIMER, 8,executer.getOriginal());
@@ -126,7 +130,7 @@ public class DodgeMasterSkill extends DodgeSkill {
 	@Override
 	public boolean isExecutableState(PlayerPatch<?> executer) {
 		EntityState playerState = executer.getEntityState();
-		if (!(executer.isUnstable() || !playerState.canUseSkill()) && !executer.getOriginal().isInWater() && !executer.getOriginal().onClimbable() && !(executer.getStamina() == 0)) {
+		if (!(executer.isUnstable() || !playerState.canUseSkill()) && !executer.getOriginal().isInWater() && !executer.getOriginal().onClimbable() && !(executer.getStamina() < 0)) {
 			executer.getOriginal().playSound(SoundEvents.BLAZE_SHOOT, 0.3f, 2);
 			return true;
 		} else {
@@ -145,10 +149,8 @@ public class DodgeMasterSkill extends DodgeSkill {
 					if (container.getDataManager().getDataValue(TIMER) < 7 && container.getDataManager().getDataValue(DODGE)) {
 						container.getExecuter().playAnimationSynchronized(this.animations[Math.abs((new Random().nextInt() % 2)+2)], 0);
 						container.getDataManager().setDataSync(TIMER, 12,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						if(((ServerPlayerPatch) container.getExecuter()).getStamina() - 3 < 0){
-							((ServerPlayerPatch) container.getExecuter()).setStamina(0);
-						} else {
-							((ServerPlayerPatch) container.getExecuter()).setStamina(((ServerPlayerPatch) container.getExecuter()).getStamina() - 3f);
+						if(!container.getExecuter().consumeStamina(3)){
+							container.getExecuter().setStamina(0);
 						}
 					}
 					if (container.getDataManager().getDataValue(TIMER) > 5 && container.getDataManager().getDataValue(DODGE)) {

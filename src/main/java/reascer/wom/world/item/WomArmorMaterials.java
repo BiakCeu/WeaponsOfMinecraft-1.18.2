@@ -11,8 +11,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import yesman.epicfight.main.EpicFightMod;
 
-@SuppressWarnings("deprecation")
-public enum EFEpicFightArmorMaterials implements ArmorMaterial {
+public enum WomArmorMaterials implements ArmorMaterial {
 	   GOLD("golden_artefacts", 25, new int[]{1, 1, 2, 1}, 25, SoundEvents.ARMOR_EQUIP_GOLD, 0.0F, 0.0F, () -> {
 	      return Ingredient.of(Items.GOLD_INGOT);
 	   }, new int[]{3, 4, 4, 3} , new int[]{0, 0, 0, 0}),
@@ -36,9 +35,9 @@ public enum EFEpicFightArmorMaterials implements ArmorMaterial {
 	private final SoundEvent soundEvent;
 	private final float toughness;
 	private final float knockbackResistance;
-	private final LazyLoadedValue<Ingredient> repairMaterial;
+	private final Ingredient repairMaterial;
 
-	private EFEpicFightArmorMaterials(String nameIn, int maxDamageFactorIn, int[] damageReductionAmountsIn, int enchantabilityIn,
+	private WomArmorMaterials(String nameIn, int maxDamageFactorIn, int[] damageReductionAmountsIn, int enchantabilityIn,
 			SoundEvent equipSoundIn, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterialSupplier,int[] addHealthAmountArray,int[] addStaminaAmountArray) {
 		this.name = nameIn;
 	    this.durabilityMultiplier = maxDamageFactorIn;
@@ -49,7 +48,7 @@ public enum EFEpicFightArmorMaterials implements ArmorMaterial {
 	    this.soundEvent = equipSoundIn;
 	    this.toughness = toughness;
 	    this.knockbackResistance = knockbackResistance;
-	    this.repairMaterial = new LazyLoadedValue<>(repairMaterialSupplier);
+	    this.repairMaterial = repairMaterialSupplier.get();
 	}
 	
 	@Override
@@ -97,7 +96,7 @@ public enum EFEpicFightArmorMaterials implements ArmorMaterial {
 
 	@Override
 	public Ingredient getRepairIngredient() {
-		return this.repairMaterial.get();
+		return this.repairMaterial;
 	}
 	
 }

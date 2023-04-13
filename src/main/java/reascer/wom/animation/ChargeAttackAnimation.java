@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,6 +43,7 @@ import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
+import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -56,24 +58,24 @@ import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class BasicMultipleAttackAnimation extends AttackAnimation {
-	public BasicMultipleAttackAnimation(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
+public class ChargeAttackAnimation extends AttackAnimation {
+	public ChargeAttackAnimation(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
 		this(convertTime, antic, antic, contact, recovery, collider, colliderJoint, path, armature);
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
+	public ChargeAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
 		this(convertTime, path, armature, new Phase(0.0F, antic, preDelay, contact, recovery, Float.MAX_VALUE, colliderJoint, collider));
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
+	public ChargeAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
 		this(convertTime, path, armature, new Phase(0.0F, antic, antic, contact, recovery, Float.MAX_VALUE, hand, colliderJoint, collider));
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, String path, Armature armature, boolean Coordsetter, Phase... phases) {
+	public ChargeAttackAnimation(float convertTime, String path, Armature armature, boolean Coordsetter, Phase... phases) {
 		super(convertTime, path, armature, phases);
 	}
 	
-	public BasicMultipleAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
+	public ChargeAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
 		super(convertTime, path, armature, phases);
 		
 		this.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, MoveCoordFunctions.TRACE_LOC_TARGET);
@@ -88,7 +90,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 				Vec3f keyLast = keyframes[endFrame].transform().translation();
 				Vec3 pos = entitypatch.getOriginal().getEyePosition();
 				Vec3 targetpos = attackTarget.position();
-				float horizontalDistance = Math.max((float)targetpos.subtract(pos).horizontalDistance()*1.75f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+				float horizontalDistance = Math.max((float)targetpos.subtract(pos).horizontalDistance()*3.00f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
 				Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
 				float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
 				

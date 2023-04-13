@@ -45,7 +45,7 @@ public class ArtefactsItem extends ArmorItem {
    private final int health;
    private final int stamina;
    protected final float knockbackResistance;
-   protected final EFEpicFightArmorMaterials material;
+   protected final WomArmorMaterials material;
    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
    public static boolean dispenseArmor(BlockSource p_40399_, ItemStack p_40400_) {
@@ -67,7 +67,7 @@ public class ArtefactsItem extends ArmorItem {
       }
    }
    
-   public ArtefactsItem(EFEpicFightArmorMaterials p_40386_, EquipmentSlot p_40387_, Item.Properties p_40388_) {
+   public ArtefactsItem(WomArmorMaterials p_40386_, EquipmentSlot p_40387_, Item.Properties p_40388_) {
       super(p_40386_,p_40387_,p_40388_);
       this.health = p_40386_.getAddHealthAmountArray(p_40387_);
       this.stamina = p_40386_.getAddStaminaAmountArray(p_40387_);

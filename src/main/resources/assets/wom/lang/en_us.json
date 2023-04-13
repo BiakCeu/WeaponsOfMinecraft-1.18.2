@@ -1,4 +1,6 @@
 {
+	"itemGroup.wom.items": "Weapons of Minecraft Items",
+	
 	"enchantment.epicfight.invigoration" : "Invigoration",
 	"attribute.name.epicfight.staminar" : "Max Stamina",
 
@@ -73,7 +75,9 @@
 	"skill.wom.charybdis.tooltip" : "Consume Stamina to perform a whirlwind of hit for a total of 8 strikes. Reduce the stamina consumption with sweeping edge.\n",
 	
 	"skill.wom.ender_step" : "Ender Step",
-	"skill.wom.ender_step.tooltip" : "Stamina : %d\n\nteleport to a grand distance. While executing this skill, player become immune from physical attacks.",
+	"skill.wom.ender_step.tooltip" : "Stamina : %d\n\nA fast teleportion away from the danger. While executing this skill, player become immune from physical attacks.",
+	"skill.wom.shadow_step" : "Shadow Step",
+	"skill.wom.shadow_step.tooltip" : "Stamina : %d\n\nSink in the shadows. Moving in the shadow will twist space and time to make you move faster than the light itself. While executing this skill, player become immune from physical attacks.",
 	"skill.wom.counter_attack" : "Counter Attack",
 	"skill.wom.counter_attack.tooltip" : "Perfect Guard will trigger a counter attack based on weapons attacks.\n\nAvailable Weapon Types : %s",
 	"skill.wom.arrow_tenacity" : "Arrow tenacity",

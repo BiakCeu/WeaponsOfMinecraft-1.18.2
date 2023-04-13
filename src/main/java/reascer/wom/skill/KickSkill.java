@@ -11,13 +11,13 @@ public class KickSkill extends Skill {
 	
 	public KickSkill(Builder builder) {
 		super(builder);
-		this.animations = WOMAnimations.KICK;
+		this.animations = WOMAnimations.KICK_AUTO_1;
 	}
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.executeOnServer(executer, args);
-		executer.playAnimationSynchronized(WOMAnimations.KICK, 0);
+		executer.playAnimationSynchronized(WOMAnimations.KICK_AUTO_1, 0);
 		
 	}
 }

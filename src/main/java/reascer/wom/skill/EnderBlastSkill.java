@@ -81,7 +81,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		container.getDataManager().registerData(NOFALLDAMAGE);
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 10,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {

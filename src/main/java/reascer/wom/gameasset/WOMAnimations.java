@@ -22,9 +22,12 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.animation.AntitheusShootAttackAnimation;
 import reascer.wom.animation.BasicMultipleAttackAnimation;
 import reascer.wom.animation.EnderblasterShootAttackAnimation;
+import reascer.wom.animation.CancelableDodgeAnimation;
+import reascer.wom.animation.ChargeAttackAnimation;
 import reascer.wom.animation.SpecialAttackAnimation;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.particle.WOMParticles;
+import reascer.wom.skill.ChargeSkill;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.EFKatanaPassive;
@@ -82,7 +85,14 @@ public class WOMAnimations {
 	public static StaticAnimation KNIGHT_ROLL_LEFT;
 	public static StaticAnimation KNIGHT_ROLL_RIGHT;
 	
-	public static StaticAnimation KICK;
+	public static StaticAnimation SHADOWSTEP_FORWARD;
+	public static StaticAnimation SHADOWSTEP_BACKWARD;
+	
+	public static StaticAnimation BULL_CHARGE;
+	
+	public static StaticAnimation KICK_AUTO_1;
+	public static StaticAnimation KICK_AUTO_2;
+	public static StaticAnimation KICK_AUTO_3;
 	
 	public static StaticAnimation SWORD_ONEHAND_AUTO_1;
 	public static StaticAnimation SWORD_ONEHAND_AUTO_2;
@@ -274,25 +284,25 @@ public class WOMAnimations {
 		
 		EATING = new StaticAnimation(0.11F, true, "biped/living/eating", biped);
 		
-		KICK = new BasicMultipleAttackAnimation(0.1F, 0.05F, 0.15F, 0.2F, null, biped.toolR, "biped/skill/kick", biped)
+		KICK_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.05F, 0.15F, 0.2F, null, biped.toolR, "biped/skill/kick", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(2))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(5))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
-		DODGEMASTER_BACKWARD = new DodgeAnimation(0.00F, "biped/skill/dodgemaster_back", 0.6F, 1.65F, biped)
+		DODGEMASTER_BACKWARD = new CancelableDodgeAnimation(0.00F, "biped/skill/dodgemaster_back", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG, 1.0F, 2.0F);
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT));
-		DODGEMASTER_LEFT = new DodgeAnimation(0.00F, "biped/skill/dodgemaster_left", 0.6F, 1.65F, biped)
+		DODGEMASTER_LEFT = new CancelableDodgeAnimation(0.00F, "biped/skill/dodgemaster_left", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG, 1.0F, 2.0F);
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT));
-		DODGEMASTER_RIGHT = new DodgeAnimation(0.00F, "biped/skill/dodgemaster_right", 0.6F, 1.65F, biped)
+		DODGEMASTER_RIGHT = new CancelableDodgeAnimation(0.00F, "biped/skill/dodgemaster_right", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG, 1.0F, 2.0F);
@@ -308,6 +318,70 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.ENDER_STEP, Side.BOTH));
 		ENDERSTEP_RIGHT = new DodgeAnimation(0.05F, "biped/skill/enderstep_right", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.ENDER_STEP, Side.BOTH));
+		
+		SHADOWSTEP_FORWARD = new CancelableDodgeAnimation(0.05F, "biped/skill/shadow_step_forward", 0.6F, 1.65F, biped)
+				.addEvents(TimePeriodEvent.create(0.05F, 1f, ReuseableEvents.SHADOW_STEP, Side.BOTH))
+				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.SHADOW_STEP_ENTER, Side.BOTH));
+		SHADOWSTEP_BACKWARD = new CancelableDodgeAnimation(0.05F, "biped/skill/shadow_step_backward", 0.6F, 1.65F, biped)
+				.addEvents(TimePeriodEvent.create(0.05F,1f, ReuseableEvents.SHADOW_STEP, Side.BOTH))
+				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.SHADOW_STEP_ENTER, Side.BOTH));
+		
+		BULL_CHARGE = new ChargeAttackAnimation(0.15F, "biped/skill/bull_charge", biped,
+				new Phase(0.0F, 0.0F, 0.10F, 0.11F, 0.11F, biped.rootJoint, WOMColliders.BULL_CHARGE),
+				new Phase(0.11F, 0.15F, 0.25F, 0.26F, 0.26F, biped.rootJoint, WOMColliders.BULL_CHARGE),
+				new Phase(0.26F, 0.3F, 0.4F, 0.41F, 0.41F, biped.rootJoint, WOMColliders.BULL_CHARGE),
+				new Phase(0.41F, 0.45F, 0.55F, 0.56F, 0.56F, biped.rootJoint, WOMColliders.BULL_CHARGE),
+				new Phase(0.56F, 0.6F, 0.7F, 0.8F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.SHOULDER_BUMP))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3F),1)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3F),2)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F),2)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,2)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1),3)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3F),3)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F),3)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,3)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,3)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,3)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(2),4)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(5F),4)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F),4)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,4)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,4)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,4)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.5F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
+				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof ServerPlayerPatch) {
+							ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) entitypatch;
+							if (serverPlayerPatch.getSkill(SkillSlots.DODGE) != null) {
+								serverPlayerPatch.getSkill(SkillSlots.DODGE).getDataManager().setDataSync(ChargeSkill.SUPER_ARMOR, true,(ServerPlayer)entitypatch.getOriginal());
+							}
+						}
+					}, Side.SERVER),
+					TimeStampedEvent.create(0.7F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof ServerPlayerPatch) {
+							ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) entitypatch;
+							if (serverPlayerPatch.getSkill(SkillSlots.DODGE) != null) {
+								serverPlayerPatch.getSkill(SkillSlots.DODGE).getDataManager().setDataSync(ChargeSkill.SUPER_ARMOR, false,(ServerPlayer)entitypatch.getOriginal());
+							}
+						}
+					}, Side.SERVER));
 		
 		KNIGHT_ROLL_FORWARD = new DodgeAnimation(0.1F, "biped/skill/roll_forward", 0.6F, 0.8F, biped);
 		KNIGHT_ROLL_BACKWARD = new DodgeAnimation(0.1F, "biped/skill/roll_backward", 0.6F, 0.8F, biped);
@@ -435,7 +509,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false);
 		
-		AGONY_AIR_SLASH = new BasicMultipleAttackAnimation(0.0F, 0.55F, 0.75F, 0.85F, WOMColliders.AGONY_AIRSLASH, biped.toolR, "biped/combat/agony_airslash", biped)
+		AGONY_AIR_SLASH = new BasicMultipleAttackAnimation(0.0F, 0.45F, 0.75F, 0.85F, WOMColliders.AGONY_AIRSLASH, biped.toolR, "biped/combat/agony_airslash", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.6F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.4F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
@@ -888,10 +962,11 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.85F, (entitypatch, self, params) -> {
-					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
 					}
+					entitypatch.updateMotion(true);
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
 		
@@ -908,7 +983,6 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
-
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
@@ -919,6 +993,7 @@ public class WOMAnimations {
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
 						}
+						entitypatch.updateMotion(true);
 						entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 					}, Side.SERVER));
 				
@@ -941,15 +1016,16 @@ public class WOMAnimations {
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
 					}
+					entitypatch.updateMotion(true);
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
 		
 		KATANA_SHEATHED_DASH = new BasicMultipleAttackAnimation(0.10F, 0.16F, 0.4F, 1.0F,WOMColliders.KATANA_SHEATHED_DASH, biped.rootJoint, "biped/combat/katana_sheathed_dash", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.75F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F))
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.KATANA_SHEATHED_HIT)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
@@ -966,7 +1042,8 @@ public class WOMAnimations {
 				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, self, params) -> {
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 1);
+						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+						entitypatch.updateMotion(true);
 					}
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
@@ -1028,6 +1105,10 @@ public class WOMAnimations {
 								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 								entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 1);
 							}
+							entitypatch.updateMotion(true);
+						}, Side.SERVER),TimeStampedEvent.create(2.05F, (entitypatch, self, params) -> {
+							entitypatch.playSound(EpicFightSounds.WHOOSH, 0, 0);
+						}, Side.SERVER),TimeStampedEvent.create(3.45F, (entitypatch, self, params) -> {
 							entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 						}, Side.SERVER));
 		
@@ -1044,6 +1125,10 @@ public class WOMAnimations {
 								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 								entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 1);
 							}
+							entitypatch.updateMotion(true);
+						}, Side.SERVER),TimeStampedEvent.create(2.05F, (entitypatch, self, params) -> {
+							entitypatch.playSound(EpicFightSounds.WHOOSH, 0, 0);
+						}, Side.SERVER),TimeStampedEvent.create(3.45F, (entitypatch, self, params) -> {
 							entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 						}, Side.SERVER));
 		
@@ -1064,6 +1149,10 @@ public class WOMAnimations {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(EFKatanaPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 1);
 					}
+					entitypatch.updateMotion(true);
+				}, Side.SERVER),TimeStampedEvent.create(1.90F, (entitypatch, self, params) -> {
+					entitypatch.playSound(EpicFightSounds.WHOOSH, 0, 0);
+				}, Side.SERVER),TimeStampedEvent.create(3.35F, (entitypatch, self, params) -> {
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
 		
@@ -3488,6 +3577,41 @@ public class WOMAnimations {
 			}
 			LivingEntity entity = entitypatch.getOriginal();
 			entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+		};
+		
+		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP_ENTER = (entitypatch, self, params) -> {
+			if (!entitypatch.isLogicalClient()) {
+				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				((ServerLevel) entity.level).sendParticles(ParticleTypes.LARGE_SMOKE,
+						entity.xo, 
+						entity.yo + 1, 
+						entity.zo,
+						40,
+						0.0,
+					    0.0,
+						0.0,
+						0.1);
+				entity.level.playSound(null, 
+						entity.xo, 
+						entity.yo + 1, 
+						entity.zo,
+		    			SoundEvents.WITHER_SHOOT, entity.getSoundSource(), 1.0F, 1.0F - ((new Random().nextFloat()-0.5f) * 0.2F));
+			}
+		};
+		
+		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP = (entitypatch, self, params) -> {
+			if (!entitypatch.isLogicalClient()) {
+				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				((ServerLevel) entity.level).sendParticles(ParticleTypes.SMOKE,
+						entity.xo, 
+						entity.yo + 1, 
+						entity.zo,
+						10,
+						0.45,
+					    0.45,
+						0.45,
+						0.05);
+			}
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer ANTITHEUS_WEAPON_TRAIL_ON = (entitypatch, self, params) -> {

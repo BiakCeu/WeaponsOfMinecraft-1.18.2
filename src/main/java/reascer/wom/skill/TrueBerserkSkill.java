@@ -100,7 +100,6 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(this).isActivated()) { 
 			super.cancelOnServer(executer, args);
-			executer.getOriginal().removeEffect(EpicFightMobEffects.STUN_IMMUNITY.get());
 			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 			this.setDurationSynchronize(executer, 0);
 			this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
@@ -115,7 +114,6 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 					executer.getOriginal().getY() + 1.2D, 
 					executer.getOriginal().getZ() - 0.15D, 
 					150, 0.3D, 0.6D, 0.3D, 0.1D);
-			executer.getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 120000));
 			executer.getSkill(this).getDataManager().setData(TIMER, 2);
 			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, true,executer.getOriginal());
 			this.setDurationSynchronize(executer, this.maxDuration + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()));
@@ -133,7 +131,6 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	@Override
 	public void cancelOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.cancelOnServer(executer, args);
-		executer.getOriginal().removeEffect(EpicFightMobEffects.STUN_IMMUNITY.get());
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
 		this.setDurationSynchronize(executer, 0);
@@ -189,6 +186,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	public void updateContainer(SkillContainer container) {
 		if (container.isActivated()) {
 			if (container.getDataManager().getDataValue(ACTIVE)) {
+				container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(),2, 0,true,false,false));
 				if (container.getDataManager().getDataValue(TIMER) > 0) {
 					container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
 				} else {

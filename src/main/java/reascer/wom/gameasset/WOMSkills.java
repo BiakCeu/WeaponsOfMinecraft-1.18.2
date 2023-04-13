@@ -10,6 +10,7 @@ import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.skill.AdrenalineSkill;
 import reascer.wom.skill.AgonyPlungeSkill;
 import reascer.wom.skill.ArrowTenacitySkill;
+import reascer.wom.skill.ChargeSkill;
 import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
 import reascer.wom.skill.CriticalKnowledgeSkill;
@@ -28,6 +29,7 @@ import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
 import reascer.wom.skill.RuinePassive;
+import reascer.wom.skill.ShadowStepSkill;
 import reascer.wom.skill.TormentPassiveSkill;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.skill.VampirizeSkill;
@@ -50,8 +52,10 @@ import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class WOMSkills {
 	public static Skill ENDERSTEP;
+	public static Skill SHADOWSTEP;
 	public static Skill DODGEMASTER;
 	public static Skill KNIGHT_ROLL;
+	public static Skill BULL_CHARGE;
 	
 	public static Skill KICK;
 	
@@ -106,6 +110,15 @@ public class WOMSkills {
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/roll_left"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/roll_right")),
 				WeaponOfMinecraft.MODID,"precise_roll");
+		
+		SkillManager.register(ShadowStepSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/shadow_step_forward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/shadow_step_backward")),
+				WeaponOfMinecraft.MODID,"shadow_step");
+		
+		SkillManager.register(ChargeSkill::new, ChargeSkill.createChargeBuilder().setAnimations(
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/bull_charge")),
+				WeaponOfMinecraft.MODID,"bull_charge");
 		
 		//BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
 		
@@ -200,8 +213,10 @@ public class WOMSkills {
 	@SubscribeEvent
 	public static void buildSkillEvent(SkillBuildEvent onBuild) {
 		ENDERSTEP = onBuild.build(WeaponOfMinecraft.MODID, "ender_step");
+		SHADOWSTEP = onBuild.build(WeaponOfMinecraft.MODID, "shadow_step");
 		KNIGHT_ROLL = onBuild.build(WeaponOfMinecraft.MODID, "precise_roll");		
 		DODGEMASTER = onBuild.build(WeaponOfMinecraft.MODID, "dodge_master");
+		BULL_CHARGE = onBuild.build(WeaponOfMinecraft.MODID, "bull_charge");
 		
 		COUNTER_ATTACK = onBuild.build(WeaponOfMinecraft.MODID, "counter_attack");
 		
