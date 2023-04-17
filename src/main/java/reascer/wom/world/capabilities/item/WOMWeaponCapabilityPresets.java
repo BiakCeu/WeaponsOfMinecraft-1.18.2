@@ -335,7 +335,7 @@ public class WOMWeaponCapabilityPresets {
 			.category(WOMWeaponCategories.ENDERBLASTER)
 			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER ? Styles.TWO_HAND : Styles.ONE_HAND)
 			.hitSound(EpicFightSounds.BLADE_HIT)
-			.collider(WOMColliders.ENDER_BLASTER)
+			.collider(WOMColliders.PUNCH)
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_1, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_2, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_3, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_4, WOMAnimations.ENDERBLASTER_ONEHAND_DASH, WOMAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_1, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_2, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_3, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_4, WOMAnimations.ENDERBLASTER_ONEHAND_DASH, WOMAnimations.ENDERBLASTER_TWOHAND_TISHNAW)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
@@ -364,7 +364,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FALL, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.ENDERBLASTER_TWOHAND_AIMING)
-			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCollider() == WOMColliders.ENDER_BLASTER);
+			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCollider() == WOMColliders.PUNCH);
 		return builder;
 	};
 	
@@ -421,21 +421,24 @@ public class WOMWeaponCapabilityPresets {
 				}
 			})
 			
-			.collider(ColliderPreset.SWORD)
+			.collider(WOMColliders.HERSCHER)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.comboCancel((style) -> {
 				return false;
 			})
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
-			.newStyleCombo(Styles.OCHS, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
 			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+			.newStyleCombo(Styles.OCHS, WOMAnimations.HERRSCHER_AUTO_1, WOMAnimations.HERRSCHER_AUTO_2, WOMAnimations.HERRSCHER_AUTO_3, WOMAnimations.HERRSCHER_BEFREIUNG, WOMAnimations.HERRSCHER_AUSROTTUNG)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.SWEEPING_EDGE)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
-			.innateSkill(Styles.OCHS,(itemstack) -> EpicFightSkills.SWEEPING_EDGE)
+			.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.REGIERUNG)
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
 			.livingMotionModifier(Styles.OCHS, LivingMotions.IDLE, WOMAnimations.HERRSCHER_IDLE)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.WALK, WOMAnimations.HERRSCHER_WALK)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.RUN, WOMAnimations.HERRSCHER_RUN)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, Animations.SWORD_GUARD)
 			.weaponCombinationPredicator((entitypatch) -> {
 				return EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.SWORD || entitypatch.getOriginal().getItemInHand(InteractionHand.OFF_HAND).is(WOMItems.GESETZ.get());
 			});

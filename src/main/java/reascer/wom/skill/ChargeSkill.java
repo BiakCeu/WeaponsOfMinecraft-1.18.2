@@ -1,10 +1,14 @@
 package reascer.wom.skill;
 
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.main.EpicFightMod;
@@ -91,6 +95,12 @@ public class ChargeSkill extends Skill {
 	@Override
 	public Skill getPriorSkill() {
 		return EpicFightSkills.ROLL;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public List<Object> getTooltipArgs(List<Object> list) {
+		list.add(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.consumption));
+		return list;
 	}
 }
 

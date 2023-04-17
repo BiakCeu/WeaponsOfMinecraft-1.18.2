@@ -31,6 +31,9 @@ import reascer.wom.skill.ChargeSkill;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.EFKatanaPassive;
+import reascer.wom.skill.EnderObscurisSkill;
+import reascer.wom.world.capabilities.item.WOMWeaponCapabilityPresets;
+import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.Keyframe;
@@ -55,6 +58,7 @@ import yesman.epicfight.api.utils.TimePairList;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
+import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.model.armature.HumanoidArmature;
@@ -75,6 +79,8 @@ public class WOMAnimations {
 	public static StaticAnimation ENDERSTEP_BACKWARD;
 	public static StaticAnimation ENDERSTEP_LEFT;
 	public static StaticAnimation ENDERSTEP_RIGHT;
+	
+	public static StaticAnimation ENDERSTEP_OBSCURIS;
 	
 	public static StaticAnimation DODGEMASTER_BACKWARD;
 	public static StaticAnimation DODGEMASTER_LEFT;
@@ -271,8 +277,17 @@ public class WOMAnimations {
 	public static StaticAnimation ANTITHEUS_ASCENDED_WALK;
 	
 	public static StaticAnimation HERRSCHER_IDLE;
-	public static StaticAnimation HERRSCHER_RUN;
 	public static StaticAnimation HERRSCHER_WALK;
+	public static StaticAnimation HERRSCHER_RUN;
+	public static StaticAnimation HERRSCHER_AUTO_1;
+	public static StaticAnimation HERRSCHER_AUTO_2;
+	public static StaticAnimation HERRSCHER_AUTO_3;
+	public static StaticAnimation HERRSCHER_BEFREIUNG;
+	public static StaticAnimation HERRSCHER_AUSROTTUNG;
+	
+	public static StaticAnimation GESETZ_AUTO_1;
+	public static StaticAnimation GESETZ_AUTO_2;
+	public static StaticAnimation GESETZ_AUTO_3;
 	
 	@SubscribeEvent
 	public static void registerAnimations(AnimationRegistryEvent event) {
@@ -318,6 +333,10 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.ENDER_STEP, Side.BOTH));
 		ENDERSTEP_RIGHT = new DodgeAnimation(0.05F, "biped/skill/enderstep_right", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.ENDER_STEP, Side.BOTH));
+		
+		ENDERSTEP_OBSCURIS = new CancelableDodgeAnimation(0.05F, "biped/skill/ender_obscuris", 0.6F, 1.65F, biped)
+				.addEvents(TimeStampedEvent.create(0.10F, ReuseableEvents.ENDER_STEP, Side.BOTH),
+						TimeStampedEvent.create(0.30F, ReuseableEvents.ENDER_OBSCURIS, Side.BOTH));
 		
 		SHADOWSTEP_FORWARD = new CancelableDodgeAnimation(0.05F, "biped/skill/shadow_step_forward", 0.6F, 1.65F, biped)
 				.addEvents(TimePeriodEvent.create(0.05F, 1f, ReuseableEvents.SHADOW_STEP, Side.BOTH))
@@ -441,13 +460,13 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
 		
 		AGONY_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.05F, 0.15F, 0.2F, null, biped.toolR, "biped/combat/agony_auto_1", biped)
-				
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
+		
 		AGONY_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/agony_auto_2", biped,
 				new Phase(0.00F, 0.3F, 0.45F, 0.5F, 0.5F, biped.toolR, null),
 				new Phase(0.5F, 0.5F, 0.65F, 0.8F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7F),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
@@ -461,6 +480,8 @@ public class WOMAnimations {
 				new Phase(0.55F, 0.75F, 1.0F, 1.20F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.8F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
@@ -492,7 +513,6 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL)
-
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false);
 		
@@ -523,7 +543,7 @@ public class WOMAnimations {
 					   	   TimeStampedEvent.create(0.00F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.20F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.40F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
-						   TimeStampedEvent.create(0.65F, ReuseableEvents.AGONY_GROUNDSLAM, Side.CLIENT));
+						   TimeStampedEvent.create(0.7F, ReuseableEvents.AGONY_GROUNDSLAM, Side.CLIENT));
 		
 		AGONY_IDLE = new StaticAnimation(0.1f,true, "biped/living/agony_idle", biped);
 		AGONY_RUN = new MovementAnimation(0.1f,true, "biped/living/agony_run", biped);
@@ -604,8 +624,8 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.50F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.90F),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1 )
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1 )
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
 		
 		RUINE_AUTO_4 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/ruine_auto_4", biped,
@@ -1272,8 +1292,8 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(4.0F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F)
@@ -1337,14 +1357,17 @@ public class WOMAnimations {
 				new Phase(0.30F, 0.35F, 0.39F, 0.6F, 0.6F, biped.legL, WOMColliders.KICK_HUGE),
 				new Phase(0.6F, 0.6F, 0.7F, 0.80F, Float.MAX_VALUE, biped.legR, WOMColliders.KICK_HUGE))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.3F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.3F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.3F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3F),2)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,2)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
@@ -2189,7 +2212,7 @@ public class WOMAnimations {
 				
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.00F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
-		ENDERBLASTER_TWOHAND_SHOOT_LEFT = new EnderblasterShootAttackAnimation(0.05F, 0.00F, 0.05F, 0.25F, WOMColliders.ENDER_SHOOT, biped.toolL, "biped/skill/enderblaster_twohand_shoot_left", biped)
+		ENDERBLASTER_TWOHAND_SHOOT_LEFT = new EnderblasterShootAttackAnimation(0.05F, 0.00F, 0.05F, 0.25F,InteractionHand.OFF_HAND, WOMColliders.ENDER_SHOOT, biped.toolL, "biped/skill/enderblaster_twohand_shoot_left", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.7f)))
 				.addProperty(AttackPhaseProperty.SWING_SOUND, SoundEvents.BLAZE_SHOOT)
@@ -2217,7 +2240,7 @@ public class WOMAnimations {
 				
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.00F, ReuseableEvents.SHOOT_RIGHT, Side.CLIENT));
-		ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT = new EnderblasterShootAttackAnimation(0.05F, 0.00F, 0.05F, 0.25F, WOMColliders.ENDER_SHOOT, biped.toolL, "biped/skill/enderblaster_twohand_shoot_layed_left", biped)
+		ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT = new EnderblasterShootAttackAnimation(0.05F, 0.00F, 0.05F, 0.25F, InteractionHand.OFF_HAND, WOMColliders.ENDER_SHOOT, biped.toolL, "biped/skill/enderblaster_twohand_shoot_layed_left", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.7F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.7f)))
 				.addProperty(AttackPhaseProperty.SWING_SOUND, SoundEvents.BLAZE_SHOOT)
@@ -2851,6 +2874,99 @@ public class WOMAnimations {
 		ANTITHEUS_ASCENDED_WALK = new MovementAnimation(0.1f, true, "biped/living/antitheus_ascended_walk", biped);
 		
 		HERRSCHER_IDLE = new StaticAnimation(0.1f,true, "biped/living/herrscher_idle", biped);
+		HERRSCHER_WALK = new MovementAnimation(0.1f, true, "biped/living/herrscher_walk", biped);
+		HERRSCHER_RUN = new MovementAnimation(0.1f, true, "biped/living/herrscher_run", biped);
+		
+		HERRSCHER_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/herrscher_auto_1", biped,
+				new Phase(0.0F, 0.10F, 0.25F, 0.3F, 0.3F, biped.toolR, null),
+				new Phase(0.3F, 0.35F, 0.5F, 0.6F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.60F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.60F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.8F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1 )
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.2F);
+		
+		HERRSCHER_AUTO_2 = new BasicMultipleAttackAnimation(0.10F, "biped/combat/herrscher_auto_2", biped,
+				new Phase(0.0F, 0.25F, 0.45F, 0.55F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		
+		HERRSCHER_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/herrscher_auto_3", biped,
+				new Phase(0.0F, 0.45F, 0.55F, 0.75F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.40F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		
+		HERRSCHER_BEFREIUNG = new BasicMultipleAttackAnimation(0.00F, "biped/combat/herrscher_befreiung", biped,
+				new Phase(0.0F, 0.35F, 0.50F, 0.7F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F);
+		
+		HERRSCHER_AUSROTTUNG = new BasicMultipleAttackAnimation(0.00F, "biped/combat/herrscher_ausrottung", biped,
+				new Phase(0.0F, 0.15F, 0.30F, 0.35F, 0.35F, biped.toolR, null),
+				new Phase(0.35F, 0.45F, 0.60F, 0.65F, 0.65F, biped.toolR, null),
+				new Phase(0.65F, 0.85F, 1.00F, 1.20F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.50F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.50F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.00F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(5.0F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F),2)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.2F)
+				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.85F))
+				.addEvents(TimePeriodEvent.create(1.05F, 1.5F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH));
+		
+		GESETZ_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/gezets_auto_1", biped,
+				new Phase(0.0F, 0.10F, 0.20F, 0.3F, Float.MAX_VALUE, InteractionHand.OFF_HAND, biped.toolL, WOMColliders.GESETZ))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(4.00F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3.0F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(5.0F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.6F);
+		
+		GESETZ_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, "biped/skill/gezets_auto_2", biped,
+				new Phase(0.0F, 0.10F, 0.20F, 0.3F, Float.MAX_VALUE, InteractionHand.OFF_HAND, biped.toolL, WOMColliders.GESETZ_INSET_LARGE))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(8.00F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(2.0F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10.0F))
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 3.2F);
+		
+		GESETZ_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/gezets_auto_3", biped,
+				new Phase(0.0F, 0.30F, 0.50F, 0.55F, 0.55F, InteractionHand.OFF_HAND, biped.handL, WOMColliders.PUNCH),
+				new Phase(0.55F, 0.70F, 0.85F, 1.35F, Float.MAX_VALUE, InteractionHand.OFF_HAND, biped.toolL, WOMColliders.GESETZ))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(2.00F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3.0F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(10.00F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(3.0F),1)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(5.0F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(5.0F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1 )
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT_HARD)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE,1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.8F);
+		
+		
 		
 	}
 	
@@ -2962,7 +3078,7 @@ public class WOMAnimations {
 		};
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD = (entitypatch, self, params) -> {
-			if (entitypatch.getValidItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
+			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 				if (entitypatch instanceof PlayerPatch) {
 					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 1.0F, 1.0F);
 				}
@@ -2975,7 +3091,7 @@ public class WOMAnimations {
 		};
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD_BOTH = (entitypatch, self, params) -> {
-			if (entitypatch.getValidItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
+			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 				if (entitypatch instanceof PlayerPatch) {
 					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 1.0F, 1.0F);
 					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -3577,6 +3693,40 @@ public class WOMAnimations {
 			}
 			LivingEntity entity = entitypatch.getOriginal();
 			entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+		};
+		
+		private static final AnimationEvent.AnimationEventConsumer ENDER_OBSCURIS = (entitypatch, self, params) -> {
+			if (!entitypatch.isLogicalClient()) {
+				
+				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				ServerPlayerPatch playerPatch = (ServerPlayerPatch) entitypatch;
+				if (playerPatch.getSkill(WOMSkills.ENDEROBSCURIS) != null) {
+					LivingEntity target = (LivingEntity) entity.level.getEntity(playerPatch.getSkill(WOMSkills.ENDEROBSCURIS).getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
+					if (target != null) {
+						entity.teleportTo(((ServerLevel) entity.level),
+								target.getX(),
+								target.getY(),
+								target.getZ(),
+								target.yHeadRot,
+								entity.getViewXRot(1));
+						entity.setDeltaMovement(target.getDeltaMovement());
+					}
+				}
+				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
+						entity.getX(), 
+						entity.getY() + 1, 
+						entity.getZ(),
+						60,
+						0.05,
+					    0.05,
+						0.05,
+						0.5);
+				entity.level.playSound(null, 
+						entity.xo, 
+						entity.yo + 1, 
+						entity.zo,
+		    			SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 2.0F, 1.0F - ((new Random().nextFloat()-0.5f) * 0.2F));
+			}
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP_ENTER = (entitypatch, self, params) -> {

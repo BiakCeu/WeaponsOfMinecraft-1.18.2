@@ -21,6 +21,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -85,19 +86,19 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get() && container.getExecuter().getEntityState().canBasicAttack()) {
+			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER && container.getExecuter().getEntityState().canBasicAttack()) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get() && container.getExecuter().getEntityState().canBasicAttack()) {
+			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER && container.getExecuter().getEntityState().canBasicAttack()) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(SHOOT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
-			if(!container.getExecuter().isLogicalClient() && event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
+			if(!container.getExecuter().isLogicalClient() && event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER && container.getExecuter().getEntityState().canBasicAttack() ) {
 				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
@@ -105,7 +106,8 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			if (event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT.getId() && event.getAnimation().getId() != WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_LAYED.getId()) {
+			if (!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT) &&
+				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_LAYED)) {
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			

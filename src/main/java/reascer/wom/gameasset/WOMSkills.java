@@ -21,6 +21,7 @@ import reascer.wom.skill.DodgeMasterSkill;
 import reascer.wom.skill.EFKatanaPassive;
 import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
+import reascer.wom.skill.EnderObscurisSkill;
 import reascer.wom.skill.EnderStepSkill;
 import reascer.wom.skill.MindSetSkill;
 import reascer.wom.skill.WOMFatalDrawSkill;
@@ -28,6 +29,7 @@ import reascer.wom.skill.heartShieldSkill;
 import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
 import reascer.wom.skill.PlunderPerditionSkill;
+import reascer.wom.skill.RegierungSkill;
 import reascer.wom.skill.RuinePassive;
 import reascer.wom.skill.ShadowStepSkill;
 import reascer.wom.skill.TormentPassiveSkill;
@@ -52,6 +54,7 @@ import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class WOMSkills {
 	public static Skill ENDERSTEP;
+	public static Skill ENDEROBSCURIS;
 	public static Skill SHADOWSTEP;
 	public static Skill DODGEMASTER;
 	public static Skill KNIGHT_ROLL;
@@ -61,11 +64,11 @@ public class WOMSkills {
 	
 	//public static Skill BLOSSOM;
 	public static Skill CHARYBDIS;
-	
 	public static Skill AGONY_PLUNGE;
 	public static Skill TRUE_BERSERK;
 	public static Skill DEMONIC_ASCENSION;
 	public static Skill PLUNDER_PERDITION;
+	public static Skill REGIERUNG;
 	
 	public static Skill COUNTERATTACK_PASSIVE;
 	
@@ -96,6 +99,14 @@ public class WOMSkills {
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_left"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_right")), 
 				WeaponOfMinecraft.MODID,"ender_step");
+		
+		SkillManager.register(EnderObscurisSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_forward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_backward"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_left"),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_right"), 
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/ender_obscuris")),
+				WeaponOfMinecraft.MODID,"ender_obscuris");
 		
 		SkillManager.register(DodgeMasterSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
@@ -177,6 +188,8 @@ public class WOMSkills {
 		SkillManager.register(DemonicAscensionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
 				WeaponOfMinecraft.MODID,"demonic_ascension");
 		
+		SkillManager.register(RegierungSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponOfMinecraft.MODID,"regierung");
 		
 		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder(),
 				WeaponOfMinecraft.MODID,"counter_attack");
@@ -213,6 +226,7 @@ public class WOMSkills {
 	@SubscribeEvent
 	public static void buildSkillEvent(SkillBuildEvent onBuild) {
 		ENDERSTEP = onBuild.build(WeaponOfMinecraft.MODID, "ender_step");
+		ENDEROBSCURIS = onBuild.build(WeaponOfMinecraft.MODID, "ender_obscuris");
 		SHADOWSTEP = onBuild.build(WeaponOfMinecraft.MODID, "shadow_step");
 		KNIGHT_ROLL = onBuild.build(WeaponOfMinecraft.MODID, "precise_roll");		
 		DODGEMASTER = onBuild.build(WeaponOfMinecraft.MODID, "dodge_master");
@@ -308,6 +322,8 @@ public class WOMSkills {
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(4.0F))
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(2.1f)));
 		ENDER_FUSION = enderfusionSkill;
+		
+		REGIERUNG = onBuild.build(WeaponOfMinecraft.MODID, "regierung");
 		
 		DEMON_MARK_PASSIVE = onBuild.build(WeaponOfMinecraft.MODID, "demon_mark_passive");
 		DEMONIC_ASCENSION = onBuild.build(WeaponOfMinecraft.MODID, "demonic_ascension");

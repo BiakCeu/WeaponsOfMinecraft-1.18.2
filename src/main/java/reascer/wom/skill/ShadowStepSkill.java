@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.gameasset.WOMSkills;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.EpicFightSkills;
@@ -42,6 +43,6 @@ public class ShadowStepSkill extends DodgeSkill {
 	
 	@Override
 	public Skill getPriorSkill() {
-		return EpicFightSkills.STEP;
+		return WOMSkills.ENDERSTEP;
 	}
 }

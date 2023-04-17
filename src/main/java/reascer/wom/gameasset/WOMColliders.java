@@ -33,7 +33,7 @@ public class WOMColliders {
 	public static final Collider FATAL_DRAW = new OBBCollider(1.75D, 0.7D, 1.35D, 0D, 1.0D, -1.0D);
 	public static final Collider FATAL_DRAW_DASH = new OBBCollider(1.0D, 1.0D, 2.75D, 0D, 1.2D, -0.2D);
 	
-	public static final Collider ENDER_BLASTER = new MultiOBBCollider(4, 0.4D, 0.6D, 0.4D, 0D, 0D, 0D);
+	public static final Collider PUNCH = new MultiOBBCollider(4, 0.4D, 0.6D, 0.4D, 0D, 0D, 0D);
 	public static final Collider ENDER_BLASTER_CROSS = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0D, 0.6D);
 	public static final Collider KICK = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.6D, 0D);
 	public static final Collider KICK_HUGE = new MultiOBBCollider(4, 0.8D, 0.8D, 0.8D, 0D, 0.9D, 0D);
@@ -55,5 +55,9 @@ public class WOMColliders {
 	public static final Collider ANTITHEUS_ASCENDED_BLINK = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0.75F, 0.0F);
 	public static final Collider ANTITHEUS_ASCENDED_DEATHFALL = new OBBCollider(4F, 3F, 4F, 0F, 0F, 0F);
 	public static final Collider ANTITHEUS_SHOOT = new MultiOBBCollider(4, 2.0D, 1.6D, 2.0D, 0.0D, -1.7D, 0.0D);
+	
+	public static final Collider HERSCHER = new MultiOBBCollider(5, 0.2D, 0.3D, 0.8D, 0D, 0D, -0.8D);
+	public static final Collider GESETZ = new MultiOBBCollider(5, 0.4D, 0.6D, 1.0D, 0D, 0D, 0.4D);
+	public static final Collider GESETZ_INSET_LARGE = new MultiOBBCollider(5, 0.9D, 0.6D, 1.0D, -0.2D, 0D, 0.4D);
 	
 }

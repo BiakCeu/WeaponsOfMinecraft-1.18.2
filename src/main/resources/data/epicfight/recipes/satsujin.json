@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "epicfight:katana"
+    },
+    "addition": {
+        "item" : "epicfight:demon_seal"
+    },
+    "result": {
+        "item": "epicfight:satsujin"
+    }
+}
