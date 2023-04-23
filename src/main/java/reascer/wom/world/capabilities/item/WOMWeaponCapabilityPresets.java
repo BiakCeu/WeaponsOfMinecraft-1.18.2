@@ -14,7 +14,7 @@ import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.main.WeaponOfMinecraft;
-import reascer.wom.skill.EFKatanaPassive;
+import reascer.wom.skill.SatsujinPassive;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
@@ -289,22 +289,22 @@ public class WOMWeaponCapabilityPresets {
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch) {
 					PlayerPatch<?> playerpatch = (PlayerPatch<?>)entitypatch;
-					if (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(EFKatanaPassive.SHEATH) && 
-							playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(EFKatanaPassive.SHEATH)) {
+					if (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(SatsujinPassive.SHEATH) && 
+							playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(SatsujinPassive.SHEATH)) {
 						return Styles.SHEATH;
 					}
 				}
 				return Styles.TWO_HAND;
 			})
-			.passiveSkill(WOMSkills.KATANA_PASSIVE_EF)
+			.passiveSkill(WOMSkills.SATSUJIN_PASSIVE)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(WOMColliders.KATANA)
 			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.SHEATH, WOMAnimations.KATANA_SHEATHED_AUTO_1, WOMAnimations.KATANA_SHEATHED_AUTO_2, WOMAnimations.KATANA_SHEATHED_AUTO_3, WOMAnimations.KATANA_SHEATHED_DASH, Animations.KATANA_SHEATH_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.KATANA_AUTO_1, WOMAnimations.KATANA_AUTO_2, WOMAnimations.KATANA_AUTO_3, WOMAnimations.KATANA_DASH, Animations.KATANA_AIR_SLASH)
+			.newStyleCombo(Styles.SHEATH, WOMAnimations.KATANA_SHEATHED_AUTO_1, WOMAnimations.KATANA_SHEATHED_AUTO_2, WOMAnimations.KATANA_SHEATHED_AUTO_3, WOMAnimations.KATANA_SHEATHED_DASH, WOMAnimations.HERRSCHER_AUSROTTUNG)
+			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.KATANA_AUTO_1, WOMAnimations.KATANA_AUTO_2, WOMAnimations.KATANA_AUTO_3, WOMAnimations.KATANA_DASH, WOMAnimations.HERRSCHER_AUSROTTUNG)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.innateSkill(Styles.SHEATH,(itemstack) -> WOMSkills.FATAL_DRAW_EF)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.FATAL_DRAW_EF)
+			.innateSkill(Styles.SHEATH,(itemstack) -> WOMSkills.SAKURA_STATE)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.SAKURA_STATE)
 			.comboCancel((style) -> {
 				return false;
 			})
@@ -356,7 +356,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, WOMAnimations.ENDERBLASTER_ONEHAND_AIMING)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.ENDERBLASTER_ONEHAND_WALK)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.ENDERBLASTER_ONEHAND_RUN)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.ENDERBLASTER_ONEHAND_RUN)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, WOMAnimations.ENDERBLASTER_TWOHAND_IDLE)
@@ -438,7 +438,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.OCHS, LivingMotions.IDLE, WOMAnimations.HERRSCHER_IDLE)
 			.livingMotionModifier(Styles.OCHS, LivingMotions.WALK, WOMAnimations.HERRSCHER_WALK)
 			.livingMotionModifier(Styles.OCHS, LivingMotions.RUN, WOMAnimations.HERRSCHER_RUN)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, Animations.SWORD_GUARD)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, WOMAnimations.HERRSCHER_GUARD)
 			.weaponCombinationPredicator((entitypatch) -> {
 				return EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.SWORD || entitypatch.getOriginal().getItemInHand(InteractionHand.OFF_HAND).is(WOMItems.GESETZ.get());
 			});

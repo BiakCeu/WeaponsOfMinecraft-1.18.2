@@ -18,13 +18,13 @@ import reascer.wom.skill.DancingBladeSkill;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.DodgeMasterSkill;
-import reascer.wom.skill.EFKatanaPassive;
+import reascer.wom.skill.SatsujinPassive;
 import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderObscurisSkill;
 import reascer.wom.skill.EnderStepSkill;
 import reascer.wom.skill.MindSetSkill;
-import reascer.wom.skill.WOMFatalDrawSkill;
+import reascer.wom.skill.SakuraStateSkill;
 import reascer.wom.skill.heartShieldSkill;
 import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
@@ -36,6 +36,7 @@ import reascer.wom.skill.TormentPassiveSkill;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.skill.VampirizeSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
+import reascer.wom.world.item.WOMCreativeTabs;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.data.reloader.SkillManager;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
@@ -72,12 +73,12 @@ public class WOMSkills {
 	
 	public static Skill COUNTERATTACK_PASSIVE;
 	
-	public static Skill KATANA_PASSIVE_EF;
+	public static Skill SATSUJIN_PASSIVE;
 	public static Skill DEMON_MARK_PASSIVE;
 	public static Skill RUINE_PASSIVE;
 	public static Skill TORMENT_PASSIVE;
 
-	public static Skill FATAL_DRAW_EF;
+	public static Skill SAKURA_STATE;
 	public static Skill ARROW_TENACITY;
 	public static Skill COUNTER_ATTACK;
 	public static Skill PAIN_ANTICIPATION;
@@ -97,7 +98,7 @@ public class WOMSkills {
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_forward"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_backward"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_left"),
-				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_right")), 
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_right")).setCreativeTab(WOMCreativeTabs.ITEMS), 
 				WeaponOfMinecraft.MODID,"ender_step");
 		
 		SkillManager.register(EnderObscurisSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
@@ -105,14 +106,14 @@ public class WOMSkills {
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_backward"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_left"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/enderstep_right"), 
-				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/ender_obscuris")),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/ender_obscuris")).setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"ender_obscuris");
 		
 		SkillManager.register(DodgeMasterSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_right"),
-				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_left")),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/dodgemaster_left")).setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"dodge_master");
 		
 		SkillManager.register(DodgeSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
@@ -124,12 +125,13 @@ public class WOMSkills {
 		
 		SkillManager.register(ShadowStepSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/shadow_step_forward"),
-				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/shadow_step_backward")),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/shadow_step_backward")).setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"shadow_step");
 		
 		SkillManager.register(ChargeSkill::new, ChargeSkill.createChargeBuilder().setAnimations(
-				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/bull_charge")),
+				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/bull_charge")).setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"bull_charge");
+		
 		
 		//BLOSSOM = event.registerSkill(new BlossomSkill(BlossomSkill.createBuilder(new ResourceLocation(EpicFightMod.MODID, "blossom")).setConsumption(60.0F)),false);
 		
@@ -151,30 +153,30 @@ public class WOMSkills {
 		SkillManager.register(RuinePassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
 				WeaponOfMinecraft.MODID,"ruine_passive");
 		
-		SkillManager.register(EFKatanaPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
-				WeaponOfMinecraft.MODID,"katana_passive_ef");
+		SkillManager.register(SatsujinPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
+				WeaponOfMinecraft.MODID,"satsujin_passive");
 		
-		SkillManager.register(WOMFatalDrawSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setSelector((executer) -> {
+		SkillManager.register(SakuraStateSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setSelector((executer) -> {
 			if (executer.getOriginal().isSprinting()) {
-				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, false, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, false, executer.getOriginal());
 				return 2;
-			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMFatalDrawSkill.ACTIVE)) {
-				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMFatalDrawSkill.SECOND_DRAW)) {
-					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, false, executer.getOriginal());
+			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SakuraStateSkill.ACTIVE)) {
+				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SakuraStateSkill.SECOND_DRAW)) {
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, false, executer.getOriginal());
 					return 1;
 				} else {
-					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, true, executer.getOriginal());
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, true, executer.getOriginal());
 					return 0;
 				}
 			} else {
-				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMFatalDrawSkill.SECOND_DRAW, true, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, true, executer.getOriginal());
 				return 0;
 			}
 		}).setAnimations(
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/katana_fatal_draw"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/katana_fatal_draw_second"),
 				new ResourceLocation(WeaponOfMinecraft.MODID, "biped/skill/katana_fatal_draw_dash")),
-				WeaponOfMinecraft.MODID,"fatal_draw_ef");
+				WeaponOfMinecraft.MODID,"sakura_state");
 
 		SkillManager.register(EnderBlastSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"ender_blast");
@@ -195,31 +197,31 @@ public class WOMSkills {
 				WeaponOfMinecraft.MODID,"counter_attack");
 
 		
-		SkillManager.register(ArrowTenacitySkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(ArrowTenacitySkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"arrow_tenacity");
 
-		SkillManager.register(PainAnticipationSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(PainAnticipationSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"pain_anticipation");
 
-		SkillManager.register(PainRetributionSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(PainRetributionSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"pain_retribution");
 
-		SkillManager.register(VampirizeSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(VampirizeSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"vampirize");
 
-		SkillManager.register(CriticalKnowledgeSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(CriticalKnowledgeSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"critical_knowledge");
 		
-		SkillManager.register(heartShieldSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(heartShieldSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"heart_shield");
 		
-		SkillManager.register(MindSetSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(MindSetSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"mindset");
 		
-		SkillManager.register(AdrenalineSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(AdrenalineSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"adrenaline");
 		
-		SkillManager.register(DancingBladeSkill::new, PassiveSkill.createPassiveBuilder(),
+		SkillManager.register(DancingBladeSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"dancing_blade");
 	}
 	
@@ -285,17 +287,17 @@ public class WOMSkills {
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()));
 		PLUNDER_PERDITION = plunderPerditionSkill;
 		
-		KATANA_PASSIVE_EF = onBuild.build(WeaponOfMinecraft.MODID, "katana_passive_ef");
+		SATSUJIN_PASSIVE = onBuild.build(WeaponOfMinecraft.MODID, "satsujin_passive");
 		
-		WeaponInnateSkill fatalDrawEFsSkill = onBuild.build(WeaponOfMinecraft.MODID, "fatal_draw_ef");
-		fatalDrawEFsSkill.newProperty()
+		WeaponInnateSkill sakuraStateskill = onBuild.build(WeaponOfMinecraft.MODID, "sakura_state");
+		sakuraStateskill.newProperty()
 			.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f))
 			.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
 			.addProperty(AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(30))
 			.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 			.registerPropertiesToAnimation();
 			
-		FATAL_DRAW_EF = fatalDrawEFsSkill;
+		SAKURA_STATE = sakuraStateskill;
 		
 		WeaponInnateSkill enderblastSkill = onBuild.build(WeaponOfMinecraft.MODID, "ender_blast");
 		enderblastSkill.newProperty()

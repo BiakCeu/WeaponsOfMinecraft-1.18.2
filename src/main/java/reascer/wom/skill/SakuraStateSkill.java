@@ -47,7 +47,7 @@ import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class WOMFatalDrawSkill extends ConditionalWeaponInnateSkill {
+public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("1a56d169-416a-4206-ba3d-e7100d55d603");
 	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -63,7 +63,7 @@ public class WOMFatalDrawSkill extends ConditionalWeaponInnateSkill {
 	private List<Integer> AttackedSlashEntities = new ArrayList<Integer>();
 	private List<Integer> prevTimedSlashEntities = new ArrayList<Integer>();
 	
-	public WOMFatalDrawSkill(ConditionalWeaponInnateSkill.Builder builder) {
+	public SakuraStateSkill(ConditionalWeaponInnateSkill.Builder builder) {
 		super(builder);
 	}
 	
@@ -162,7 +162,7 @@ public class WOMFatalDrawSkill extends ConditionalWeaponInnateSkill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(this).getDataManager().getDataValue(COOLDOWN) < 80) {
 			executer.getSkill(this).getDataManager().setData(COOLDOWN, 80);
-			boolean isSheathed = executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(EFKatanaPassive.SHEATH);
+			boolean isSheathed = executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(SatsujinPassive.SHEATH);
 			if (isSheathed || executer.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], -0.45F);
 			} else {

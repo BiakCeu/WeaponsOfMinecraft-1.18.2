@@ -30,8 +30,8 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class AgonyPlungeSkill extends WeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("c7a0ee46-56b3-4008-9fba-d2594b1e2676");
-	private static final SkillDataKey<Boolean> PLUNGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Boolean> PLUNGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private StaticAnimation attackAnimations;
 	
 	public AgonyPlungeSkill(Builder builder) {
@@ -49,13 +49,12 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunging: " + container.getDataManager().getDataValue(PLUNGING) + " | Stack: " + container.getDataManager().getDataValue(STACK) + " | Plunging: " + event.getAttackDamage() ), UUID.randomUUID());
-			if (container.getDataManager().getDataValue(PLUNGING) && event.getDamage() > 1.0F) {
+			if (container.getDataManager().getDataValue(PLUNGING) && event.getDamage() > 1.0F && container.getDataManager().getDataValue(STACK) > 0) {
 				float attackDamage = event.getDamage();
 				event.setDamage(attackDamage * container.getDataManager().getDataValue(STACK));
 				//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunge attack damge: " + (attackDamage * container.getDataManager().getDataValue(STACK))), UUID.randomUUID());
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
-				
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
@@ -98,8 +97,8 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
 			DamageSource damage = new IndirectEpicFightDamageSource("agonized_to_death", executer.getOriginal(), executer.getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
+			super.executeOnServer(executer, args);
 		}
-		super.executeOnServer(executer, args);
 
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null && !executer.getOriginal().isCreative()) {
 			this.setStackSynchronize(executer, 0);

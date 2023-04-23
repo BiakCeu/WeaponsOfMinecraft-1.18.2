@@ -1,6 +1,7 @@
 package reascer.wom.animation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -75,6 +76,8 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	
 	public BasicMultipleAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
 		super(convertTime, path, armature, phases);
+		this.newTimePair(0, Float.MAX_VALUE);
+		this.addStateRemoveOld(EntityState.TURNING_LOCKED, false);
 		
 		this.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, MoveCoordFunctions.TRACE_LOC_TARGET);
 		this.addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
@@ -156,6 +159,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 						HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(hitten, HurtableEntityPatch.class);
 						if (entity.hasLineOfSight(hitten)) {
 							EpicFightDamageSource source;
+							float anti_stunlock = 1;
 							if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
 								if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
 									source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
@@ -166,26 +170,43 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 							} else {
 								source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
 							}
+							String replaceTag = "anti_stunlock:"+ anti_stunlock +":"+hitten.tickCount+":"+this.getId()+"-"+phase.contact;
 							if (hitHurtableEntityPatch.isStunned()) {
-								float anti_stunlock = 1;
 								for (String tag : hitten.getTags()) {
 									if (tag.contains("anti_stunlock:")) {
-										anti_stunlock = Float.valueOf(tag.substring(14)) * 0.90f;
-										hitten.removeTag(tag);
+										anti_stunlock = this.applyAntiStunLock(hitten, anti_stunlock, source, phase, tag, replaceTag);
 										break;
 									}
 								}
-								source.setImpact(source.getImpact() * anti_stunlock);
-								hitten.addTag("anti_stunlock:"+anti_stunlock);
 							} else {
+								boolean firstAttack = true;
+								for (String tag : hitten.getTags()) {
+									if (tag.contains("anti_stunlock:")) {
+										if (hitten.tickCount - Float.valueOf(tag.split(":")[2]) > 10) {
+											anti_stunlock = 1;
+										} else {
+											anti_stunlock = this.applyAntiStunLock(hitten, anti_stunlock, source, phase, tag, replaceTag);
+											firstAttack = false;
+										}
+										break;
+									}
+
+								}
+								if (firstAttack) {
+									hitten.addTag(replaceTag);
+								}
+								//entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);
+							}
+							if (anti_stunlock < 0.4f) {
 								for (String tag : hitten.getTags()) {
 									if (tag.contains("anti_stunlock:")) {
 										hitten.removeTag(tag);
 										break;
 									}
 								}
-								entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);
+								source.setStunType(StunType.KNOCKDOWN);
 							}
+							source.setImpact(source.getImpact() * anti_stunlock);
 							int prevInvulTime = hitten.invulnerableTime;
 							hitten.invulnerableTime = 0;
 							AttackResult attackResult = entitypatch.attack(source, hitten, phase.hand);
@@ -205,18 +226,19 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										float stunTime = (float) (source.getImpact() * 0.3f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 											hitHurtableEntityPatch.setStunReductionOnHit();
-											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
+											
+											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.4f ?StunType.LONG:StunType.KNOCKDOWN), stunTime);
 											float impact = source.getImpact();
 											hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),source.getImpact() * 0.25f);
 										}
 									}
 									
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.FALL) {
-										float stunTime = (float) (source.getImpact() * 0.3f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+										float stunTime = (float) (source.getImpact() * 0.5f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 											hitHurtableEntityPatch.setStunReductionOnHit();
-											hitHurtableEntityPatch.applyStun(StunType.SHORT, stunTime);
-											double power = source.getImpact() * 0.25f;
+											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.4f ? StunType.SHORT:StunType.KNOCKDOWN), stunTime);
+											double power = (source.getImpact() / anti_stunlock) * 0.25f;
 											double d1 = entity.getX() - hitten.getX();
 											double d2 = entity.getY()-8 - hitten.getY();
 											double d0;
@@ -283,5 +305,59 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	@Override
 	public boolean isBasicAttackAnimation() {
 		return true;
+	}
+	
+	public float applyAntiStunLock(Entity hitten, float anti_stunlock, EpicFightDamageSource source, Phase phase, String tag, String replaceTag) {
+		boolean isPhaseFromSameAnimnation = false;
+		if (hitten.level.getBlockState(new BlockPos(new Vec3(hitten.getX(), hitten.getY()-1, hitten.getZ()))).isAir() && source.getStunType() != StunType.FALL ) {
+			String phaseID = String.valueOf(this.getId())+"-"+String.valueOf(phase.contact);
+			if (tag.split(":").length > 3) {
+				if ((String.valueOf(this.getId()).equals(tag.split(":")[3].split("-")[0])) && (!String.valueOf(phase.contact).equals(tag.split(":")[3].split("-")[1]))) {
+					anti_stunlock = Float.valueOf(tag.split(":")[1])* 0.975f;
+					isPhaseFromSameAnimnation = true;
+				} else {
+					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.95f;
+					isPhaseFromSameAnimnation = false;
+				}
+			}
+			for (int i = 3; i < tag.split(":").length && i < 7; i++) {
+				if (tag.split(":")[i].equals(phaseID)) {
+					anti_stunlock *= 0.80f;
+				}
+			}
+		} else {
+			String phaseID = String.valueOf(this.getId())+"-"+String.valueOf(phase.contact);
+			if (tag.split(":").length > 3) {
+				if ((String.valueOf(this.getId()).equals(tag.split(":")[3].split("-")[0])) && (!String.valueOf(phase.contact).equals(tag.split(":")[3].split("-")[1]))) {
+					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.95f;
+					isPhaseFromSameAnimnation = true;
+				} else {
+					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.9f;
+					isPhaseFromSameAnimnation = false;
+				}
+			}
+			for (int i = 3; i < tag.split(":").length && i < 7; i++) {
+				if (tag.split(":")[i].equals(phaseID)) {
+					anti_stunlock *= 0.80f;
+				}
+			}
+		}
+		hitten.removeTag(tag);
+		int maxSavedAttack = 7;
+		
+		if (isPhaseFromSameAnimnation) {
+			replaceTag = "anti_stunlock:"+ anti_stunlock+":"+hitten.tickCount;
+			maxSavedAttack = 8;
+		} else {
+			replaceTag = "anti_stunlock:"+ anti_stunlock+":"+hitten.tickCount+":"+this.getId()+"-"+phase.contact;
+			maxSavedAttack = 7;
+		}
+		
+		for (int i = 3; i < tag.split(":").length && i < maxSavedAttack; i++) {
+			replaceTag = replaceTag.concat(":"+tag.split(":")[i]);
+		}
+		System.out.println(replaceTag);
+		hitten.addTag(replaceTag);
+		return anti_stunlock;
 	}
 }

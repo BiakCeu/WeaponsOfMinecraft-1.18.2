@@ -589,8 +589,6 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			}
 		}
 		
-		
-		
 		if (container.getDataManager().getDataValue(ZOOM_COOLDOWN) > 0) {
 			if(container.getExecuter().isLogicalClient()) {
 				if (!container.getDataManager().getDataValue(ACTIVE)) {

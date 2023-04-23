@@ -30,15 +30,21 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 			OpenMatrix4f mat = OpenMatrix4f.createRotatorDeg((float)Math.random() * 360.0F, Vec3f.Y_AXIS);
 			Vec3f positionVec = OpenMatrix4f.transform3v(mat, Vec3f.Z_AXIS, null).scale((float)dx);
 			Vec3f moveVec = OpenMatrix4f.transform3v(mat, Vec3f.Z_AXIS, null).scale((float)dz);
+			
+			// Particle block side
 			Particle blockParticle = new TerrainParticle(level, x + positionVec.x, y, z + positionVec.z, 0, 0, 0, blockstate, blockpos);
 			blockParticle.setParticleSpeed((moveVec.x + (Math.random()-0.5)) * 0.3D, (Math.random()) * 0.5D, (moveVec.z + (Math.random()-0.5)) * 0.3D);
 			blockParticle.setLifetime(60 + (new Random().nextInt(20)));
+			
+			// Particle block up
 			Particle blockParticle2 = new TerrainParticle(level, x + positionVec.x, y, z + positionVec.z, 0, 0, 0, blockstate, blockpos);
 			blockParticle2.setParticleSpeed((moveVec.x + (Math.random()-0.5)) * 0.1D, (Math.random()) * dz * 1.5, (moveVec.z + (Math.random()-0.5)) * 0.1D);
 			blockParticle2.setLifetime(60 + (new Random().nextInt(20)));
+			
 			Particle smokeParticle = mc.particleEngine.createParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + positionVec.x * 0.5D, y + dz * 1.5, z + positionVec.z * 0.5D, 0, 0, 0); 
 			smokeParticle.setParticleSpeed(moveVec.x * 0.08D, moveVec.y * Math.random() * 0.08D, moveVec.z * 0.08D);
 			smokeParticle.scale((float) (dz*2f));
+			
 			mc.particleEngine.add(blockParticle);
 			mc.particleEngine.add(blockParticle2);
 			mc.particleEngine.add(smokeParticle);

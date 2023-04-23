@@ -1,9 +1,9 @@
 {
     "trail": {
-    	"color": [50, 6, 2],
+    	"color": [10, 0, 0],
     	"begin_pos": [0.0, 0.0, 1.9],
     	"end_pos": [0.0, 0.0, -1.9],
-    	"lifetime": 4,
+    	"lifetime": 6,
 		"interpolations": 12,
     	"texture_path": "wom:textures/particle/staff/weapon_trail/basic.png",
     	"particle_type": "epicfight:swing_trail"

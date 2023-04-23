@@ -111,7 +111,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.TORMENTED_MIND.get() && container.getExecuter().getEntityState().canBasicAttack()) {
+			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.TORMENT && container.getExecuter().getEntityState().canBasicAttack()) {
 				if (container.getExecuter().getStamina() > 0) {
 					event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 					container.getExecuter().getOriginal().setSprinting(false);
@@ -123,10 +123,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.TORMENT && container.getExecuter().getEntityState().canBasicAttack()) {
 				if (container.getExecuter().getStamina() > 0) {
 					event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
-					if(!container.getExecuter().isLogicalClient()) {
-						container.getDataManager().setDataSync(CHARGING, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getExecuter().getOriginal().setSprinting(false);
-					}
+					container.getDataManager().setDataSync(CHARGING, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getExecuter().getOriginal().setSprinting(false);
 				}
 			}
 		});
@@ -427,7 +425,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 			if (container.getExecuter().getStamina() <= 0) {
 				container.getExecuter().getOriginal().stopUsingItem();
 			}
-			if (!container.getExecuter().consumeStamina(4)) {
+			if (!container.getExecuter().consumeStamina(3)) {
 				container.getExecuter().setStamina(0);
 				container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 						SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);

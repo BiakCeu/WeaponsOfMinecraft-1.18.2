@@ -15,12 +15,12 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class EFKatanaPassive extends PassiveSkill {
+public class SatsujinPassive extends PassiveSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("010e5bfa-e6a2-11ec-8fea-0242ac120002");
 	public static final SkillDataKey<Boolean> SHEATH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	
-	public EFKatanaPassive(Builder<? extends Skill> builder) {
+	public SatsujinPassive(Builder<? extends Skill> builder) {
 		super(builder);
 	}
 	

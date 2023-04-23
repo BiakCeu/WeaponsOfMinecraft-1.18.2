@@ -12,23 +12,37 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
+import reascer.wom.world.item.HerscherItem;
+import reascer.wom.world.item.MagneticShieldItem;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
+import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
+import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.network.client.CPExecuteSkill;
+import yesman.epicfight.particle.EpicFightParticles;
+import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.Skill.ActivateType;
 import yesman.epicfight.skill.SkillCategories;
@@ -39,15 +53,20 @@ import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class RegierungSkill extends WomMultipleAnimationSkill {
 	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Boolean> GUARD_POINT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Integer> GUARD_POINT_RESULT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Boolean> GESETZ_SPRENGKOPF = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	private static final UUID EVENT_UUID = UUID.fromString("63c38d4f-cc97-4339-bedf-d9bba36ba29f");
     
@@ -58,22 +77,153 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 			
 		},  WOMAnimations.GESETZ_AUTO_1, 
 			WOMAnimations.GESETZ_AUTO_2, 
-			WOMAnimations.GESETZ_AUTO_3);
+			WOMAnimations.GESETZ_AUTO_3,
+			WOMAnimations.GESETZ_KRUMMEN,
+			WOMAnimations.GESETZ_SPRENGKOPF);
 	}
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		super.onInitiate(container);
 		container.getDataManager().registerData(COMBO);
 		container.getDataManager().registerData(COOLDOWN);
+		container.getDataManager().registerData(GUARD_POINT);
+		container.getDataManager().registerData(GUARD_POINT_RESULT);
+		container.getDataManager().registerData(GESETZ_SPRENGKOPF);
 		
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			this.setMaxDurationSynchronize(((ServerPlayerPatch)container.getExecuter()), this.maxDuration+(10 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal())));
 		}
+		
+		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
+			if (container.getDataManager().getDataValue(GESETZ_SPRENGKOPF) && container.getRemainDuration() > 0) {
+				float attackDamage = event.getDamage();
+				event.setDamage(attackDamage + container.getRemainDuration());
+				container.getExecuter().getOriginal().resetFallDistance();
+			}
+		});
+		
+		container.getExecuter().getEventListener().addEventListener(EventType.MOVEMENT_INPUT_EVENT, EVENT_UUID, (event) -> {
+			container.getDataManager().setData(GUARD_POINT, false);
+		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(GESETZ_SPRENGKOPF, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(GUARD_POINT, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				
+				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_AUTO_2)) {
+					container.getDataManager().setDataSync(GUARD_POINT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(GUARD_POINT_RESULT, 2, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				}
+				
+				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_BEFREIUNG)) {
+					container.getDataManager().setDataSync(GUARD_POINT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(GUARD_POINT_RESULT, 4, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				}
+				
+				if (event.getAnimation().equals(WOMAnimations.GESETZ_AUTO_1)) {
+					container.getDataManager().setDataSync(GUARD_POINT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(GUARD_POINT_RESULT, 5, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				}
+				
+				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_GUARD_HIT)) {
+					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
+				}
+				
+				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_TRANE)) {
+					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +3);
+					container.getDataManager().setDataSync(COMBO, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				}
+			}
+		});
+		
+		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
+			if (container.getDataManager().getDataValue(GUARD_POINT)) {
+				DamageSource damageSource = event.getDamageSource();
+				boolean isFront = false;
+				Vec3 sourceLocation = damageSource.getSourcePosition();
+				
+				if (sourceLocation != null) {
+					Vec3 viewVector = event.getPlayerPatch().getOriginal().getViewVector(1.0F);
+					Vec3 toSourceLocation = sourceLocation.subtract(event.getPlayerPatch().getOriginal().position()).normalize();
+					
+					if (toSourceLocation.dot(viewVector) > 0.0D) {
+						isFront = true;
+					}
+				}
+				
+				if (isFront) {
+					float impact = 0.5F;
+					float knockback = 0.25F;
+					
+					if (event.getDamageSource() instanceof EpicFightDamageSource) {
+						impact = ((EpicFightDamageSource)event.getDamageSource()).getImpact();
+						knockback += Math.min(impact * 0.1F, 1.0F);
+					}
+					ServerPlayer playerentity = event.getPlayerPatch().getOriginal();
+					event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
+					EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
+					
+					StaticAnimation animation = Animations.BIPED_HIT_SHIELD;;
+					float convert = -0.05f;
+					switch (container.getDataManager().getDataValue(GUARD_POINT_RESULT)) {
+					case 1: {
+						animation = WOMAnimations.GESETZ_AUTO_1;
+						container.getDataManager().setDataSync(COMBO, 1, playerentity);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
+						break;
+					}
+					case 2: {
+						animation = WOMAnimations.HERRSCHER_AUTO_2;
+						container.getDataManager().setDataSync(COMBO, 0, playerentity);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+						break;
+					}
+					case 3: {
+						animation = WOMAnimations.HERRSCHER_AUTO_3;
+						container.getDataManager().setDataSync(COMBO, 0, playerentity);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +5);
+						convert = -0.45f;
+						break;
+					}
+					case 4: {
+						animation = WOMAnimations.GESETZ_AUTO_2;
+						container.getDataManager().setDataSync(COMBO, 2, playerentity);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+						convert = -0.15f;
+						break;
+					}
+					case 5: {
+						animation = WOMAnimations.HERRSCHER_AUTO_2;
+						container.getDataManager().setDataSync(COMBO, 1, playerentity);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+						break;
+					}
+					case 6: {
+						animation = WOMAnimations.HERRSCHER_BEFREIUNG;
+						container.getDataManager().setDataSync(COMBO, 0, playerentity);
+						convert = -0.45f;
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
+						break;
+					}
+					default:
+						animation = Animations.BIPED_HIT_SHIELD;
+					}
+					
+					event.getPlayerPatch().playAnimationSynchronized(animation,convert);
+					
+					event.setCanceled(true);
+					event.setResult(AttackResult.ResultType.BLOCKED);
+					
+					Entity directEntity = event.getDamageSource().getDirectEntity();
+					LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(directEntity, LivingEntityPatch.class);
+					
+					if (entitypatch != null) {
+						entitypatch.onAttackBlocked(event.getDamageSource(), entitypatch);
+					}
+				}
 			}
 		});
 	}
@@ -81,15 +231,33 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	@Override
 	public void onRemoved(SkillContainer container) {
 		super.onRemoved(container);
+		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
+		
+		if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK) != null) {
+			if(!container.getExecuter().isLogicalClient()) {
+				container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().setDataSync(CounterAttack.CONSUMPTION_VALUE, 1f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			}
+		}
+		
 	}
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
-			executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 3], 0);
+		if ((!player.isOnGround() && !player.isInWater()) && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+			if (!executer.consumeStamina(3)) {
+				executer.setStamina(0);
+			} else {
+				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
+			}
 		} else {
 			if(executer.getOriginal().isSprinting()) {
-				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
+				if (!executer.consumeStamina(2)) {
+					executer.setStamina(0);
+				} else {
+					executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
+				}
 				executer.getSkill(this).getDataManager().setDataSync(COMBO, 0, executer.getOriginal());
 			} else {
 				int animation = this.getAnimationInCondition(executer);
@@ -104,16 +272,14 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 			}
 		}
 		executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
-		executer.getSkill(this).activate();
 	}
 	
 	@Override
 	public boolean canExecute(PlayerPatch<?> executer) {
-		if (executer.isLogicalClient()) {
-			return true;
-		} else {
+		if (executer.getValidItemInHand(InteractionHand.OFF_HAND).getItem() instanceof MagneticShieldItem && executer.getValidItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof HerscherItem) {
 			return true;
 		}
+		return false;
 	}
 	
 	@Override
@@ -152,5 +318,14 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 				container.getExecuter().getSkill(this).getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		}
+		if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK) != null) {
+			if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().getDataValue(CounterAttack.CONSUMPTION_VALUE) != 0.2f) {
+				if(!container.getExecuter().isLogicalClient()) {
+					container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().setDataSync(CounterAttack.CONSUMPTION_VALUE, 0.2f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				}
+			}
+		}
+
+		container.setResource(10.0f);
 	}
 }

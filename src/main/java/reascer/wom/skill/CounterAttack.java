@@ -33,6 +33,7 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.skill.guard.GuardSkill.BlockType;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
@@ -43,13 +44,14 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 public class CounterAttack extends GuardSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("ad8def54-20a4-4806-be95-ce3f5054627c");
 	private static final SkillDataKey<Integer> LAST_ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Float> CONSUMPTION_VALUE = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
 	private static final SkillDataKey<Boolean> PARRYING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder()
 				.addAdvancedGuardMotion(WeaponCategories.SWORD, (itemCap, playerpatch) -> itemCap.getStyle(playerpatch) == Styles.ONE_HAND ?
 					Animations.SWORD_AUTO3 :
-					Animations.SWORD_DUAL_AUTO3)
+						itemCap.getStyle(playerpatch) == Styles.OCHS ? WOMAnimations.HERRSCHER_TRANE : Animations.SWORD_DUAL_AUTO3)
 				.addAdvancedGuardMotion(WeaponCategories.LONGSWORD, (itemCap, playerpatch) ->
 					Animations.LONGSWORD_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.TACHI, (itemCap, playerpatch) ->
@@ -71,11 +73,16 @@ public class CounterAttack extends GuardSkill {
 		super(builder);
 	}
 	
+	public void setPenalizer(float penalizer) {
+		this.penalizer = penalizer;
+	}
+	
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
 		container.getDataManager().registerData(LAST_ACTIVE);
 		container.getDataManager().registerData(PARRYING);
+		container.getDataManager().registerData(CONSUMPTION_VALUE);
 		container.getDataManager().setData(PARRYING, false);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, CounterAttack.EVENT_UUID, (event) -> {
@@ -87,7 +94,28 @@ public class CounterAttack extends GuardSkill {
 			
 			if (!container.getDataManager().getDataValue(PARRYING) && event.getPlayerPatch().getStamina() > 0) {
 				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 20 && !(event.getPlayerPatch().getOriginal().isFallFlying() || event.getPlayerPatch().currentLivingMotion == LivingMotions.FALL || !event.getPlayerPatch().getEntityState().canUseSkill() || !event.getPlayerPatch().getEntityState().canBasicAttack())) {
-					StaticAnimation animation = new Random().nextBoolean() ? Animations.SWORD_GUARD_ACTIVE_HIT1 : Animations.SWORD_GUARD_ACTIVE_HIT2;
+					StaticAnimation animation;
+					switch (new Random().nextInt() %3) {
+					case 0: {
+						animation = Animations.SWORD_GUARD_ACTIVE_HIT1;
+						break;
+					}
+					case 1: {
+						animation = Animations.SWORD_GUARD_ACTIVE_HIT2;
+						break;
+					}
+					case 2: {
+						animation = Animations.SWORD_GUARD_ACTIVE_HIT3;
+						break;
+					}
+					default:
+						animation = Animations.SWORD_GUARD_ACTIVE_HIT1;
+					}
+					
+					if (itemCapability.getStyle(event.getPlayerPatch()) == Styles.TWO_HAND) {
+						animation = new Random().nextBoolean() ? Animations.LONGSWORD_GUARD_ACTIVE_HIT1 : Animations.LONGSWORD_GUARD_ACTIVE_HIT2;
+					}
+					
 					float convert = -0.05F;
 					
 					if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
@@ -99,10 +127,12 @@ public class CounterAttack extends GuardSkill {
 					}
 					
 					if (itemCapability.getWeaponCollider() == WOMColliders.KATANA) {
-							animation = WOMAnimations.KATANA_GUARD_HIT;
-							convert = -0.15F;
-							//((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(WOMParticles.KATANA_SHEATHED_CUT.get(), event.getPlayerPatch().getOriginal().getX(), event.getPlayerPatch().getOriginal().getY() + (event.getPlayerPatch().getOriginal().getBbHeight()/2), event.getPlayerPatch().getOriginal().getZ(), 0, 0, 0,1 ,0);
-							//WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) event.getPlayerPatch().getOriginal().level), null, null, event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal());
+						animation = WOMAnimations.KATANA_GUARD_HIT;
+						convert = -0.15F;
+					}
+					
+					if (itemCapability.getWeaponCollider() == WOMColliders.HERSCHER && itemCapability.getStyle(event.getPlayerPatch()) == Styles.OCHS) {
+						animation = WOMAnimations.HERRSCHER_GUARD_PARRY;
 					}
 					
 					if(!event.getPlayerPatch().consumeStamina(3)){
@@ -117,7 +147,7 @@ public class CounterAttack extends GuardSkill {
 					
 					
 				} else {
-					if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD)) {
+					if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
 						event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 								SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 						container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
@@ -126,7 +156,7 @@ public class CounterAttack extends GuardSkill {
 			}
 			
 			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD)) {
-				if (event.getPlayerPatch().getStamina() == 0 || event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 10) {
+				if ((event.getPlayerPatch().getStamina() == 0 || event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 10) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
 					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 					container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
@@ -169,8 +199,8 @@ public class CounterAttack extends GuardSkill {
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
-		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, CounterAttack.EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, CounterAttack.EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
 		super.onRemoved(container);
 	}
 	
@@ -203,8 +233,17 @@ public class CounterAttack extends GuardSkill {
 				}
 				
 				event.getPlayerPatch().knockBackEntity(damageSource.getDirectEntity().position(), knockback);
+				if (container.getDataManager().getDataValue(CONSUMPTION_VALUE) != null && container.getDataManager().getDataValue(CONSUMPTION_VALUE) != 0) {
+					penalty *= container.getDataManager().getDataValue(CONSUMPTION_VALUE);
+				}
 				
-				boolean enoughStamina = event.getPlayerPatch().consumeStamina(penalty * impact);
+				boolean enoughStamina = true;
+				if (penalty > 0.0f) {
+					enoughStamina = event.getPlayerPatch().consumeStamina(penalty * impact);
+				} else {
+					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
+					enoughStamina = true;
+				}
 				
 				BlockType blockType = successParrying ? BlockType.ADVANCED_GUARD : enoughStamina ? BlockType.GUARD : BlockType.GUARD_BREAK;
 				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
@@ -257,6 +296,10 @@ public class CounterAttack extends GuardSkill {
 			if (itemCapability.getWeaponCollider() == WOMColliders.KATANA) {
 				return WOMAnimations.KATANA_GUARD_HIT;
 			}			
+			
+			if (itemCapability.getWeaponCollider() == WOMColliders.HERSCHER && itemCapability.getStyle(playerpatch) == Styles.OCHS) {
+				return WOMAnimations.HERRSCHER_GUARD_HIT;
+			}
 		}
 		
 

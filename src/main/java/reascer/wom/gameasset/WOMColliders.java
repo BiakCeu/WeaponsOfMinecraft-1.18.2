@@ -57,7 +57,12 @@ public class WOMColliders {
 	public static final Collider ANTITHEUS_SHOOT = new MultiOBBCollider(4, 2.0D, 1.6D, 2.0D, 0.0D, -1.7D, 0.0D);
 	
 	public static final Collider HERSCHER = new MultiOBBCollider(5, 0.2D, 0.3D, 0.8D, 0D, 0D, -0.8D);
+	public static final Collider HERSCHER_THRUST = new OBBCollider(0.6F, 0.6F, 1.3F, 0F, 0.8F, -1.1F);
+	public static final Collider HERSCHER_CHARGE_1 = new MultiOBBCollider(6, 0.2D, 0.4D, 1.2D, 0D, 0D, -1.2D);
+	public static final Collider HERSCHER_CHARGE_2 = new MultiOBBCollider(8, 0.2D, 0.6D, 1.6D, 0D, 0D, -1.6D);
+	public static final Collider HERSCHER_CHARGE_3 = new MultiOBBCollider(10, 0.2D, 0.8D, 2.0D, 0D, 0D, -2.0D);
 	public static final Collider GESETZ = new MultiOBBCollider(5, 0.4D, 0.6D, 1.0D, 0D, 0D, 0.4D);
-	public static final Collider GESETZ_INSET_LARGE = new MultiOBBCollider(5, 0.9D, 0.6D, 1.0D, -0.2D, 0D, 0.4D);
+	public static final Collider GESETZ_KRUMMEN = new MultiOBBCollider(5, 0.4D, 0.6D, 1.6D, 0D, 0D, 0.0D);
+	public static final Collider GESETZ_INSET_LARGE = new MultiOBBCollider(5, 0.9D, 0.6D, 1.0D, 0.3D, 0D, 0.4D);
 	
 }
