@@ -1,3 +1,4 @@
 {
-	"consumption": 240.0
+	"consumption": 24.0,
+	"max_stacks":10
 }

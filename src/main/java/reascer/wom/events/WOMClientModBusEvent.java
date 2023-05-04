@@ -19,6 +19,7 @@ import reascer.wom.client.particle.AntitheusCutParticle;
 import reascer.wom.client.particle.AntitheusHitDownParticle;
 import reascer.wom.client.particle.AntitheusHitParticle;
 import reascer.wom.client.particle.AntitheusHitReverseParticle;
+import reascer.wom.client.particle.AntitheusHitUpParticle;
 import reascer.wom.client.particle.AntitheusPunchHitParticle;
 import reascer.wom.client.particle.AntitheusPunchParticle;
 import reascer.wom.client.particle.EnderblasterbulletHitParticle;
@@ -52,6 +53,7 @@ public class WOMClientModBusEvent {
 		ParticleEngine particleEngine = mc.particleEngine;
     	particleEngine.register(WOMParticles.ANTITHEUS_HIT.get(), new AntitheusHitParticle.Provider());
     	particleEngine.register(WOMParticles.ANTITHEUS_HIT_DOWN.get(), new AntitheusHitDownParticle.Provider());
+    	particleEngine.register(WOMParticles.ANTITHEUS_HIT_UP.get(), new AntitheusHitUpParticle.Provider());
     	particleEngine.register(WOMParticles.ANTITHEUS_HIT_REVERSE.get(), new AntitheusHitReverseParticle.Provider());
     	particleEngine.register(WOMParticles.ANTITHEUS_CUT.get(), AntitheusCutParticle.Provider::new);
     	

@@ -593,7 +593,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			if(container.getExecuter().isLogicalClient()) {
 				if (!container.getDataManager().getDataValue(ACTIVE)) {
 					if (container.getDataManager().getDataValue(ZOOM)) {
-						ClientEngine.instance.renderEngine.zoomIn();
+						ClientEngine.getInstance().renderEngine.zoomIn();
 					}
 				}
 			} else {
@@ -601,7 +601,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			}
 		} else {
 			if(container.getExecuter().isLogicalClient()) {
-				ClientEngine.instance.renderEngine.zoomOut(0);
+				ClientEngine.getInstance().renderEngine.zoomOut(0);
 			}
 		}
 		
@@ -663,7 +663,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							float ressource = container.getExecuter().getSkill(this).getResource();
 							float ressource_after_consumption = ressource + ((66.6f * (1f - sweeping_edge/6f)/2) * target.getEffect(MobEffects.WITHER).getAmplifier());
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
-							container.getExecuter().getOriginal().heal(WitherCatharsis*0.3f);
+							container.getExecuter().getOriginal().heal(WitherCatharsis*0.4f);
 							target.removeEffect(MobEffects.WITHER);
 						}
 						float dpx = container.getDataManager().getDataValue(DARKNESS_PORTAL_X);
@@ -672,7 +672,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						container.getDataManager().setDataSync(DARKNESS_TARGET_REAPED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						if (target.hurt(damage,1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.7f))) {
+						if (target.hurt(damage,1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.6f))) {
 							container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent((ServerPlayerPatch)container.getExecuter(), target, damage, 1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f)));
 							if (target.isAlive()) {
 								target.teleportTo(dpx,(target instanceof Player ? 0:dpy - 100), dpz);

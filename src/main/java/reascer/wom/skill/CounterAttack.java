@@ -318,7 +318,7 @@ public class CounterAttack extends GuardSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<Object> getTooltipArgs(List<Object> list) {
+	public List<Object> getTooltipArgsOfScreen(List<Object> list) {
 		list.clear();
 		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WOMWeaponCategories.AGONY , WOMWeaponCategories.RUINE, WOMWeaponCategories.STAFF).toLowerCase());
 		return list;

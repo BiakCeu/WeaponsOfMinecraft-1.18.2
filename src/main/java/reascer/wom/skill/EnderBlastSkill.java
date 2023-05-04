@@ -3,7 +3,6 @@ package reascer.wom.skill;
 import java.util.List;
 import java.util.UUID;
 
-import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
@@ -31,20 +30,17 @@ import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerP
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.Skill.ActivateType;
-import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
-import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 
 public class EnderBlastSkill extends WomMultipleAnimationSkill {
 	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -333,7 +329,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
 			if(container.getExecuter().isLogicalClient()) {
 				if (container.getDataManager().getDataValue(ZOOM)) {
-					ClientEngine.instance.renderEngine.zoomIn();
+					ClientEngine.getInstance().renderEngine.zoomIn();
 				}
 			}
 			if(!container.getExecuter().isLogicalClient()) {
@@ -395,7 +391,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				container.getExecuter().getSkill(this).getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			if(container.getExecuter().isLogicalClient()) {
-				ClientEngine.instance.renderEngine.zoomOut(0);
+				ClientEngine.getInstance().renderEngine.zoomOut(0);
 			}
 		}
 	

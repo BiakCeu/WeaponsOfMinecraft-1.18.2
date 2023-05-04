@@ -31,16 +31,16 @@ public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 	private float yB;
 	
 	public RuinePlunderSwordParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, RawMesh particleMesh, ResourceLocation texture) {
-		super(level, x, y-10.0f, z, xd, yd, zd, particleMesh, texture);
+		super(level, x, y-5.0f, z, xd, yd, zd, particleMesh, texture);
 		this.lifetime = 50;
 		this.hasPhysics = false;
 		this.roll = (float)xd;
 		this.pitch = (float)zd;
 		this.yaw = random.nextFloat()*90;
 		this.yawO = this.yaw;
-		this.scale = -1;
+		this.scale = 1;
 		this.yO = (float) y-1.5f;
-		this.yB = (float) y-10f;
+		this.yB = (float) y-7f;
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 		super.tick();
 		this.alpha = (float)(this.lifetime - this.age) / (float)this.lifetime;
 		if (this.age < 10) {
-			if (((float) this.y + 2.0f) < yO) {
+			if (((float) this.y) < yO) {
 				this.yo = this.y;
 				this.y += 2.0f;
 			} else {

@@ -72,8 +72,8 @@ public class EntityAfterImageWeaponParticle extends CustomModelParticle<Animated
 			Entity entity = level.getEntity((int)Double.doubleToLongBits(xSpeed));
 			LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(entity, LivingEntityPatch.class);
 			
-			if (entitypatch != null && ClientEngine.instance.renderEngine.hasRendererFor(entitypatch.getOriginal())) {
-				PatchedEntityRenderer renderer = ClientEngine.instance.renderEngine.getEntityRenderer(entitypatch.getOriginal());
+			if (entitypatch != null && ClientEngine.getInstance().renderEngine.hasRendererFor(entitypatch.getOriginal())) {
+				PatchedEntityRenderer renderer = ClientEngine.getInstance().renderEngine.getEntityRenderer(entitypatch.getOriginal());
 				Armature armature = entitypatch.getArmature();
 				PoseStack poseStack = new PoseStack();
 				OpenMatrix4f[] matrices = renderer.getPoseMatrices(entitypatch, armature, 6.0F);
@@ -83,7 +83,7 @@ public class EntityAfterImageWeaponParticle extends CustomModelParticle<Animated
 					matrices[i] = OpenMatrix4f.mul(matrices[i], armature.searchJointById(i).getToOrigin(), null);
 				}
 				
-				AnimatedMesh mesh = ClientEngine.instance.renderEngine.getEntityRenderer(entitypatch.getOriginal()).getMesh(entitypatch);
+				AnimatedMesh mesh = ClientEngine.getInstance().renderEngine.getEntityRenderer(entitypatch.getOriginal()).getMesh(entitypatch);
 				EntityAfterImageWeaponParticle particle = new EntityAfterImageWeaponParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, mesh, matrices, poseStack.last().pose());
 				
 				return particle;

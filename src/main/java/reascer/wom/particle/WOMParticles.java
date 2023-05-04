@@ -16,6 +16,7 @@ public class WOMParticles {
 	public static final RegistryObject<HitParticleType> ANTITHEUS_HIT = PARTICLES.register("antitheus_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
 	public static final RegistryObject<HitParticleType> ANTITHEUS_HIT_REVERSE = PARTICLES.register("antitheus_hit_reverse", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
 	public static final RegistryObject<HitParticleType> ANTITHEUS_HIT_DOWN = PARTICLES.register("antitheus_hit_down", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+	public static final RegistryObject<HitParticleType> ANTITHEUS_HIT_UP = PARTICLES.register("antitheus_hit_up", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
 	
 	public static final RegistryObject<SimpleParticleType> ANTITHEUS_PUNCH = PARTICLES.register("antitheus_punch", () -> new SimpleParticleType(true));
 	public static final RegistryObject<HitParticleType> ANTITHEUS_PUNCH_HIT = PARTICLES.register("antitheus_punch_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));

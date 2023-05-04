@@ -177,21 +177,17 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					}
 					case 2: {
 						animation = WOMAnimations.HERRSCHER_AUTO_2;
-						container.getDataManager().setDataSync(COMBO, 0, playerentity);
 						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
 						break;
 					}
 					case 3: {
 						animation = WOMAnimations.HERRSCHER_AUTO_3;
-						container.getDataManager().setDataSync(COMBO, 0, playerentity);
 						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +5);
 						convert = -0.45f;
 						break;
 					}
 					case 4: {
-						animation = WOMAnimations.GESETZ_AUTO_2;
-						container.getDataManager().setDataSync(COMBO, 2, playerentity);
-						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+						animation = WOMAnimations.HERRSCHER_TRANE;
 						convert = -0.15f;
 						break;
 					}
@@ -203,7 +199,6 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					}
 					case 6: {
 						animation = WOMAnimations.HERRSCHER_BEFREIUNG;
-						container.getDataManager().setDataSync(COMBO, 0, playerentity);
 						convert = -0.45f;
 						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
 						break;
@@ -296,8 +291,11 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	
 	@Override
 	public List<Component> getTooltipOnItem(ItemStack itemStack, CapabilityItem cap, PlayerPatch<?> playerCap) {
-		List<Component> list = Lists.<Component>newArrayList();
+		List<Component> list = Lists.newArrayList();
+		String traslatableText = this.getTranslationKey();
 		
+		list.add(new TranslatableComponent(traslatableText).withStyle(ChatFormatting.WHITE).append(new TextComponent(String.format("[%.0f]", this.consumption)).withStyle(ChatFormatting.AQUA)));
+		list.add(new TranslatableComponent(traslatableText + ".tooltip").withStyle(ChatFormatting.DARK_GRAY));
 		return list;
 	}
 	

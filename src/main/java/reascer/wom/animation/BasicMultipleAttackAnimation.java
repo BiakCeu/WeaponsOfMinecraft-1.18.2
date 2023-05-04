@@ -192,7 +192,17 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 									}
 
 								}
+								
 								if (firstAttack) {
+									int i = 0;  
+									while (i < hitten.getTags().size()) {
+										if (((String) hitten.getTags().toArray()[i]).contains("anti_stunlock:")) {
+											hitten.getTags().remove(hitten.getTags().toArray()[i]);
+										} else {
+											i++;
+										}
+										
+									}
 									hitten.addTag(replaceTag);
 								}
 								//entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);

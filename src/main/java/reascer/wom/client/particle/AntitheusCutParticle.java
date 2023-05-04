@@ -60,7 +60,10 @@ public class AntitheusCutParticle extends HitParticle {
 				particle.oRoll = (float)Math.toRadians(45.0F - 90F);
 				particle.roll = (float)Math.toRadians(45.0F - 90F);
 			}
-			
+			if (xSpeed == 90) {
+				particle.oRoll = (float)Math.toRadians(45.0F + 90F);
+				particle.roll = (float)Math.toRadians(45.0F + 90F);
+			}
 			return particle;
 		}
 	}

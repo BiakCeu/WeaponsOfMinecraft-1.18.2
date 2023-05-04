@@ -30,20 +30,17 @@ import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerP
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.Skill.ActivateType;
-import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
-import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 
 public class EnderFusionSkill extends WomMultipleAnimationSkill {
 	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -307,8 +304,8 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		
 		list.add(new TranslatableComponent(traslatableText).withStyle(ChatFormatting.WHITE).append(new TextComponent(String.format("[%.0f]", this.consumption)).withStyle(ChatFormatting.AQUA)));
 		list.add(new TranslatableComponent(traslatableText + ".tooltip").withStyle(ChatFormatting.DARK_GRAY));
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Close range shot:");
-		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Bullet shot:");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Close range shots:");
+		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Ender Bullets:");
 		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Laser beam:");
 		
 		return list;
@@ -336,7 +333,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
 			if(container.getExecuter().isLogicalClient()) {
 				if (container.getDataManager().getDataValue(ZOOM)) {
-					ClientEngine.instance.renderEngine.zoomIn();
+					ClientEngine.getInstance().renderEngine.zoomIn();
 				}
 			}
 			if(!container.getExecuter().isLogicalClient()) {
@@ -405,7 +402,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				container.getExecuter().getSkill(this).getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			if(container.getExecuter().isLogicalClient()) {
-				ClientEngine.instance.renderEngine.zoomOut(0);
+				ClientEngine.getInstance().renderEngine.zoomOut(0);
 			}
 		}
 	}
