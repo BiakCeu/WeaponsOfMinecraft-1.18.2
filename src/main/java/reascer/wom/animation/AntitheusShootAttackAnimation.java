@@ -225,26 +225,22 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
 			Pose pose = super.getPoseByTime(entitypatch, time, partialTicks);
 			
-			this.getProperty(AttackAnimationProperty.ROTATE_X).ifPresent((flag) -> {
-				if (flag) {
-					float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
-					JointTransform armR = pose.getOrDefaultTransform("Arm_R");
-					armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
-					
-					if (this.getPhaseByTime(partialTicks).getColliderJoint() != Armatures.BIPED.armR) {
-						JointTransform armL = pose.getOrDefaultTransform("Arm_L");
-						armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
-					}
-					
-					JointTransform chest = pose.getOrDefaultTransform("Chest");
-					chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
-					
-					if (entitypatch instanceof PlayerPatch) {
-						JointTransform head = pose.getOrDefaultTransform("Head");
-						MathUtils.mulQuaternion(Vector3f.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
-					}
-				}
-			});
+			float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
+			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
+			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+			
+			if (this.getPhaseByTime(partialTicks).getColliderJoint() != Armatures.BIPED.armR) {
+				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
+				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+			}
+			
+			JointTransform chest = pose.getOrDefaultTransform("Chest");
+			chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
+			
+			if (entitypatch instanceof PlayerPatch) {
+				JointTransform head = pose.getOrDefaultTransform("Head");
+				MathUtils.mulQuaternion(Vector3f.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
+			}
 			
 			return pose;
 	}

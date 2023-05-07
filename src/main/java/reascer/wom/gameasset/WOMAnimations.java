@@ -50,10 +50,12 @@ import yesman.epicfight.api.animation.property.AnimationEvent.TimeStampedEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
+import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.animation.types.AimAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.animation.types.DodgeAnimation;
+import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.MovementAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -878,7 +880,27 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.0F))
-				.addEvents(TimePeriodEvent.create(0.3F, 0.55F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
+				
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.3F && elapsedTime < 0.55F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy) - 1.0F, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 0.5F) + 1);
+					}
+					
+					return 1.0F;
+				})
+				//.addEvents(TimePeriodEvent.create(0.3F, 0.55F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
 				.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 		
 		TORMENT_IDLE = new StaticAnimation(0.1f,true, "biped/living/torment_idle", biped);
@@ -3790,9 +3812,10 @@ public class WOMAnimations {
 			Vec3 floorPos = getfloor(entitypatch, self,new Vec3f(0,0.0F,-1.4F),Armatures.BIPED.toolR);
 			
 			weaponEdge = new Vec3(weaponEdge.x ,floorPos.y, weaponEdge.z);
+			
 			entitypatch.getOriginal().level.addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
 					floorPos.x,
-					(int) floorPos.y + 1,
+					(int) floorPos.y,
 					floorPos.z,
 					0.7D, 35.0D, 0.7D);
 			

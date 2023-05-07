@@ -157,7 +157,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 				if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(trueEntity) && !entitypatch.isTeammate(hitten)) {
 					if (hitten instanceof LivingEntity || hitten instanceof PartEntity) {
 						HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(hitten, HurtableEntityPatch.class);
-						if (entity.hasLineOfSight(hitten)) {
+						if (hitHurtableEntityPatch != null && entity.hasLineOfSight(hitten)) {
 							EpicFightDamageSource source;
 							float anti_stunlock = 1;
 							if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
