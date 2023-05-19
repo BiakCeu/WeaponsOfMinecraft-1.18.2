@@ -80,11 +80,6 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 		container.getDataManager().registerData(ATTACKS);
 		container.getDataManager().registerData(DAMAGE);
 		
-		if(!container.getExecuter().isLogicalClient()) {
-			container.getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			container.getDataManager().setDataSync(COOLDOWN, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-		}
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			container.getDataManager().setData(TIMEDSLASH, false);
 			ServerPlayer serverPlayer = event.getPlayerPatch().getOriginal();

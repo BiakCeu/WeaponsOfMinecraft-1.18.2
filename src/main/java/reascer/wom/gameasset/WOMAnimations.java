@@ -812,7 +812,36 @@ public class WOMAnimations {
 							Vec3f keyLast = keyframes[endFrame].transform().translation();
 							Vec3 pos = entitypatch.getOriginal().getEyePosition();
 							Vec3 targetpos = attackTarget.position();
-							float horizontalDistance = (float) Math.max((float)targetpos.subtract(pos).horizontalDistance()*(2.5+(2.5f/playerPatch.getAttackSpeed(InteractionHand.MAIN_HAND))) - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+							float horizontalDistance = (float) Math.max((float)targetpos.subtract(pos).horizontalDistance()*2.00f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+							Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
+							float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
+							
+							for (int i = startFrame; i <= endFrame; i++) {
+								Vec3f translation = keyframes[i].transform().translation();
+								translation.z *= scale;
+							}
+							
+							transformSheet.readFrom(transform);
+						} else {
+							transformSheet.readFrom(self.getTransfroms().get("Root"));
+						}
+					}
+				})
+				.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, (self, entitypatch, transformSheet) -> {
+					LivingEntity attackTarget = entitypatch.getTarget();
+					if (entitypatch instanceof PlayerPatch<?>) {
+						PlayerPatch<?> playerPatch;
+						playerPatch = (PlayerPatch<?>) entitypatch;
+						
+						if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
+							TransformSheet transform = self.getTransfroms().get("Root").copyAll();
+							Keyframe[] keyframes = transform.getKeyframes();
+							int startFrame = 0;
+							int endFrame = transform.getKeyframes().length - 1;
+							Vec3f keyLast = keyframes[endFrame].transform().translation();
+							Vec3 pos = entitypatch.getOriginal().getEyePosition();
+							Vec3 targetpos = attackTarget.position();
+							float horizontalDistance = (float) Math.max((float)targetpos.subtract(pos).horizontalDistance()*2.00f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
 							Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
 							float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
 							
@@ -880,7 +909,6 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.0F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.0F))
-				
 				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
 					if (elapsedTime >= 0.3F && elapsedTime < 0.55F) {
 						float dpx = (float) entitypatch.getOriginal().getX();
@@ -893,14 +921,13 @@ public class WOMAnimations {
 							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
 						}
 						
-						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy) - 1.0F, 0.0F);
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
 						
-						return 1 - (1 / (-distanceToGround - 0.5F) + 1);
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
 					}
 					
 					return 1.0F;
 				})
-				//.addEvents(TimePeriodEvent.create(0.3F, 0.55F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
 				.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 		
 		TORMENT_IDLE = new StaticAnimation(0.1f,true, "biped/living/torment_idle", biped);
@@ -927,7 +954,25 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.7F, 1.0F))
-				.addEvents(TimePeriodEvent.create(1.0F, 1.3F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 1.0F && elapsedTime < 1.3F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(1.3F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 		
 		TORMENT_CHARGED_ATTACK_2 = new BasicMultipleAttackAnimation(0.05F, 0.25F, 0.4F, 1.00F, null, biped.toolR, "biped/combat/torment_charged_attack_2", biped)
@@ -977,7 +1022,25 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.35F, 0.9F))
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				.addEvents(TimePeriodEvent.create(0.9F, 1.15F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.9F && elapsedTime < 1.15F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_AIRBURST_JUMP, Side.CLIENT),
 						TimeStampedEvent.create(1.15F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT));
 		
@@ -1036,7 +1099,25 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.50F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.20F))
-				.addEvents(TimePeriodEvent.create(0.3F, 0.6F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.3F && elapsedTime < 0.6F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.0F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch) {
 								((PlayerPatch<?>)entitypatch).setStamina(((PlayerPatch<?>)entitypatch).getStamina() - 2.0f);
@@ -2343,7 +2424,7 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.00F, ReuseableEvents.SHOOT_LEFT, Side.CLIENT));
 		
-		ENDERBLASTER_TWOHAND_RELOAD = new StaticAnimation(0.1f,false, "biped/skill/enderblaster_twohand_reload", biped)
+		ENDERBLASTER_TWOHAND_RELOAD = new StaticAnimation(0.1f, false, "biped/skill/enderblaster_twohand_reload", biped)
 				.addEvents(TimeStampedEvent.create(0.2F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.25F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.3F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
@@ -2536,7 +2617,25 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.3F))
-				.addEvents(TimePeriodEvent.create(0.3F, 0.50F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.4F && elapsedTime < 0.55F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
 					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
 				}, Side.CLIENT),
@@ -2550,6 +2649,8 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_HIT)				
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_HIT,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD )
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.9F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
@@ -3093,7 +3194,25 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.00F))
-				.addEvents(TimePeriodEvent.create(1.15F, 1.5F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH));
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 1.15F && elapsedTime < 1.50F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				});
 		
 		GESETZ_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/gezets_auto_1", biped,
 				new Phase(0.0F, 0.10F, 0.20F, 0.3F, Float.MAX_VALUE, InteractionHand.OFF_HAND, biped.toolL, WOMColliders.GESETZ))
@@ -3167,7 +3286,25 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.35F))
-				.addEvents(TimePeriodEvent.create(0.3F, 0.65F, ReuseableEvents.FALLING_EASE_IN, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.55F && elapsedTime < 0.65F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while (block.getBlock() instanceof BushBlock || block.isAir()) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.BODY_BIG_GROUNDSLAM, Side.CLIENT),
 						TimeStampedEvent.create(0.65F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch<?>) {
@@ -3212,39 +3349,6 @@ public class WOMAnimations {
 		
 		public static final AnimationEvent.AnimationEventConsumer KATANA_IN = (entitypatch, self, params) -> entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 		public static final AnimationEvent.AnimationEventConsumer FAST_SPINING = (entitypatch, self, params) -> entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH, SoundSource.MASTER, 0.5F, 1.1F - ((new Random().nextFloat()-0.5f) * 0.2F));
-		
-		public static final AnimationEvent.AnimationEventConsumer FALLING_EASE_IN = (entitypatch, self, params) -> {
-			float dpx = (float) entitypatch.getOriginal().getX();
-			float dpy = (float) entitypatch.getOriginal().getY();
-			float dpz = (float) entitypatch.getOriginal().getZ();
-			BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
-			while (block.getBlock() instanceof BushBlock || block.isAir()) {
-				dpy--;
-				block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
-			}
-			dpy = (int)dpy;
-			float A = 0.051f * self.getPlaySpeed(entitypatch);
-			float B = 0.25f;
-			float time_to_rewind = (float) Math.min((A * (1- Math.exp(-B * (entitypatch.getOriginal().getY() - dpy)))),0.050f * self.getPlaySpeed(entitypatch));
-			A = 4;
-			B = 0.01f;
-			float vertical_distance = (float) (A * (1- Math.exp(-B * (entitypatch.getOriginal().getY() - dpy))));
-			if (time_to_rewind > 0.01f && entitypatch.getOriginal().getDeltaMovement().y < -0.08f) {
-				EntityState state = self.getState(entitypatch, entitypatch.getAnimator().getPlayerFor(self).getElapsedTime());
-				
-				if (state.inaction()) {
-					LivingEntity livingentity = entitypatch.getOriginal();
-					Vec3 coordvector = ((BasicMultipleAttackAnimation) self).getCoordVector(entitypatch, self);
-					
-					Vec3f direction = new Vec3f((float)coordvector.horizontalDistance()*vertical_distance,0.0f, 0.0f);
-				    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
-				    OpenMatrix4f.transform3v(rotation, direction, direction);
-				    
-					livingentity.move(MoverType.SELF, direction.toDoubleVector());
-				}
-				entitypatch.getAnimator().getPlayerFor(self).setElapsedTimeCurrent((float) (entitypatch.getAnimator().getPlayerFor(self).getElapsedTime() - time_to_rewind));
-			}
-		};
 		
 		public static final AnimationEvent.AnimationEventConsumer LOOPED_FALLING_MOVE = (entitypatch, self, params) -> {
 			float dpx = (float) entitypatch.getOriginal().getX();
@@ -3647,7 +3751,7 @@ public class WOMAnimations {
 					(int) floorPos.y + 1,
 					floorPos.z,
 					0.7D, 40.0D, 0.6D);
-			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 2.0f);
+			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 2.0f,true,false);
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer AGONY_GROUNDSLAM = (entitypatch, self, params) -> {
@@ -3762,7 +3866,7 @@ public class WOMAnimations {
 					(int) floorPos.y+1,
 					floorPos.z,
 					1.0D, 50.0D, 1.0D);
-			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 3.0f);
+			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 3.0f,true,false);
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer TORMENT_GROUNDSLAM = (entitypatch, self, params) -> {
@@ -3789,7 +3893,7 @@ public class WOMAnimations {
 					(int) floorPos.y + 1,
 					floorPos.z,
 					1.0D, 50.0D, 1.0D);
-			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 3.50f);
+			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 3.50f,true,false);
 			
 		};
 		private static final AnimationEvent.AnimationEventConsumer TORMENT_GROUNDSLAM_SMALL = (entitypatch, self, params) -> {
@@ -3815,11 +3919,11 @@ public class WOMAnimations {
 			
 			entitypatch.getOriginal().level.addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
 					floorPos.x,
-					(int) floorPos.y,
+					(int) floorPos.y+1,
 					floorPos.z,
 					0.7D, 35.0D, 0.7D);
 			
-			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 2.0f);
+			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 2.0f,true,false);
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer RUINE_COMET_GROUNDTHRUST = (entitypatch, self, params) -> {

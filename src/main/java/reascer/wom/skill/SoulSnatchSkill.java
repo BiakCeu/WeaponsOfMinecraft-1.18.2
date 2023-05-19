@@ -71,10 +71,6 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 		container.getDataManager().registerData(EXPIATION);
 		container.getDataManager().registerData(TIMER);
 		
-		if (!container.getExecuter().isLogicalClient()) {
-			container.getDataManager().setData(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal())));
-		}
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(BUFFING)) {
 				event.getDamageSource().setStunType(StunType.NONE);
@@ -131,20 +127,6 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 				
 				container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(stolen_move_speed);
 				container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(stolen_attack_speed);
-				
-				if (event.getTarget().hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
-					event.getTarget().removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
-					event.getTarget().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, (12 + (4 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) * 20, 0, false, true));
-				} else {
-					event.getTarget().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, (9 + (3 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) * 20, 0, false, true));
-				}
-				
-				if (event.getTarget().hasEffect(MobEffects.DIG_SLOWDOWN)) {
-					event.getTarget().removeEffect(MobEffects.DIG_SLOWDOWN);
-					event.getTarget().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, (12 + (4 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) * 20, 0, false, true));
-				} else {
-					event.getTarget().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, (9 + (3 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) * 20, 0, false, true));
-				}
 			}
 		});
 		
