@@ -311,6 +311,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 				} else if (animation_timer >= 20) {
 					container.getExecuter().playAnimationSynchronized(WOMAnimations.TORMENT_CHARGED_ATTACK_1, 0);
 				} else {
+					
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE)) {
 						container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 1,true,false,false));
 						container.getExecuter().getOriginal().level.playSound(null,

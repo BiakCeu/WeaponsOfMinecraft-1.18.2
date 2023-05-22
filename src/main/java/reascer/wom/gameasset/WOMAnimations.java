@@ -78,6 +78,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.level.block.FractureBlock;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class WOMAnimations {
@@ -801,8 +802,6 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
 					LivingEntity attackTarget = entitypatch.getTarget();
 					if (entitypatch instanceof PlayerPatch<?>) {
-						PlayerPatch<?> playerPatch;
-						playerPatch = (PlayerPatch<?>) entitypatch;
 						
 						if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
 							TransformSheet transform = self.getTransfroms().get("Root").copyAll();
@@ -812,7 +811,7 @@ public class WOMAnimations {
 							Vec3f keyLast = keyframes[endFrame].transform().translation();
 							Vec3 pos = entitypatch.getOriginal().getEyePosition();
 							Vec3 targetpos = attackTarget.position();
-							float horizontalDistance = (float) Math.max((float)targetpos.subtract(pos).horizontalDistance()*2.00f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+							float horizontalDistance = (float) Math.max(((float)targetpos.subtract(pos).horizontalDistance()*2.00f) - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
 							Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
 							float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
 							
@@ -830,9 +829,6 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, (self, entitypatch, transformSheet) -> {
 					LivingEntity attackTarget = entitypatch.getTarget();
 					if (entitypatch instanceof PlayerPatch<?>) {
-						PlayerPatch<?> playerPatch;
-						playerPatch = (PlayerPatch<?>) entitypatch;
-						
 						if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
 							TransformSheet transform = self.getTransfroms().get("Root").copyAll();
 							Keyframe[] keyframes = transform.getKeyframes();
@@ -841,7 +837,7 @@ public class WOMAnimations {
 							Vec3f keyLast = keyframes[endFrame].transform().translation();
 							Vec3 pos = entitypatch.getOriginal().getEyePosition();
 							Vec3 targetpos = attackTarget.position();
-							float horizontalDistance = (float) Math.max((float)targetpos.subtract(pos).horizontalDistance()*2.00f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+							float horizontalDistance = (float) Math.max(((float)targetpos.subtract(pos).horizontalDistance()*2.00f) - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
 							Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
 							float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
 							
@@ -1089,18 +1085,19 @@ public class WOMAnimations {
 					TimeStampedEvent.create(0.7F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT),
 					TimeStampedEvent.create(1.15F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 		
-		TORMENT_BERSERK_AIRSLAM = new BasicMultipleAttackAnimation(0.15F, 0.5F, 0.7F, 1.2F, WOMColliders.TORMENT_BERSERK_AIRSLAM, biped.rootJoint, "biped/skill/torment_berserk_airslam", biped)
+		TORMENT_BERSERK_AIRSLAM = new BasicMultipleAttackAnimation(0.05F, 0.5F, 0.7F, 1.2F, WOMColliders.TORMENT_BERSERK_AIRSLAM, biped.rootJoint, "biped/skill/torment_berserk_airslam", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.2F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(4F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.KNOCKDOWN)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.00F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.20F)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.50F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.20F))
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.30F))
 				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
-					if (elapsedTime >= 0.3F && elapsedTime < 0.6F) {
+					if (elapsedTime >= 0.3F && elapsedTime < 0.35f) {
 						float dpx = (float) entitypatch.getOriginal().getX();
 						float dpy = (float) entitypatch.getOriginal().getY();
 						float dpz = (float) entitypatch.getOriginal().getZ();
@@ -1770,7 +1767,6 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.0F)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, true)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
@@ -1805,7 +1801,6 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.0F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.6F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT),
 					TimeStampedEvent.create(0.85F, ReuseableEvents.SHOTGUN_SHOOT_RIGHT, Side.CLIENT));
@@ -2697,7 +2692,7 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.55F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
 					TimeStampedEvent.create(0.75F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
-		ANTITHEUS_IDLE = new StaticAnimation(0.2f,true, "biped/living/antitheus_idle", biped)
+		ANTITHEUS_IDLE = new StaticAnimation(0.2f, true, "biped/living/antitheus_idle", biped)
 				.addEvents(TimeStampedEvent.create(6.00F, (entitypatch, self, params) -> {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(DemonMarkPassiveSkill.IDLE, true);
 						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
@@ -2765,15 +2760,97 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.0F)
 				.addEvents(TimeStampedEvent.create(0.5F, (entitypatch, self, params) -> {
+					
 					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 1.0F, 0.5F);
-				
 				}, Side.CLIENT),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
+					
 					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, (ServerPlayer)entitypatch.getOriginal());
 					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ACTIVE, true, (ServerPlayer)entitypatch.getOriginal());
 					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, true, (ServerPlayer)entitypatch.getOriginal());
 					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
 					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
-				}, Side.SERVER));
+				}, Side.SERVER),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
+					
+					float target_x = (float) entitypatch.getOriginal().getX();
+					float target_y = (float) entitypatch.getOriginal().getY()+0.2f;
+					float target_z = (float) entitypatch.getOriginal().getZ();
+					
+					int n = 80; // set the number of particles to emit
+					double r = 0.6; // set the radius of the disk to 1
+					double t = 0.05; // set the thickness of the disk to 0.1
+					
+					
+					for (int i = 0; i < n*2; i++) {
+						double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+						double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+						
+						// calculate the emission direction in Cartesian coordinates using the polar coordinates
+						double x = r * Math.cos(phi) * Math.cos(theta);
+						double y = r * Math.cos(phi) * Math.sin(theta);
+						double z = r * Math.sin(phi);
+						
+						// create a Vector3f object to represent the emission direction
+						Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
+						
+						// rotate the direction vector to align with the forward vector
+						OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+						OpenMatrix4f.transform3v(rotation, direction, direction);
+						
+						// emit the particle in the calculated direction, with some random velocity added
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								(target_x),
+								(target_y),
+								(target_z),
+								(float)(direction.x),
+								(float)(direction.y),
+								(float)(direction.z));
+					}
+					
+					for (int i = 0; i < n; i++) {
+						double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+						double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+						
+						// calculate the emission direction in Cartesian coordinates using the polar coordinates
+						double x = r * Math.cos(phi) * Math.cos(theta);
+						double y = r * Math.cos(phi) * Math.sin(theta);
+						double z = r * Math.sin(phi);
+						
+						// create a Vector3f object to represent the emission direction
+						Vec3f direction = new Vec3f(
+								(float)x *(new Random().nextFloat()+0.5f)*0.8f,
+								(float)y *(new Random().nextFloat()+0.5f)*0.8f,
+								(float)z *(new Random().nextFloat()+0.5f)*0.8f);
+						
+						// rotate the direction vector to align with the forward vector
+						OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+						OpenMatrix4f.transform3v(rotation, direction, direction);
+						
+						// emit the particle in the calculated direction, with some random velocity added
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								(target_x),
+								(target_y),
+								(target_z),
+								(float)(direction.x),
+								(float)(direction.y),
+								(float)(direction.z));
+					}
+					
+					for (int i = 0; i < 60; i++) {
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								target_x + ((new Random().nextFloat() - 0.5F)*1.2f),
+								target_y + 0.2F,
+								target_z + ((new Random().nextFloat() - 0.5F)*1.2f),
+								0,
+								((new Random().nextFloat()) * 1.5F),
+								0);
+					}
+					Level level = entitypatch.getOriginal().level;
+					
+					Vec3 floorPos = ReuseableEvents.getfloor(entitypatch, self,new Vec3f(0,0.0F,0.0F),Armatures.BIPED.rootJoint);
+					Vec3 weaponEdge = new Vec3(floorPos.x ,floorPos.y, floorPos.z);
+					
+					LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 4.00f,true,true);
+				}, Side.CLIENT));
 		
 		ANTITHEUS_ASCENDED_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.4F, 0.4F, WOMColliders.ANTITHEUS_ASCENDED_PUNCHES, biped.rootJoint, "biped/skill/antitheus_ascended_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.9F))
@@ -3058,7 +3135,21 @@ public class WOMAnimations {
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
 									transformMatrix.m32 + entitypatch.getOriginal().getZ(), 
 									48, 0.0D, 0.0D, 0.0D, 0.5D);
-						}, Side.SERVER));
+						}, Side.SERVER),TimeStampedEvent.create(1.50F, (entitypatch, self, params) -> {
+							OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(1.0f), Armatures.BIPED.handR);
+							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
+							CORRECTION.translate(new Vec3f(-1.0f, 0.0F, -2.5F));
+							OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
+							
+							Level level = entitypatch.getOriginal().getLevel();
+							
+							Vec3 FractureCenter = new Vec3(
+									transformMatrix.m30 + entitypatch.getOriginal().getX(), 
+									transformMatrix.m31 + entitypatch.getOriginal().getY()-2, 
+									transformMatrix.m32 + entitypatch.getOriginal().getZ());
+							
+							LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, FractureCenter, 4.00f,true,true);
+						}, Side.CLIENT));
 		
 		ANTITHEUS_ASCENDED_IDLE = new StaticAnimation(0.1f, true, "biped/living/antitheus_ascended_idle", biped);
 		ANTITHEUS_ASCENDED_RUN = new MovementAnimation(0.1f, true, "biped/living/antitheus_ascended_run", biped);
@@ -3863,7 +3954,7 @@ public class WOMAnimations {
 			weaponEdge = new Vec3(weaponEdge.x ,floorPos.y, weaponEdge.z);
 			entitypatch.getOriginal().level.addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
 					floorPos.x,
-					(int) floorPos.y+1,
+					(int) floorPos.y + 1,
 					floorPos.z,
 					1.0D, 50.0D, 1.0D);
 			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 3.0f,true,false);
@@ -3919,11 +4010,12 @@ public class WOMAnimations {
 			
 			entitypatch.getOriginal().level.addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
 					floorPos.x,
-					(int) floorPos.y+1,
+					(int) floorPos.y + 1,
 					floorPos.z,
 					0.7D, 35.0D, 0.7D);
-			
 			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 2.0f,true,false);
+			
+			
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer RUINE_COMET_GROUNDTHRUST = (entitypatch, self, params) -> {

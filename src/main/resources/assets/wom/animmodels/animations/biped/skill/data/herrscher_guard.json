@@ -1,6 +1,6 @@
 {
 	"layer":"COMPOSITE_LAYER",
-	"priority":"MIDDLE",
+	"priority":"HIGHEST",
 	"masks":
 	[
 		{
@@ -8,11 +8,11 @@
 			"type":"root_upper_joints"
 		},
 		{
-			"livingmotion":"idle",
+			"livingmotion":"IDLE",
 			"type":"none"
 		},
 		{
-			"livingmotion":"swim",
+			"livingmotion":"SWIM",
 			"type":"arms"
 		}
 	]

@@ -11,11 +11,14 @@ import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
+import yesman.epicfight.world.level.block.FractureBlock;
+import yesman.epicfight.world.level.block.FractureBlockState;
 
 @OnlyIn(Dist.CLIENT)
 public class WOMGroundSlamParticle extends NoRenderParticle {
@@ -26,6 +29,13 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 		BlockState blockstate = level.getBlockState(blockpos.below());
 		Minecraft mc = Minecraft.getInstance();
 		
+		float floorY = (float) y; 
+		
+		while (blockstate instanceof FractureBlockState) {
+			blockpos = new BlockPos(x, floorY--, z);
+			blockstate = level.getBlockState(blockpos.below());
+		}
+		
 		for (int i = 0; i < dy; i ++) {
 			OpenMatrix4f mat = OpenMatrix4f.createRotatorDeg((float)Math.random() * 360.0F, Vec3f.Y_AXIS);
 			Vec3f positionVec = OpenMatrix4f.transform3v(mat, Vec3f.Z_AXIS, null).scale((float)dx);
@@ -33,12 +43,18 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 			
 			// Particle block side
 			Particle blockParticle = new TerrainParticle(level, x + positionVec.x, y, z + positionVec.z, 0, 0, 0, blockstate, blockpos);
-			blockParticle.setParticleSpeed((moveVec.x + (Math.random()-0.5)) * 0.3D, (Math.random()) * 0.5D, (moveVec.z + (Math.random()-0.5)) * 0.3D);
+			blockParticle.setParticleSpeed((
+					moveVec.x + (Math.random()-0.5)) * 0.3D,
+					(Math.random()) * 0.5D,
+					(moveVec.z + (Math.random()-0.5)) * 0.3D);
 			blockParticle.setLifetime(60 + (new Random().nextInt(20)));
 			
 			// Particle block up
 			Particle blockParticle2 = new TerrainParticle(level, x + positionVec.x, y, z + positionVec.z, 0, 0, 0, blockstate, blockpos);
-			blockParticle2.setParticleSpeed((moveVec.x + (Math.random()-0.5)) * 0.1D, (Math.random()) * dz * 1.5, (moveVec.z + (Math.random()-0.5)) * 0.1D);
+			blockParticle2.setParticleSpeed((
+					moveVec.x + (Math.random()-0.5)) * 0.1D,
+					(Math.random()) * dz * 1.5,
+					(moveVec.z + (Math.random()-0.5)) * 0.1D);
 			blockParticle2.setLifetime(60 + (new Random().nextInt(20)));
 			
 			Particle smokeParticle = mc.particleEngine.createParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + positionVec.x * 0.5D, y + dz * 1.5, z + positionVec.z * 0.5D, 0, 0, 0); 

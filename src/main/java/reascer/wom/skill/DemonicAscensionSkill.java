@@ -832,10 +832,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					if (!container.getExecuter().getOriginal().isCreative()) {
 						container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
 					}
-					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.INVISIBILITY,2, 0,true,false,false));
-					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,2, 0,true,false,false));
-					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,2, 0,true,false,false));
-					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.GLOWING,2, 0,true,false,false));
+					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,5, 0,true,false,false));
+					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,5, 0,true,false,false));
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
 						if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
 							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, (ServerPlayer) container.getExecuter().getOriginal());					

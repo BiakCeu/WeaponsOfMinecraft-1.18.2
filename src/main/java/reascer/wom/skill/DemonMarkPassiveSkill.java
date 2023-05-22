@@ -229,7 +229,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
-					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() + 0.3F)*0.55f),
+					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() + 0.1F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(new Random().nextFloat() - 0.5F)*0.15f,
 					(new Random().nextFloat() - 1.0F)*0.55f,

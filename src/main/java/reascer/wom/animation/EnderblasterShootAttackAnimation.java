@@ -18,6 +18,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
+import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.world.entity.projectile.EnderBullet;
 import reascer.wom.world.entity.projectile.WOMEntities;
@@ -76,6 +77,35 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	
 	public EnderblasterShootAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
 		super(convertTime, path, armature, phases);
+		this.newTimePair(0, Float.MAX_VALUE);
+		this.addStateRemoveOld(EntityState.TURNING_LOCKED, false);
+		
+		this.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, MoveCoordFunctions.TRACE_LOC_TARGET);
+		this.addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
+			LivingEntity attackTarget = entitypatch.getTarget();
+			
+			if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
+				TransformSheet transform = self.getTransfroms().get("Root").copyAll();
+				Keyframe[] keyframes = transform.getKeyframes();
+				int startFrame = 0;
+				int endFrame = transform.getKeyframes().length - 1;
+				Vec3f keyLast = keyframes[endFrame].transform().translation();
+				Vec3 pos = entitypatch.getOriginal().getEyePosition();
+				Vec3 targetpos = attackTarget.position();
+				float horizontalDistance = Math.max((float)targetpos.subtract(pos).horizontalDistance()*1.75f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+				Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
+				float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
+				
+				for (int i = startFrame; i <= endFrame; i++) {
+					Vec3f translation = keyframes[i].transform().translation();
+					translation.z *= scale;
+				}
+				
+				transformSheet.readFrom(transform);
+			} else {
+				transformSheet.readFrom(self.getTransfroms().get("Root"));
+			}
+		});
 		
 		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch) -> {
 			float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
@@ -91,10 +121,6 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			JointTransform chest = pose.getOrDefaultTransform("Chest");
 			chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
 			
-			if (entitypatch instanceof PlayerPatch) {
-				JointTransform head = pose.getOrDefaultTransform("Head");
-				MathUtils.mulQuaternion(Vector3f.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
-			}
 		});
 	}
 	@Override
@@ -156,7 +182,8 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 								source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
 							}
 							String replaceTag = "anti_stunlock:"+ anti_stunlock +":"+hitten.tickCount+":"+this.getId()+"-"+phase.contact;
-							if (hitHurtableEntityPatch.isStunned()) {
+							boolean validAnim = this != WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT;
+							if (hitHurtableEntityPatch.isStunned() && validAnim) {
 								for (String tag : hitten.getTags()) {
 									if (tag.contains("anti_stunlock:")) {
 										anti_stunlock = this.applyAntiStunLock(hitten, anti_stunlock, source, phase, tag, replaceTag);
@@ -191,7 +218,9 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 								}
 								source.setStunType(StunType.KNOCKDOWN);
 							}
+							
 							source.setImpact(source.getImpact() * anti_stunlock);
+							
 							int prevInvulTime = hitten.invulnerableTime;
 							hitten.invulnerableTime = 0;
 							AttackResult attackResult = entitypatch.attack(source, hitten, phase.hand);

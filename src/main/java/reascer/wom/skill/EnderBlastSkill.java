@@ -15,6 +15,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
@@ -82,13 +83,17 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER && container.getExecuter().getEntityState().canBasicAttack()) {
+			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER &&
+					container.getExecuter().getEntityState().canBasicAttack()) {
+				
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER && container.getExecuter().getEntityState().canBasicAttack()) {
+			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER &&
+					container.getExecuter().getEntityState().canBasicAttack()) {
+				
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(SHOOT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

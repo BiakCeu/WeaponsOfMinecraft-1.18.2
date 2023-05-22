@@ -6,5 +6,6 @@
 			"impact":2.6,
 			"max_strikes":4
 		}
-	}
+	},
+	"type":"shield"
 }
