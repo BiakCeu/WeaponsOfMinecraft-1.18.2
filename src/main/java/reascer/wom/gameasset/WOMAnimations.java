@@ -2947,7 +2947,7 @@ public class WOMAnimations {
 					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
 				}, Side.CLIENT));
 		
-		ANTITHEUS_ASCENDED_DEATHFALL = new BasicMultipleAttackAnimation(0.05F, 0.5F, 0.55F, 0.6F, WOMColliders.ANTITHEUS_ASCENDED_DEATHFALL, biped.rootJoint, "biped/skill/antitheus_ascended_deathfall", biped)
+		ANTITHEUS_ASCENDED_DEATHFALL = new BasicMultipleAttackAnimation(0.05F, 0.5F, 0.55F, 0.75F, WOMColliders.ANTITHEUS_ASCENDED_DEATHFALL, biped.rootJoint, "biped/skill/antitheus_ascended_deathfall", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10.0F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
@@ -2959,7 +2959,7 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
-				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.00F))
+				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.75F))
 				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
 					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
 					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -3006,9 +3006,8 @@ public class WOMAnimations {
 						floor_y--;
 					}
 					
-					Vec3 position = new Vec3(0,(floor_y - 2) - entitypatch.getOriginal().getY(),0);
+					Vec3 position = new Vec3(0,(floor_y-2) - entitypatch.getOriginal().getY(),0);
 					entitypatch.getOriginal().move(MoverType.SELF,position);
-					
 					
 					int n = 80; // set the number of particles to emit
 					double r = 0.6; // set the radius of the disk to 1
@@ -3112,7 +3111,7 @@ public class WOMAnimations {
 							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.7F);
 							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS, 1.0F, 1.0F);
 						}, Side.CLIENT),
-						TimeStampedEvent.create(1.50F, (entitypatch, self, params) -> {
+						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
 							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
 							OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(1.0f), Armatures.BIPED.handR);
 							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
@@ -3135,10 +3134,10 @@ public class WOMAnimations {
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
 									transformMatrix.m32 + entitypatch.getOriginal().getZ(), 
 									48, 0.0D, 0.0D, 0.0D, 0.5D);
-						}, Side.SERVER),TimeStampedEvent.create(1.50F, (entitypatch, self, params) -> {
+						}, Side.SERVER),TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
 							OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(1.0f), Armatures.BIPED.handR);
 							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
-							CORRECTION.translate(new Vec3f(-1.0f, 0.0F, -2.5F));
+							CORRECTION.translate(new Vec3f(0.5f, 0.0F, -1.5F));
 							OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
 							
 							Level level = entitypatch.getOriginal().getLevel();

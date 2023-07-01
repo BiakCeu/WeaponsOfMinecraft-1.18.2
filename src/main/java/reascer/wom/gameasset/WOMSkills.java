@@ -193,7 +193,8 @@ public class WOMSkills {
 		SkillManager.register(RegierungSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"regierung");
 		
-		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder(),
+		
+		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"counter_attack");
 
 		

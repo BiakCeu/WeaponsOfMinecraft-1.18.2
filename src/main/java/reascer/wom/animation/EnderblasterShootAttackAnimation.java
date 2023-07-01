@@ -107,20 +107,21 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			}
 		});
 		
-		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch) -> {
-			float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
-			
-			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
-			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
-			
-			if (((AttackAnimation) self).getPhaseByTime(1).getColliderJoint() != Armatures.BIPED.armR) {
-				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
-				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch, time) -> {
+			if (self instanceof AttackAnimation) {
+				float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
+				
+				JointTransform armR = pose.getOrDefaultTransform("Arm_R");
+				armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				
+				if (((AttackAnimation) self).getPhaseByTime(1).getColliderJoint() != Armatures.BIPED.armR) {
+					JointTransform armL = pose.getOrDefaultTransform("Arm_L");
+					armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				}
+				
+				JointTransform chest = pose.getOrDefaultTransform("Chest");
+				chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);	
 			}
-			
-			JointTransform chest = pose.getOrDefaultTransform("Chest");
-			chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
-			
 		});
 	}
 	@Override

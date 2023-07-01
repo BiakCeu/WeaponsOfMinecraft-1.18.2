@@ -47,11 +47,11 @@ public class WOMColliders {
 	public static final Collider ENDER_BULLET_WIDE = new OBBCollider( 7.5D, 1.5D, 5D, 0.0D, 0.75D, -5D);
 	public static final Collider ENDER_PISTOLERO = new OBBCollider( 2.5D, 2D, 2.5D, 0.0D, -1.5D, 0.0D);
 	
-	public static final Collider ANTITHEUS = new MultiOBBCollider(3, 0.4F, 1.2F, 0.7F, 0F, -0.2F, -1.7F);
-	public static final Collider ANTITHEUS_AGRESSION = new MultiOBBCollider(3, 1.2F, 1.6F, 1.2F, 0F, -0.6F, -2.0F);
-	public static final Collider ANTITHEUS_AGRESSION_REAP = new OBBCollider(1.2F, 1.6F, 1.2F, 0F, 0.8F, -3.40F);
+	public static final Collider ANTITHEUS = new MultiOBBCollider(3, 0.4F, 1.2F, 1.0F, 0F, -0.2F, -1.7F);
+	public static final Collider ANTITHEUS_AGRESSION = new MultiOBBCollider(3, 1.2F, 1.6F, 1.4F, 0F, -0.6F, -2.0F);
+	public static final Collider ANTITHEUS_AGRESSION_REAP = new OBBCollider(1.2F, 1.6F, 1.6F, 0F, 0.8F, -3.40F);
 	public static final Collider ANTITHEUS_GUILLOTINE = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0F, 0F);
-	public static final Collider ANTITHEUS_ASCENDED_PUNCHES = new OBBCollider(1.0F, 1.0F, 2.0F, 0F, 1.0F, -1.25F);
+	public static final Collider ANTITHEUS_ASCENDED_PUNCHES = new OBBCollider(1.0F, 1.0F, 1.8F, 0F, 1.0F, -1.15F);
 	public static final Collider ANTITHEUS_ASCENDED_BLINK = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0.75F, 0.0F);
 	public static final Collider ANTITHEUS_ASCENDED_DEATHFALL = new OBBCollider(4F, 3F, 4F, 0F, 0F, 0F);
 	public static final Collider ANTITHEUS_SHOOT = new MultiOBBCollider(4, 2.0D, 1.6D, 2.0D, 0.0D, -1.7D, 0.0D);
