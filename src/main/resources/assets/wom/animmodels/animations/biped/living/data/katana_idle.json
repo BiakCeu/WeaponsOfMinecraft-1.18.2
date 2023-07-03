@@ -13,7 +13,7 @@
 		},
 		{
 			"livingmotion":"walk",
-			"type":"root_upper_joints"
+			"type":"upper_joints"
 		}
 	]
 }

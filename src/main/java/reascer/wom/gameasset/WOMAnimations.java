@@ -173,8 +173,10 @@ public class WOMAnimations {
 	public static StaticAnimation RUINE_COUNTER;
 	public static StaticAnimation RUINE_BLOCK;
 	public static StaticAnimation RUINE_IDLE;
+	public static StaticAnimation RUINE_BOOSTED_IDLE;
 	public static StaticAnimation RUINE_RUN;
 	public static StaticAnimation RUINE_WALK;
+	public static StaticAnimation RUINE_BOOSTED_WALK;
 	public static StaticAnimation RUINE_PLUNDER;
 	public static StaticAnimation RUINE_EXPIATION;
 	
@@ -763,8 +765,10 @@ public class WOMAnimations {
 		
 		RUINE_BLOCK = new StaticAnimation(0.05F, true, "biped/skill/ruine_block", biped);
 		RUINE_IDLE = new StaticAnimation(0.1f,true, "biped/living/ruine_idle", biped);
+		RUINE_BOOSTED_IDLE = new StaticAnimation(0.2f,true, "biped/living/ruine_boosted_idle", biped);
 		RUINE_RUN = new MovementAnimation(0.1f,true, "biped/living/ruine_run", biped);
 		RUINE_WALK = new MovementAnimation(0.1f,true, "biped/living/ruine_walk", biped);
+		RUINE_BOOSTED_WALK = new MovementAnimation(0.1f,true, "biped/living/ruine_boosted_walk", biped);
 		
 		RUINE_PLUNDER = new SpecialAttackAnimation(0.05F, "biped/skill/ruine_plunder", biped,
 				new Phase(0.0F, 1.1F, 1.25F, 1.85F, 1.85F, biped.rootJoint, WOMColliders.PLUNDER_PERDITION), 

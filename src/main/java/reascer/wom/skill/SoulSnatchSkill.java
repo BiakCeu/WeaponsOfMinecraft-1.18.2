@@ -127,6 +127,8 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 				
 				container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(stolen_move_speed);
 				container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(stolen_attack_speed);
+				
+				event.getPlayerPatch().modifyLivingMotionByCurrentItem();
 			}
 		});
 		
@@ -147,6 +149,7 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 					
 					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(stolen_move_speed);
 					container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(stolen_attack_speed);
+					event.getPlayerPatch().modifyLivingMotionByCurrentItem();
 				}
 			}
 		});
@@ -222,6 +225,7 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 		executer.getSkill(this).getDataManager().setData(STRENGHT, 0);
 		executer.getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(stolen_move_speed);
 		executer.getOriginal().getAttribute(Attributes.ATTACK_SPEED).removeModifier(stolen_attack_speed);
+		executer.modifyLivingMotionByCurrentItem();
 	}
 	
 	@Override

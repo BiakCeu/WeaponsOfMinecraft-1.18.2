@@ -67,11 +67,12 @@ public class SatsujinPassive extends PassiveSkill {
 			if (this.consumption < value) {
 				ServerPlayer serverPlayer = (ServerPlayer) executer.getOriginal();
 				if (!container.getDataManager().getDataValue(SHEATH)) {
+					container.getDataManager().setDataSync(SHEATH, true, serverPlayer);
+					((ServerPlayerPatch) executer).modifyLivingMotionByCurrentItem();
 					SPPlayAnimation msg3 = new SPPlayAnimation(WOMAnimations.KATANA_SHEATHE, serverPlayer.getId(), 0.0F);
 					EpicFightNetworkManager.sendToAllPlayerTrackingThisEntityWithSelf(msg3, serverPlayer);
 				}
 				container.getDataManager().setDataSync(SHEATH, true, serverPlayer);
-				((ServerPlayerPatch)container.getExecuter()).modifyLivingMotionByCurrentItem();
 			}
 		}
 		

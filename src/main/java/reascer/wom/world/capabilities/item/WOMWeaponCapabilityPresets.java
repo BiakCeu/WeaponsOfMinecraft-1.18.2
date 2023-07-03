@@ -15,6 +15,7 @@ import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.skill.SatsujinPassive;
+import reascer.wom.skill.SoulSnatchSkill;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
@@ -79,73 +80,6 @@ public class WOMWeaponCapabilityPresets {
 	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
 	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
 	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD);
-		return builder;
-	};
-	
-	public static final Function<Item, CapabilityItem.Builder> LONGSWORD = (item) -> {
-		WeaponCapability.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.LONGSWORD)
-			.styleProvider((entitypatch) -> {
-				if (entitypatch instanceof PlayerPatch<?> playerpatch) {
-					SkillContainer skillContainer = playerpatch.getSkill(SkillSlots.WEAPON_INNATE);
-					
-					if (skillContainer.getSkill() != EpicFightSkills.LIECHTENAUER) {
-						return Styles.VOM_TAG;
-					}
-					
-					int stance = skillContainer.getDataManager().getDataValue(LiechtenauerSkill.STANCE_ORDINAL);
-					
-					switch (stance) {
-					case 0:
-						return Styles.VOM_TAG;
-					case 1:
-						return Styles.PFLUG;
-					case 2:
-						return Styles.OCHS;
-					}
-				}
-				
-				return Styles.VOM_TAG;
-			})
-			.hitSound(EpicFightSounds.BLADE_HIT)
-			.collider(ColliderPreset.LONGSWORD)
-			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.VOM_TAG, WOMAnimations.LONGSWORD_TWOHAND_AUTO_1, WOMAnimations.LONGSWORD_TWOHAND_AUTO_2, WOMAnimations.LONGSWORD_TWOHAND_AUTO_3, Animations.LONGSWORD_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.PFLUG, Animations.LONGSWORD_AUTO1, Animations.LONGSWORD_AUTO2, Animations.LONGSWORD_AUTO3, Animations.LONGSWORD_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.OCHS, Animations.LONGSWORD_AUTO1, Animations.LONGSWORD_AUTO2, Animations.LONGSWORD_AUTO3, Animations.LONGSWORD_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.innateSkill(Styles.VOM_TAG, (itemstack) -> EpicFightSkills.LIECHTENAUER)
-			.innateSkill(Styles.PFLUG, (itemstack) -> EpicFightSkills.LIECHTENAUER)
-			.innateSkill(Styles.OCHS, (itemstack) -> EpicFightSkills.LIECHTENAUER)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.IDLE, Animations.BIPED_HOLD_LONGSWORD_VOM_TAG)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.WALK, Animations.BIPED_HOLD_LONGSWORD_VOM_TAG)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.RUN, Animations.BIPED_HOLD_LONGSWORD_VOM_TAG)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.SNEAK, Animations.BIPED_HOLD_LONGSWORD_VOM_TAG)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.KNEEL, Animations.BIPED_HOLD_LONGSWORD_VOM_TAG)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.JUMP, Animations.BIPED_HOLD_LONGSWORD_VOM_TAG)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.VOM_TAG, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.IDLE, Animations.BIPED_HOLD_LONGSWORD_PFLUG)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.WALK, Animations.BIPED_HOLD_LONGSWORD_PFLUG)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.RUN, Animations.BIPED_HOLD_LONGSWORD_PFLUG)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.SNEAK, Animations.BIPED_HOLD_LONGSWORD_PFLUG)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.KNEEL, Animations.BIPED_HOLD_LONGSWORD_PFLUG)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.JUMP, Animations.BIPED_HOLD_LONGSWORD_PFLUG)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.PFLUG, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.IDLE, Animations.BIPED_HOLD_LONGSWORD_OCHS)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.WALK, Animations.BIPED_HOLD_LONGSWORD_OCHS)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.RUN, Animations.BIPED_HOLD_LONGSWORD_OCHS)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.SNEAK, Animations.BIPED_HOLD_LONGSWORD_OCHS)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.KNEEL, Animations.BIPED_HOLD_LONGSWORD_OCHS)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.JUMP, Animations.BIPED_HOLD_LONGSWORD_OCHS)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-			;
-		
 		return builder;
 	};
 	
@@ -260,13 +194,24 @@ public class WOMWeaponCapabilityPresets {
 	public static final Function<Item, CapabilityItem.Builder> RUINE = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 			.category(WeaponCategories.LONGSWORD)
-			.styleProvider((playerpatch) -> Styles.TWO_HAND)
+			.styleProvider((entitypatch) -> {
+				if (entitypatch instanceof PlayerPatch<?>) {
+					if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.BUFFED) != null) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.BUFFED)) {
+							return Styles.OCHS;
+						}
+					}
+				}
+				return Styles.TWO_HAND;
+			})
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(WOMColliders.RUINE)
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.RUINE_AUTO_1, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.RUINE_AUTO_4, WOMAnimations.RUINE_DASH, WOMAnimations.RUINE_COMET)
+			.newStyleCombo(Styles.OCHS, WOMAnimations.RUINE_AUTO_1, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.RUINE_AUTO_4, WOMAnimations.RUINE_DASH, WOMAnimations.RUINE_COMET)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.PLUNDER_PERDITION)
+			.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.PLUNDER_PERDITION)
 			.passiveSkill(WOMSkills.RUINE_PASSIVE)
 			.comboCancel((style) -> {
 				return false;
@@ -279,7 +224,16 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.RUINE_BLOCK);
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.RUINE_BLOCK)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.IDLE, WOMAnimations.RUINE_BOOSTED_IDLE)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.WALK, WOMAnimations.RUINE_BOOSTED_WALK)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.RUN, WOMAnimations.RUINE_RUN)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
+			.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, WOMAnimations.RUINE_BLOCK);
 		return builder;
 	};
 	

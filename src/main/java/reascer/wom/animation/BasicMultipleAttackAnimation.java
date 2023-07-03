@@ -366,7 +366,6 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 		for (int i = 3; i < tag.split(":").length && i < maxSavedAttack; i++) {
 			replaceTag = replaceTag.concat(":"+tag.split(":")[i]);
 		}
-		System.out.println(replaceTag);
 		hitten.addTag(replaceTag);
 		return anti_stunlock;
 	}
