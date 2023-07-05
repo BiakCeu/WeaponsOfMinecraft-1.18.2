@@ -115,7 +115,9 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 			if (container.getDataManager().getDataValue(EXPIATION)) {
 				if (!container.getDataManager().getDataValue(BUFFED)) {
 					container.getDataManager().setDataSync(BUFFED, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(TIMER, 140 + (20 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal())),((ServerPlayerPatch) container.getExecuter()).getOriginal());			
+					container.getDataManager().setDataSync(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal())),((ServerPlayerPatch) container.getExecuter()).getOriginal());			
+				} else {
+					container.getDataManager().setDataSync(TIMER,container.getDataManager().getDataValue(TIMER) - (1 * 20),((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				}
 				if (container.getDataManager().getDataValue(STRENGHT) < 40) {
 					container.getDataManager().setDataSync(STRENGHT, container.getDataManager().getDataValue(STRENGHT)+1,event.getPlayerPatch().getOriginal());
@@ -141,7 +143,7 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 				if (!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(BUFFED, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(BUFFING, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal())),((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + (200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))),((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					stolen_move_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_move_speed", (( 0.03D * container.getDataManager().getDataValue(STRENGHT))), Operation.MULTIPLY_TOTAL);
 					stolen_attack_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_attack_speed", (( 0.015D * container.getDataManager().getDataValue(STRENGHT))), Operation.MULTIPLY_TOTAL);
 					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(stolen_move_speed);
@@ -200,7 +202,6 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 			executer.getSkill(this).getDataManager().setData(BUFFING, true);
 			executer.getSkill(this).getDataManager().setData(BUFFED, false);
 			executer.getSkill(this).getDataManager().setData(STRENGHT, 0);
-			executer.getSkill(this).getDataManager().setData(TIMER, 200 * (1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		}
 	}
 	

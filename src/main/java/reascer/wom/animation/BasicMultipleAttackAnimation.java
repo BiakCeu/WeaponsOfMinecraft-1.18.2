@@ -282,20 +282,6 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	}
 	
 	@Override
-	public void setLinkAnimation(Pose pose1, float timeModifier, LivingEntityPatch<?> entitypatch, LinkAnimation dest) {
-		float extTime = Math.max(this.convertTime + timeModifier, 0);
-		
-		if (entitypatch instanceof PlayerPatch<?>) {
-			PlayerPatch<?> playerpatch = (PlayerPatch<?>)entitypatch;
-			Phase phase = this.getPhaseByTime(playerpatch.getAnimator().getPlayerFor(this).getElapsedTime());
-			extTime *= (float)(this.totalTime * playerpatch.getAttackSpeed(phase.getHand()));
-		}
-		
-		extTime = Math.max(extTime - this.convertTime, 0);
-		super.setLinkAnimation(pose1, extTime, entitypatch, dest);
-	}
-	
-	@Override
 	public Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
 		Vec3 vec3 = super.getCoordVector(entitypatch, dynamicAnimation);
 		

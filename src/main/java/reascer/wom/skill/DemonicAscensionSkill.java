@@ -136,10 +136,6 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		container.getDataManager().registerData(BLACKHOLE_Z);
 		container.getDataManager().registerData(BLACKHOLE_ACTIVE);
 		container.getDataManager().registerData(BLACKHOLE_TIMER);
-
-		if (!container.getExecuter().isLogicalClient()) {
-			this.setMaxDurationSynchronize((ServerPlayerPatch)container.getExecuter(), 666);
-		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
 			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(DARKNESS_TARGET_HITED) || (container.getDataManager().getDataValue(ACTIVE) && container.getDataManager().getDataValue(TIMER) >= (40*20) || container.getExecuter().getOriginal().isCreative()))) {
@@ -339,8 +335,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
 			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
 			executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false, executer.getOriginal());
-			this.setMaxDurationSynchronize(executer, 666);
-			this.setDurationSynchronize(executer, executer.getSkill(this).getDataManager().getDataValue(TIMER)/20);
+			this.setMaxDurationSynchronize(executer, 666*20);
+			this.setDurationSynchronize(executer, executer.getSkill(this).getDataManager().getDataValue(TIMER));
 			executer.getSkill(this).activate();
 			executer.modifyLivingMotionByCurrentItem();
 			SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
@@ -613,9 +609,9 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				if (container.getDataManager().getDataValue(ACTIVE)) {
-					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 0 && container.getDataManager().getDataValue(TIMER) >= 40*20 || container.getExecuter().getOriginal().isCreative()) {
+					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 0 && container.getDataManager().getDataValue(TIMER) >= 80*20 || container.getExecuter().getOriginal().isCreative()) {
 						if (!container.getExecuter().getOriginal().isCreative()) {
-							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) - 40*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) - 80*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						}
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE, 0);
 						container.getDataManager().setDataSync(BLACKHOLE_TIMER, 140, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -839,7 +835,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, (ServerPlayer) container.getExecuter().getOriginal());					
 						}
 					}
-					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)/20F));
+					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)));
 				} else {
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
 						if (container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
