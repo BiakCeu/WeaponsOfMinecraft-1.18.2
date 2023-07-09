@@ -107,7 +107,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			}
 		});
 		
-		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch, time) -> {
+		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch, time, partialticks ) -> {
 			if (self instanceof AttackAnimation) {
 				float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
 				

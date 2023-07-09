@@ -632,7 +632,7 @@ public class WOMAnimations {
 		
 		RUINE_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.25F, 0.45F, 0.55F, null, biped.toolR, "biped/combat/ruine_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.4F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.00F);
 		
@@ -643,7 +643,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),1)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),2)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.8F),2)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)				
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
@@ -743,7 +743,7 @@ public class WOMAnimations {
 		
 		RUINE_DASH = new BasicMultipleAttackAnimation(0.1F, 0.15F, 0.65F, 0.75F, null, biped.toolR, "biped/combat/ruine_dash", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.6F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.4F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.10F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
@@ -791,17 +791,17 @@ public class WOMAnimations {
 		RUINE_EXPIATION = new SpecialAttackAnimation(0.05F, "biped/skill/ruine_expiation", biped,
 				new Phase(0.0F, 0.2F, 0.4F, 0.45F, 0.45F, biped.rootJoint, WOMColliders.SHOULDER_BUMP), 
 				new Phase(0.45F, 0.65F, 0.8F, 0.9F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),0)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,0)
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.RUINE_PLUNDER_SWORD,0)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),0)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.5f)))
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,0)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F),0)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,0)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.5f)),1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,1)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.20F)
 				.addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
 					LivingEntity attackTarget = entitypatch.getTarget();
@@ -1213,14 +1213,14 @@ public class WOMAnimations {
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
 		
-		KATANA_SHEATHED_DASH = new BasicMultipleAttackAnimation(0.10F, 0.16F, 0.4F, 1.0F,WOMColliders.KATANA_SHEATHED_DASH, biped.rootJoint, "biped/combat/katana_sheathed_dash", biped)
+		KATANA_SHEATHED_DASH = new BasicMultipleAttackAnimation(0.15F, 0.16F, 0.4F, 1.0F,WOMColliders.KATANA_SHEATHED_DASH, biped.rootJoint, "biped/combat/katana_sheathed_dash", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.75F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F))
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.KATANA_SHEATHED_HIT)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.0F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
@@ -2655,7 +2655,7 @@ public class WOMAnimations {
 					TimeStampedEvent.create(0.5F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
 					TimeStampedEvent.create(1.0F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 
-		ANTITHEUS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_auto_1", biped,
+		ANTITHEUS_AUTO_1 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/antitheus_auto_1", biped,
 				new Phase(0.0F, 0.35F, 0.55F, 0.6F, 0.6F, biped.toolR, null),
 				new Phase(0.6F, 0.70F, 0.9F, 0.9F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.55F))
@@ -2673,7 +2673,7 @@ public class WOMAnimations {
 					TimeStampedEvent.create(0.25F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
 					TimeStampedEvent.create(0.9F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
-		ANTITHEUS_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, 0.15F, 0.45F, 0.45F,null, biped.toolR, "biped/combat/antitheus_auto_2", biped)
+		ANTITHEUS_AUTO_2 = new BasicMultipleAttackAnimation(0.15F, 0.15F, 0.45F, 0.45F,null, biped.toolR, "biped/combat/antitheus_auto_2", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
@@ -2683,7 +2683,7 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.1F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
 						TimeStampedEvent.create(0.45F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
-		ANTITHEUS_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/antitheus_auto_3", biped,
+		ANTITHEUS_AUTO_3 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/antitheus_auto_3", biped,
 				new Phase(0.0F, 0.15F, 0.35F, 0.5F, 0.5F, biped.toolR, null),
 				new Phase(0.5F, 0.55F, 0.70F, 0.75F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
@@ -2700,7 +2700,7 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.10F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_ON, Side.SERVER),
 					TimeStampedEvent.create(0.75F, ReuseableEvents.ANTITHEUS_WEAPON_TRAIL_OFF, Side.SERVER));
 		
-		ANTITHEUS_AUTO_4 = new BasicMultipleAttackAnimation(0.05F, 0.50F, 0.75F, 0.9F, null, biped.toolR, "biped/combat/antitheus_auto_4", biped)
+		ANTITHEUS_AUTO_4 = new BasicMultipleAttackAnimation(0.15F, 0.50F, 0.75F, 0.9F, null, biped.toolR, "biped/combat/antitheus_auto_4", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.6F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_HIT_REVERSE)

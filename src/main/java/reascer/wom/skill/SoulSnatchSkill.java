@@ -196,7 +196,7 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 				}
 			}
 			
-		} else if (executer.getSkill(this).getStack() == 10) {
+		} else if (executer.getSkill(this).getStack() == 10 || executer.getOriginal().isCreative()) {
 			this.setStackSynchronize(executer, 0);
 			executer.playAnimationSynchronized(this.attackAnimation, 0);
 			executer.getSkill(this).getDataManager().setData(BUFFING, true);

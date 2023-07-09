@@ -88,8 +88,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 					WOMAnimations.KATANA_SHEATHED_AUTO_2,
 					WOMAnimations.KATANA_SHEATHED_AUTO_3,
 					WOMAnimations.KATANA_FATAL_DRAW,
-					WOMAnimations.KATANA_FATAL_DRAW_SECOND,
-					WOMAnimations.KATANA_FATAL_DRAW_DASH};
+					WOMAnimations.KATANA_FATAL_DRAW_SECOND};
 			
 			if (event.getAnimation() == WOMAnimations.KATANA_SHEATHED_DASH) {
 				this.resetTimedSlashes(container, serverPlayer);
@@ -97,6 +96,9 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 			
 			if (event.getAnimation() == WOMAnimations.KATANA_FATAL_DRAW_DASH) {
 				this.resetTimedSlashes(container, serverPlayer);
+				if (container.getExecuter().getStamina() > 0) {
+					container.getDataManager().setDataSync(TIMER, 30,serverPlayer);
+				}
 			}
 			
 			for (StaticAnimation staticAnimation : resetAnimations) {

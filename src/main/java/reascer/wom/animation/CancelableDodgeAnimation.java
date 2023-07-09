@@ -25,6 +25,7 @@ public class CancelableDodgeAnimation extends ActionAnimation {
 		
 		this.stateSpectrumBlueprint.clear()
 			.newTimePair(0.0F, 10.0F)
+			.addState(EntityState.PHASE_LEVEL, 1)
 			.addState(EntityState.TURNING_LOCKED, false)
 			.addState(EntityState.MOVEMENT_LOCKED, true)
 			.addState(EntityState.CAN_BASIC_ATTACK, true)
