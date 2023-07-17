@@ -28,6 +28,7 @@ import reascer.wom.skill.SakuraStateSkill;
 import reascer.wom.skill.heartShieldSkill;
 import reascer.wom.skill.PainAnticipationSkill;
 import reascer.wom.skill.PainRetributionSkill;
+import reascer.wom.skill.PerfectBulwarkSkill;
 import reascer.wom.skill.SoulSnatchSkill;
 import reascer.wom.skill.RegierungSkill;
 import reascer.wom.skill.RuinePassive;
@@ -71,7 +72,9 @@ public class WOMSkills {
 	public static Skill PLUNDER_PERDITION;
 	public static Skill REGIERUNG;
 	
+	//Guard
 	public static Skill COUNTERATTACK_PASSIVE;
+	public static Skill PERFECT_BULWARK;
 	
 	public static Skill SATSUJIN_PASSIVE;
 	public static Skill DEMON_MARK_PASSIVE;
@@ -193,10 +196,15 @@ public class WOMSkills {
 		SkillManager.register(RegierungSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponOfMinecraft.MODID,"regierung");
 		
+		//  Guard
 		
 		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"counter_attack");
-
+		
+		SkillManager.register(PerfectBulwarkSkill::new, PerfectBulwarkSkill.createCounterAttackBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+				WeaponOfMinecraft.MODID,"perfect_bulwark");
+		
+		//  Passive
 		
 		SkillManager.register(ArrowTenacitySkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponOfMinecraft.MODID,"arrow_tenacity");
@@ -236,6 +244,7 @@ public class WOMSkills {
 		BULL_CHARGE = onBuild.build(WeaponOfMinecraft.MODID, "bull_charge");
 		
 		COUNTER_ATTACK = onBuild.build(WeaponOfMinecraft.MODID, "counter_attack");
+		PERFECT_BULWARK = onBuild.build(WeaponOfMinecraft.MODID, "perfect_bulwark");
 		
 		ARROW_TENACITY = onBuild.build(WeaponOfMinecraft.MODID, "arrow_tenacity");
 		PAIN_ANTICIPATION = onBuild.build(WeaponOfMinecraft.MODID, "pain_anticipation");

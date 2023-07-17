@@ -85,6 +85,14 @@ public class CounterAttack extends GuardSkill {
 		container.getDataManager().registerData(CONSUMPTION_VALUE);
 		container.getDataManager().setData(PARRYING, false);
 		
+		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
+			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
+			
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD)) {
+				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
+			}
+		});
+		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, CounterAttack.EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
@@ -162,12 +170,17 @@ public class CounterAttack extends GuardSkill {
 					container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
 				}
 			}
+			
+
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD)) {
+				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
+			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(event.getPlayerPatch().getOriginal().getUsedItemHand());
 			
-			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 10 && container.getDataManager().getDataValue(PARRYING) && !event.getPlayerPatch().getOriginal().isUsingItem()) {
+			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 10 && container.getDataManager().getDataValue(PARRYING)) {
 				container.getDataManager().setDataSync(PARRYING, false,event.getPlayerPatch().getOriginal());
 				DamageSource damageSource = event.getDamageSource();
 				boolean isFront = false;
@@ -193,14 +206,42 @@ public class CounterAttack extends GuardSkill {
 					
 					this.guard(container, itemCapability, event, knockback, impact, false);
 				}
+			} else {
+				if (super.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getOriginal().isUsingItem()) {
+					DamageSource damageSource = event.getDamageSource();
+					boolean isFront = false;
+					Vec3 sourceLocation = damageSource.getSourcePosition();
+					
+					if (sourceLocation != null) {
+						Vec3 viewVector = event.getPlayerPatch().getOriginal().getViewVector(1.0F);
+						Vec3 toSourceLocation = sourceLocation.subtract(event.getPlayerPatch().getOriginal().position()).normalize();
+						
+						if (toSourceLocation.dot(viewVector) > 0.0D) {
+							isFront = true;
+						}
+					}
+					
+					if (isFront) {
+						float impact = 0.5F;
+						float knockback = 0.25F;
+						
+						if (event.getDamageSource() instanceof EpicFightDamageSource) {
+							impact = ((EpicFightDamageSource)event.getDamageSource()).getImpact();
+							knockback += Math.min(impact * 0.1F, 1.0F);
+						}
+						
+						super.guard(container, itemCapability, event, knockback, impact, false);
+					}
+				}
 			}
-		});
+		},2);
 	}
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		super.onRemoved(container);
 	}
 	
@@ -249,7 +290,7 @@ public class CounterAttack extends GuardSkill {
 				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
 				
 				if (animation != null) {
-					event.getPlayerPatch().playAnimationSynchronized(animation, timing <= 1 ? -0.1F : timing < 3 ? -0.05f : 0.0f);
+					event.getPlayerPatch().playAnimationSynchronized(animation, timing <= 1 ? -0.15F : timing < 3 ? 0.00f : 0.15f);
 				}
 				
 				if (blockType == BlockType.GUARD_BREAK) {
