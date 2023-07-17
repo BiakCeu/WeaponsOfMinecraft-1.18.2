@@ -35,7 +35,7 @@ public class AgonySpearItem extends WeaponItem {
 	private double attackSpeed;
 	
 	public AgonySpearItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -2.0F, build);
+		super(EpicFightItemTier.UCHIGATANA, 0, -2.0F, build);
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
 			this.tooltipExpand.add(new TextComponent(""));

@@ -87,7 +87,7 @@ public class WOMWeaponCapabilityPresets {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 			.category(WeaponCategories.TACHI)
 			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.TACHI ? Styles.TWO_HAND : Styles.ONE_HAND)
-			.collider(ColliderPreset.KATANA)
+			.collider(ColliderPreset.UCHIGATANA)
 			.hitSound(EpicFightSounds.BLADE_HIT)
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.TACHI_TWOHAND_AUTO_1, WOMAnimations.TACHI_TWOHAND_AUTO_2, WOMAnimations.TACHI_TWOHAND_AUTO_3, WOMAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
 			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
@@ -239,7 +239,7 @@ public class WOMWeaponCapabilityPresets {
 	
 	public static final Function<Item, CapabilityItem.Builder> SATSUJIN = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.KATANA)
+			.category(WeaponCategories.UCHIGATANA)
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch) {
 					PlayerPatch<?> playerpatch = (PlayerPatch<?>)entitypatch;

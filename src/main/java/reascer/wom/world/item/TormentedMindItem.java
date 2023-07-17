@@ -35,7 +35,7 @@ public class TormentedMindItem extends WeaponItem {
 	private double attackSpeed;
 
 	public TormentedMindItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -2.7F, build);
+		super(EpicFightItemTier.UCHIGATANA, 0, -2.7F, build);
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component>();
 			this.tooltipExpand.add(new TextComponent(""));

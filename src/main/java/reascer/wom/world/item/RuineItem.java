@@ -24,7 +24,7 @@ public class RuineItem extends WeaponItem {
 	private List<Component> tooltipExpand;
 
 	public RuineItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -2.45F, build);
+		super(EpicFightItemTier.UCHIGATANA, 0, -2.45F, build);
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
 			this.tooltipExpand.add(new TextComponent(""));
