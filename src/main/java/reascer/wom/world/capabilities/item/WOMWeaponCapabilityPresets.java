@@ -61,54 +61,6 @@ public class WOMWeaponCapabilityPresets {
 		return builder;
 	};
 	
-	public static final Function<Item, CapabilityItem.Builder> GREATSWORD = (item) -> {
-		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.GREATSWORD)
-			.styleProvider((playerpatch) -> Styles.TWO_HAND)
-			.collider(WOMColliders.GREATSWORD)
-			.swingSound(EpicFightSounds.WHOOSH_BIG)
-			.hitSound(EpicFightSounds.BLADE_HIT)
-			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.GREATSWORD_TWOHAND_AUTO_1, WOMAnimations.GREATSWORD_TWOHAND_AUTO_2, WOMAnimations.GREATSWORD_TWOHAND_AUTO_3, Animations.GREATSWORD_DASH, Animations.GREATSWORD_AIR_SLASH)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.GIANT_WHIRLWIND)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD);
-		return builder;
-	};
-	
-	public static final Function<Item, CapabilityItem.Builder> TACHI = (item) -> {
-		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.TACHI)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.TACHI ? Styles.TWO_HAND : Styles.ONE_HAND)
-			.collider(ColliderPreset.UCHIGATANA)
-			.hitSound(EpicFightSounds.BLADE_HIT)
-			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.TACHI_TWOHAND_AUTO_1, WOMAnimations.TACHI_TWOHAND_AUTO_2, WOMAnimations.TACHI_TWOHAND_AUTO_3, WOMAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
-			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.LETHAL_SLICE)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.RUN, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FLOAT, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FALL, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
-			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.TACHI);
-		return builder;
-	};
-	
 	public static final Function<Item, CapabilityItem.Builder> STAFF = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 			.category(WeaponCategories.SPEAR)
@@ -266,9 +218,9 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_RUN_KATANA)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_RUN_UCHIGATANA)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_RUN_KATANA)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_RUN_UCHIGATANA)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FALL, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.IDLE, WOMAnimations.KATANA_SHEATHED_IDLE)

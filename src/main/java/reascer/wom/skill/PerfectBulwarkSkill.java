@@ -69,7 +69,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				WOMAnimations.RUINE_COUNTER)
 			.addAdvancedGuardMotion(WOMWeaponCategories.STAFF, (itemCap, playerpatch) ->
 				WOMAnimations.STAFF_DASH)
-			.addAdvancedGuardMotion(WeaponCategories.KATANA, (itemCap, playerpatch) ->
+			.addAdvancedGuardMotion(WeaponCategories.UCHIGATANA, (itemCap, playerpatch) ->
 				WOMAnimations.KATANA_SHEATHED_DASH )
 			;
 	}
@@ -308,7 +308,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	@Override
 	public List<Object> getTooltipArgsOfScreen(List<Object> list) {
 		list.clear();
-		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.KATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WOMWeaponCategories.AGONY , WOMWeaponCategories.RUINE, WOMWeaponCategories.STAFF).toLowerCase());
+		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.UCHIGATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WOMWeaponCategories.AGONY , WOMWeaponCategories.RUINE, WOMWeaponCategories.STAFF).toLowerCase());
 		return list;
 	}
 }
