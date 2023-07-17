@@ -35,7 +35,7 @@ public class HerscherItem extends WeaponItem {
 	private double attackSpeed;
 
 	public HerscherItem(Item.Properties build) {
-		super(EpicFightItemTier.KATANA, 0, -2.3F, build);
+		super(EpicFightItemTier.UCHIGATANA, 0, -2.3F, build);
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component>();
 			this.tooltipExpand.add(new TextComponent(""));
