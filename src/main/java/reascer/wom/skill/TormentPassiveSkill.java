@@ -69,7 +69,7 @@ import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class TormentPassiveSkill extends PassiveSkill {

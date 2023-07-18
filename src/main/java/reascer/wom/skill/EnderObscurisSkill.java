@@ -23,7 +23,7 @@ import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.dodge.DodgeSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class EnderObscurisSkill extends DodgeSkill {
@@ -99,11 +99,11 @@ public class EnderObscurisSkill extends DodgeSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+		SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 		executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 		
 		if (!event.isCanceled()) {
-			this.resource.consume.accept(this, executer);
+			event.getResourceType().consumer.consume(this, executer, event.getAmount());
 		}
 		
 		executer.getSkill(this).activate();

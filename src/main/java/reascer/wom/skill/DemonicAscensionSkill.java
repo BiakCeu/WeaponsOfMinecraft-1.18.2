@@ -37,15 +37,12 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.gameasset.EpicFightSkills;
-import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
-import yesman.epicfight.world.capabilities.entitypatch.HurtableEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -54,8 +51,8 @@ import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class DemonicAscensionSkill extends WeaponInnateSkill {
 	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -339,11 +336,11 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			this.setDurationSynchronize(executer, executer.getSkill(this).getDataManager().getDataValue(TIMER));
 			executer.getSkill(this).activate();
 			executer.modifyLivingMotionByCurrentItem();
-			SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 			
 			if (!event.isCanceled()) {
-				this.resource.consume.accept(this, executer);
+				event.getResourceType().consumer.consume(this, executer, event.getAmount());
 			}
 			this.setStackSynchronize(executer, 1);
 		}

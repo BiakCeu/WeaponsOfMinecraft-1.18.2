@@ -15,7 +15,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,7 +40,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class EnderBlastSkill extends WomMultipleAnimationSkill {
 	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -235,10 +234,10 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				consumption += ressource;
 				//System.out.println("c :"+ consumption + " | r :"+ ressource );
 				while (consumption < 0.0f) {
-					SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+					SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 					executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 					if (!event.isCanceled()) {
-						this.resource.consume.accept(this, executer);
+						event.getResourceType().consumer.consume(this, executer, event.getAmount());
 					}
 					consumption += 6.0f;
 				}
