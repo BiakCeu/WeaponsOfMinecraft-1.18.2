@@ -129,11 +129,11 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_GUARD_HIT)) {
-					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
+					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_TRANE)) {
-					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +3);
+					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +5);
 					container.getDataManager().setDataSync(COMBO, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}

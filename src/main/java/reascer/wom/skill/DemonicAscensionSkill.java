@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.lang.model.element.ExecutableElement;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -343,6 +345,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				event.getResourceType().consumer.consume(this, executer, event.getAmount());
 			}
 			this.setStackSynchronize(executer, 1);
+			executer.getSkill(this).activate();
 		}
 	}
 	

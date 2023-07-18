@@ -534,7 +534,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false);
 		
-		AGONY_COUNTER = new BasicMultipleAttackAnimation(0.10F, 0.20F, 0.5F,0.75f, WOMColliders.AGONY_AIRSLASH, biped.toolR, "biped/combat/agony_counter", biped)
+		AGONY_COUNTER = new BasicMultipleAttackAnimation(0.20F, 0.20F, 0.5F,0.75f, WOMColliders.AGONY_AIRSLASH, biped.toolR, "biped/combat/agony_counter", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.8F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2F))
@@ -3180,7 +3180,7 @@ public class WOMAnimations {
 		HERRSCHER_GUARD_HIT  = new GuardHitAnimation(0.00F, "biped/skill/herrscher_guard_hit", biped);
 		HERRSCHER_GUARD_PARRY  = new GuardHitAnimation(0.00F, "biped/skill/herrscher_guard_parry", biped);
 		
-		HERRSCHER_TRANE = new BasicMultipleAttackAnimation(0.05F, "biped/skill/herrscher_trane", biped,
+		HERRSCHER_TRANE = new BasicMultipleAttackAnimation(0.00F, "biped/skill/herrscher_trane", biped,
 				new Phase(0.0F, 0.25F, 0.40F, 0.45F, 0.45F, biped.toolR, null),
 				new Phase(0.45F, 0.50F, 0.65F, 0.70F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.80F))
@@ -3345,7 +3345,7 @@ public class WOMAnimations {
 						}
 					}, Side.SERVER));
 		
-		GESETZ_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, "biped/skill/gezets_auto_2", biped,
+		GESETZ_AUTO_2 = new BasicMultipleAttackAnimation(0.2F, "biped/skill/gezets_auto_2", biped,
 				new Phase(0.0F, 0.10F, 0.20F, 0.3F, Float.MAX_VALUE, InteractionHand.OFF_HAND, biped.toolL, WOMColliders.GESETZ_INSET_LARGE))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
@@ -3359,7 +3359,7 @@ public class WOMAnimations {
 							entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.ANVIL_LAND, SoundSource.MASTER, 0.3F, 1.2F - ((new Random().nextFloat()-0.5f) * 0.2F));
 						}, Side.CLIENT));
 		
-		GESETZ_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/skill/gezets_auto_3", biped,
+		GESETZ_AUTO_3 = new BasicMultipleAttackAnimation(0.15F, "biped/skill/gezets_auto_3", biped,
 				new Phase(0.0F, 0.30F, 0.50F, 0.55F, 0.55F, InteractionHand.OFF_HAND, biped.handL, WOMColliders.PUNCH),
 				new Phase(0.55F, 0.70F, 0.85F, 1.00F, Float.MAX_VALUE, InteractionHand.OFF_HAND, biped.toolL, WOMColliders.GESETZ))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.60F))

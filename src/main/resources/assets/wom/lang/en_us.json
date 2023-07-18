@@ -93,6 +93,9 @@
 	
 	"skill.wom.counter_attack" : "Counter Attack",
 	"skill.wom.counter_attack.tooltip" : "Perfect Guard will trigger a counter attack based on weapons attacks.\n\nAvailable Weapon Types : %s",
+	"skill.wom.perfect_bulwark" : "Perfect Bulwark",
+	"skill.wom.perfect_bulwark.tooltip" : "Holding Guard stance will block attacks from all directions at low progressive stamina cost.\nReleasing guard after being hit 5 times will send a shockwave that pushes enemys away. \n\nAvailable Weapon Types : %s",
+	
 	"skill.wom.arrow_tenacity" : "Arrow tenacity",
 	"skill.wom.arrow_tenacity.tooltip" : "Prevent the stun from arrows damage. This skill is permanent, thus you can use another passive on top of it but, you'll only keep the current passive if you die.",
 	"skill.wom.pain_anticipation" : "Pain anticipation",
@@ -110,7 +113,7 @@
 	"skill.wom.heart_shield" : "Heart Shield",
 	"skill.wom.heart_shield.tooltip" : "Give you 1/3 of your health as shield that will recover if no action is performed for 5sec. the rate of the recovery can be increased with thorns.",
 	"skill.wom.mindset" : "Mindset",
-	"skill.wom.mindset.tooltip" : "While above 80% Health,\ngain mindest wich will increase your damage by 30% and decrease the damage recieved by 20%",
+	"skill.wom.mindset.tooltip" : "While above 80% Health,\ngain mindest which will increase your damage by 30% and decrease the damage recieved by 20%",
 	"skill.wom.adrenaline" : "Adrenanline",
 	"skill.wom.adrenaline.tooltip" : "While under 20% Health,\ngain adrenaline wich will increase your damage by 60% and decrease the damage recieved by 40%",
 	"skill.wom.dancing_blade" : "Dancing Blade",
