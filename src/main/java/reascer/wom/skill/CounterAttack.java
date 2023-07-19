@@ -22,6 +22,7 @@ import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.Animations;
+import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.particle.EpicFightParticles;
@@ -50,22 +51,16 @@ public class CounterAttack extends GuardSkill {
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder()
 				.addAdvancedGuardMotion(WeaponCategories.SWORD, (itemCap, playerpatch) -> itemCap.getStyle(playerpatch) == Styles.ONE_HAND ?
-					Animations.SWORD_AUTO3 :
+					Animations.SWEEPING_EDGE :
 						itemCap.getStyle(playerpatch) == Styles.OCHS ? WOMAnimations.HERRSCHER_TRANE : Animations.SWORD_DUAL_AUTO3)
 				.addAdvancedGuardMotion(WeaponCategories.LONGSWORD, (itemCap, playerpatch) ->
 					Animations.LONGSWORD_DASH)
 				.addAdvancedGuardMotion(WeaponCategories.TACHI, (itemCap, playerpatch) ->
-					Animations.TACHI_DASH)
+					Animations.RUSHING_TEMPO2)
 				.addAdvancedGuardMotion(WeaponCategories.SPEAR, (itemCap, playerpatch) ->
-					Animations.SPEAR_DASH)
-				.addAdvancedGuardMotion(WOMWeaponCategories.AGONY, (itemCap, playerpatch) ->
-					WOMAnimations.AGONY_CLAWSTRIKE)
-				.addAdvancedGuardMotion(WOMWeaponCategories.RUINE, (itemCap, playerpatch) ->
-					WOMAnimations.RUINE_COUNTER)
-				.addAdvancedGuardMotion(WOMWeaponCategories.STAFF, (itemCap, playerpatch) ->
-					WOMAnimations.STAFF_DASH)
+					Animations.GRASPING_SPIRAL_SECOND)
 				.addAdvancedGuardMotion(WeaponCategories.UCHIGATANA, (itemCap, playerpatch) ->
-					WOMAnimations.KATANA_SHEATHED_DASH )
+					Animations.UCHIGATANA_SHEATHING_DASH )
 				;
 	}
 	
@@ -124,6 +119,17 @@ public class CounterAttack extends GuardSkill {
 						animation = new Random().nextBoolean() ? Animations.LONGSWORD_GUARD_ACTIVE_HIT1 : Animations.LONGSWORD_GUARD_ACTIVE_HIT2;
 					}
 					
+					if (itemCapability.getWeaponCollider() == ColliderPreset.SPEAR) {
+						animation = Animations.SPEAR_GUARD_HIT;
+					}
+					
+					if (itemCapability.getWeaponCollider() == ColliderPreset.UCHIGATANA) {
+						animation = Animations.UCHIGATANA_GUARD_HIT;
+					}
+					
+					if (itemCapability.getWeaponCollider() == WOMColliders.STAFF) {
+						animation = Animations.SPEAR_GUARD_HIT;
+					}
 					float convert = -0.05F;
 					
 					if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
@@ -239,7 +245,7 @@ public class CounterAttack extends GuardSkill {
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
-		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID,2);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		super.onRemoved(container);
@@ -288,9 +294,15 @@ public class CounterAttack extends GuardSkill {
 				
 				BlockType blockType = successParrying ? BlockType.ADVANCED_GUARD : enoughStamina ? BlockType.GUARD : BlockType.GUARD_BREAK;
 				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
-				
+				float convert = timing <= 1 ? -0.15F : timing < 3 ? 0.00f : 0.15f;
+				if (animation == Animations.RUSHING_TEMPO2) {
+					 convert = timing <= 1 ? -0.10F : timing < 3 ? 0.00f : 0.15f;
+				}
+				if (animation == Animations.SWEEPING_EDGE) {
+					 convert = timing <= 1 ? -0.10F : timing < 3 ? 0.00f : 0.15f;
+				}
 				if (animation != null) {
-					event.getPlayerPatch().playAnimationSynchronized(animation, timing <= 1 ? -0.15F : timing < 3 ? 0.00f : 0.15f);
+					event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 				}
 				
 				if (blockType == BlockType.GUARD_BREAK) {
@@ -316,10 +328,12 @@ public class CounterAttack extends GuardSkill {
 		if (blockType == BlockType.ADVANCED_GUARD) {
 			if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
 				return WOMAnimations.AGONY_COUNTER;
+			} else if (itemCapability.getWeaponCollider() == WOMColliders.KATANA) {
+				return WOMAnimations.KATANA_SHEATHED_DASH;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.RUINE) {
 				return WOMAnimations.RUINE_COUNTER;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.STAFF) {
-				return WOMAnimations.STAFF_AUTO_3;
+				return Animations.GRASPING_SPIRAL_SECOND;
 			}
 			
 			

@@ -92,13 +92,14 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			this.setMaxDurationSynchronize(((ServerPlayerPatch)container.getExecuter()), this.maxDuration+(10 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal())));
+			this.setMaxDurationSynchronize(((ServerPlayerPatch)container.getExecuter()), this.maxDuration + (200 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal())));
+			this.maxDuration += (200 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal()));
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(GESETZ_SPRENGKOPF) && container.getRemainDuration() > 0) {
 				float attackDamage = event.getDamage();
-				event.setDamage(attackDamage + container.getRemainDuration());
+				event.setDamage(attackDamage + (container.getRemainDuration()/20));
 				container.getExecuter().getOriginal().resetFallDistance();
 			}
 		});
@@ -129,11 +130,11 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_GUARD_HIT)) {
-					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +40);
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_TRANE)) {
-					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +5);
+					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +100);
 					container.getDataManager().setDataSync(COMBO, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
@@ -172,17 +173,17 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					case 1: {
 						animation = WOMAnimations.GESETZ_AUTO_1;
 						container.getDataManager().setDataSync(COMBO, 1, playerentity);
-						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +20);
 						break;
 					}
 					case 2: {
 						animation = WOMAnimations.HERRSCHER_AUTO_2;
-						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +40);
 						break;
 					}
 					case 3: {
 						animation = WOMAnimations.HERRSCHER_AUTO_3;
-						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +5);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +100);
 						convert = -0.45f;
 						break;
 					}
@@ -194,13 +195,13 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					case 5: {
 						animation = WOMAnimations.HERRSCHER_AUTO_2;
 						container.getDataManager().setDataSync(COMBO, 1, playerentity);
-						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +2);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +40);
 						break;
 					}
 					case 6: {
 						animation = WOMAnimations.HERRSCHER_BEFREIUNG;
 						convert = -0.45f;
-						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +1);
+						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +20);
 						break;
 					}
 					default:

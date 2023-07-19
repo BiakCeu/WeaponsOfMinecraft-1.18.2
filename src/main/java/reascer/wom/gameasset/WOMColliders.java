@@ -53,8 +53,8 @@ public class WOMColliders {
 	public static final Collider ANTITHEUS_GUILLOTINE = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0F, 0F);
 	public static final Collider ANTITHEUS_ASCENDED_PUNCHES = new OBBCollider(1.0F, 1.0F, 1.8F, 0F, 1.0F, -1.15F);
 	public static final Collider ANTITHEUS_ASCENDED_BLINK = new OBBCollider(3.5F, 1.5F, 3.5F, 0F, 0.75F, 0.0F);
-	public static final Collider ANTITHEUS_ASCENDED_DEATHFALL = new OBBCollider(4F, 3F, 4F, 0F, 0F, 0F);
-	public static final Collider ANTITHEUS_SHOOT = new MultiOBBCollider(4, 2.0D, 1.6D, 2.0D, 0.0D, -1.7D, 0.0D);
+	public static final Collider ANTITHEUS_ASCENDED_DEATHFALL = new OBBCollider(5F, 3F, 5F, 0F, 0F, 0F);
+	public static final Collider ANTITHEUS_SHOOT = new MultiOBBCollider(4, 0.5D, 1.5D, 0.5D, 0.0D, -1.5D, 0.0D);
 	
 	public static final Collider HERSCHER = new MultiOBBCollider(5, 0.2D, 0.3D, 0.8D, 0D, 0D, -0.8D);
 	public static final Collider HERSCHER_THRUST = new OBBCollider(0.6F, 0.6F, 1.3F, 0F, 0.8F, -1.1F);

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -207,7 +208,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 								}
 								//entitypatch.playSound(SoundEvents.ARROW_HIT_PLAYER, 1, 1);
 							}
-							if (anti_stunlock < 0.4f) {
+							if (anti_stunlock < 0.3f) {
 								for (String tag : hitten.getTags()) {
 									if (tag.contains("anti_stunlock:")) {
 										hitten.removeTag(tag);
@@ -217,6 +218,9 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 								source.setStunType(StunType.KNOCKDOWN);
 							}
 							source.setImpact(source.getImpact() * anti_stunlock);
+							
+							//entitypatch.getOriginal().sendMessage(new TextComponent(String.valueOf(anti_stunlock)), null);
+							
 							int prevInvulTime = hitten.invulnerableTime;
 							hitten.invulnerableTime = 0;
 							AttackResult attackResult = entitypatch.attack(source, hitten, phase.hand);
@@ -237,7 +241,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 											hitHurtableEntityPatch.setStunReductionOnHit();
 											
-											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.4f ?StunType.LONG:StunType.KNOCKDOWN), stunTime);
+											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.3f ?StunType.LONG:StunType.KNOCKDOWN), stunTime);
 											float impact = source.getImpact();
 											hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),source.getImpact() * 0.25f);
 										}
@@ -247,7 +251,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										float stunTime = (float) (source.getImpact() * 0.5f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 											hitHurtableEntityPatch.setStunReductionOnHit();
-											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.4f ? StunType.SHORT:StunType.KNOCKDOWN), stunTime);
+											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.3f ? StunType.SHORT:StunType.KNOCKDOWN), stunTime);
 											double power = (source.getImpact() / anti_stunlock) * 0.25f;
 											double d1 = entity.getX() - hitten.getX();
 											double d2 = entity.getY()-8 - hitten.getY();
@@ -309,7 +313,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 			String phaseID = String.valueOf(this.getId())+"-"+String.valueOf(phase.contact);
 			if (tag.split(":").length > 3) {
 				if ((String.valueOf(this.getId()).equals(tag.split(":")[3].split("-")[0])) && (!String.valueOf(phase.contact).equals(tag.split(":")[3].split("-")[1]))) {
-					anti_stunlock = Float.valueOf(tag.split(":")[1])* 0.975f;
+					anti_stunlock = Float.valueOf(tag.split(":")[1])* 0.98f;
 					isPhaseFromSameAnimnation = true;
 				} else {
 					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.95f;
@@ -318,35 +322,35 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 			}
 			for (int i = 3; i < tag.split(":").length && i < 7; i++) {
 				if (tag.split(":")[i].equals(phaseID)) {
-					anti_stunlock *= 0.80f;
+					anti_stunlock *= 0.60f;
 				}
 			}
 		} else {
 			String phaseID = String.valueOf(this.getId())+"-"+String.valueOf(phase.contact);
 			if (tag.split(":").length > 3) {
 				if ((String.valueOf(this.getId()).equals(tag.split(":")[3].split("-")[0])) && (!String.valueOf(phase.contact).equals(tag.split(":")[3].split("-")[1]))) {
-					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.95f;
+					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.98f;
 					isPhaseFromSameAnimnation = true;
 				} else {
-					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.9f;
+					anti_stunlock = Float.valueOf(tag.split(":")[1]) * 0.85f;
 					isPhaseFromSameAnimnation = false;
 				}
 			}
-			for (int i = 3; i < tag.split(":").length && i < 7; i++) {
+			for (int i = 3; i < tag.split(":").length && i < 5; i++) {
 				if (tag.split(":")[i].equals(phaseID)) {
-					anti_stunlock *= 0.80f;
+					anti_stunlock *= 0.60f;
 				}
 			}
 		}
 		hitten.removeTag(tag);
-		int maxSavedAttack = 7;
+		int maxSavedAttack = 5;
 		
 		if (isPhaseFromSameAnimnation) {
 			replaceTag = "anti_stunlock:"+ anti_stunlock+":"+hitten.tickCount;
-			maxSavedAttack = 8;
+			maxSavedAttack = 6;
 		} else {
 			replaceTag = "anti_stunlock:"+ anti_stunlock+":"+hitten.tickCount+":"+this.getId()+"-"+phase.contact;
-			maxSavedAttack = 7;
+			maxSavedAttack = 5;
 		}
 		
 		for (int i = 3; i < tag.split(":").length && i < maxSavedAttack; i++) {

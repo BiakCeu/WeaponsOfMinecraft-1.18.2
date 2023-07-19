@@ -632,9 +632,9 @@ public class WOMAnimations {
 		
 		RUINE_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.25F, 0.45F, 0.55F, null, biped.toolR, "biped/combat/ruine_auto_1", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.00F);
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
 		
 		RUINE_AUTO_2 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/ruine_auto_2", biped,
 				new Phase(0.0F, 0.05F, 0.3F, 0.35F, 0.35F, biped.toolR, null),
@@ -666,11 +666,10 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.40F),1)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.1f)),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.8F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.8F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.6F),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD )
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1 )
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
-
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 				.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, (self, entitypatch, transformSheet) -> {
 					LivingEntity attackTarget = entitypatch.getTarget();
@@ -743,9 +742,9 @@ public class WOMAnimations {
 		
 		RUINE_DASH = new BasicMultipleAttackAnimation(0.1F, 0.15F, 0.65F, 0.75F, null, biped.toolR, "biped/combat/ruine_dash", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.4F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.8F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.10F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false);
 		
@@ -802,7 +801,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,1)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL,1)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.20F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F)
 				.addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
 					LivingEntity attackTarget = entitypatch.getTarget();
 					if (entitypatch instanceof PlayerPatch<?>) {
@@ -3067,8 +3066,8 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10.0F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.3F))
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.4F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_HIT_REVERSE)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_SHARP)	
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)	

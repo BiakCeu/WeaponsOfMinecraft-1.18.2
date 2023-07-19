@@ -53,7 +53,7 @@ import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 
-@Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.FORGE)
 public class WOMSkills {
 	public static Skill ENDERSTEP;
 	public static Skill ENDEROBSCURIS;
@@ -193,7 +193,7 @@ public class WOMSkills {
 		SkillManager.register(DemonicAscensionSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
 				WeaponOfMinecraft.MODID,"demonic_ascension");
 		
-		SkillManager.register(RegierungSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+		SkillManager.register(RegierungSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
 				WeaponOfMinecraft.MODID,"regierung");
 		
 		//  Guard
