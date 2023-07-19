@@ -57,7 +57,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class TrueBerserkSkill extends WeaponInnateSkill {
@@ -119,10 +119,10 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			this.setDurationSynchronize(executer, this.maxDuration + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()));
 			executer.getSkill(this).activate();
 			executer.modifyLivingMotionByCurrentItem();
-			SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 			if (!event.isCanceled()) {
-				this.resource.consume.accept(this, executer);
+				event.getResourceType().consumer.consume(this, executer, event.getAmount());
 			}
 			this.setStackSynchronize(executer, 1);
 		}

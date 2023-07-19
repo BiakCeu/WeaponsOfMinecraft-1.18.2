@@ -40,7 +40,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class EnderFusionSkill extends WomMultipleAnimationSkill {
 	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -225,10 +225,10 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				consumption += ressource;
 				//System.out.println("c :"+ consumption + " | r :"+ ressource );
 				while (consumption < 0.0f) {
-					SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+					SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 					executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 					if (!event.isCanceled()) {
-						this.resource.consume.accept(this, executer);
+						event.getResourceType().consumer.consume(this, executer, event.getAmount());
 					}
 					consumption += 12.0f;
 				}

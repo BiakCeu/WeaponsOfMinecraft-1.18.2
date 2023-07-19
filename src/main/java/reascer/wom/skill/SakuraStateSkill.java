@@ -44,7 +44,7 @@ import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
 import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
-import yesman.epicfight.world.entity.eventlistener.SkillEvent;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
@@ -168,11 +168,11 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 			if (!executer.getOriginal().isCreative()) {
 				//this.setConsumptionSynchronize(executer, 0);
 				this.setDurationSynchronize(executer, 0);
-				SkillEvent.Consume event = new SkillEvent.Consume(executer, this, this.resource);
+				SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 				executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 				
 				if (!event.isCanceled()) {
-					this.resource.consume.accept(this, executer);
+					event.getResourceType().consumer.consume(this, executer, event.getAmount());
 				}
 			}
 			
