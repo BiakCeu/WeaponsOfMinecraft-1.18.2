@@ -139,13 +139,12 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	
 	@Override
 	protected void hurtCollidingEntities(LivingEntityPatch<?> entitypatch, float prevElapsedTime, float elapsedTime, EntityState prevState, EntityState state, Phase phase) {
-		Collider collider = this.getCollider(entitypatch, elapsedTime);
 		LivingEntity entity = entitypatch.getOriginal();
 		entitypatch.getArmature().initializeTransform();
 		float prevPoseTime = prevState.attacking() ? prevElapsedTime : phase.preDelay;
 		float poseTime = state.attacking() ? elapsedTime : phase.contact;
-		List<Entity> list = collider.updateAndSelectCollideEntity(entitypatch, this, prevPoseTime, poseTime, phase.getColliderJoint(), this.getPlaySpeed(entitypatch));
-		
+		List<Entity> list = phase.getCollidingEntities(entitypatch, this,prevPoseTime, poseTime, this.getPlaySpeed(entitypatch));
+				
 		if (list.size() > 0) {
 			HitEntityList hitEntities = new HitEntityList(entitypatch, list, phase.getProperty(AttackPhaseProperty.HIT_PRIORITY).orElse(HitEntityList.Priority.DISTANCE));
 			int maxStrikes = this.getMaxStrikes(entitypatch, phase);

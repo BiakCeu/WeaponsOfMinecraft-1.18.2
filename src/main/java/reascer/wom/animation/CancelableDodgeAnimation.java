@@ -6,6 +6,7 @@ import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
+import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
@@ -46,8 +47,8 @@ public class CancelableDodgeAnimation extends ActionAnimation {
 	}
 	
 	@Override
-	public void end(LivingEntityPatch<?> entitypatch, boolean isEnd) {
-		super.end(entitypatch, isEnd);
+	public void end(LivingEntityPatch<?> entitypatch, DynamicAnimation nextAnimation, boolean isEnd) {
+		super.end(entitypatch, nextAnimation, isEnd);
 		
 		if (entitypatch.isLogicalClient() && entitypatch instanceof LocalPlayerPatch) {
 			((LocalPlayerPatch)entitypatch).changeModelYRot(0);

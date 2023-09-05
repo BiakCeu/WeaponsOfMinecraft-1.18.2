@@ -114,7 +114,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 				JointTransform armR = pose.getOrDefaultTransform("Arm_R");
 				armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 				
-				if (((AttackAnimation) self).getPhaseByTime(1).getColliderJoint() != Armatures.BIPED.armR) {
+				if (((AttackAnimation) self).getPhaseByTime(1).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 					JointTransform armL = pose.getOrDefaultTransform("Arm_L");
 					armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 				}
@@ -151,12 +151,11 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	
 	@Override
 	protected void hurtCollidingEntities(LivingEntityPatch<?> entitypatch, float prevElapsedTime, float elapsedTime, EntityState prevState, EntityState state, Phase phase) {
-		Collider collider = this.getCollider(entitypatch, elapsedTime);
 		LivingEntity entity = entitypatch.getOriginal();
 		entitypatch.getArmature().initializeTransform();
 		float prevPoseTime = prevState.attacking() ? prevElapsedTime : phase.preDelay;
 		float poseTime = state.attacking() ? elapsedTime : phase.contact;
-		List<Entity> list = collider.updateAndSelectCollideEntity(entitypatch, this, prevPoseTime, poseTime, phase.getColliderJoint(), this.getPlaySpeed(entitypatch));
+		List<Entity> list = this.getPhaseByTime(elapsedTime).getCollidingEntities(entitypatch, this, prevPoseTime, poseTime, this.getPlaySpeed(entitypatch));
 		
 		if (list.size() > 0) {
 			HitEntityList hitEntities = new HitEntityList(entitypatch, list, phase.getProperty(AttackPhaseProperty.HIT_PRIORITY).orElse(HitEntityList.Priority.DISTANCE));
@@ -313,11 +312,10 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 				if (!prevState.attacking() || (phase != this.getPhaseByTime(prevElapsedTime) && (state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)))) {
 					
 					Level worldIn = entitypatch.getOriginal().getLevel();
-					Collider collider = this.getCollider(entitypatch, elapsedTime);
 					entitypatch.getArmature().initializeTransform();
 					float prevPoseTime = prevElapsedTime;
 					float poseTime = elapsedTime;
-					List<Entity> list = collider.updateAndSelectCollideEntity(entitypatch, this, prevPoseTime, poseTime, phase.getColliderJoint(), this.getPlaySpeed(entitypatch));
+					List<Entity> list = this.getPhaseByTime(elapsedTime).getCollidingEntities(entitypatch, this, prevPoseTime, poseTime, this.getPlaySpeed(entitypatch));
 					List<Entity> list2 = new ArrayList<Entity>(list);
 					for (Entity entity : list) {
 						if (entity instanceof Projectile) {
@@ -337,9 +335,10 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 					System.out.println();
 					*/
 					if (list2.size() == 0) {
-						if (phase.getColliderJoint() != Armatures.BIPED.head && phase.getColliderJoint() != Armatures.BIPED.rootJoint && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_LASER && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_PISTOLERO && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_DASH && this.getCollider(entitypatch, elapsedTime) != WOMColliders.ENDER_BULLET_WIDE) {
-							Joint joint = phase.getColliderJoint();
-							
+						Joint joint = phase.getColliders().get(0).getFirst();
+						Collider collider = phase.getColliders().get(0).getSecond();
+						
+						if (joint != Armatures.BIPED.head && joint != Armatures.BIPED.rootJoint && collider != WOMColliders.ENDER_LASER && collider != WOMColliders.ENDER_PISTOLERO && collider != WOMColliders.ENDER_DASH && collider != WOMColliders.ENDER_BULLET_WIDE) {
 							OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0.0f), joint);
 							transformMatrix.translate(new Vec3f(0,-0.6F,-0.3F));
 							OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
@@ -373,7 +372,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
 			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			
-			if (this.getPhaseByTime(partialTicks).getColliderJoint() != Armatures.BIPED.armR) {
+			if (this.getPhaseByTime(partialTicks).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
 				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			}
