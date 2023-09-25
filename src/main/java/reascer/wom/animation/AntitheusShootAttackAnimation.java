@@ -113,11 +113,10 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 				if (!prevState.attacking() || (phase != this.getPhaseByTime(prevElapsedTime) && (state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)))) {
 					
 					Level worldIn = entitypatch.getOriginal().getLevel();
-					Collider collider = this.getCollider(entitypatch, elapsedTime);
 					entitypatch.getArmature().initializeTransform();
 					float prevPoseTime = prevElapsedTime;
 					float poseTime = elapsedTime;
-					List<Entity> list = collider.updateAndSelectCollideEntity(entitypatch, this, prevPoseTime, poseTime, phase.getColliderJoint(), this.getPlaySpeed(entitypatch));
+					List<Entity> list = this.getPhaseByTime(elapsedTime).getCollidingEntities(entitypatch, this, prevPoseTime, poseTime, this.getPlaySpeed(entitypatch));
 					List<Entity> list2 = new ArrayList<Entity>(list);
 					for (Entity entity : list) {
 						if (entity instanceof Projectile) {
@@ -137,7 +136,7 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 					System.out.println();
 					*/
 					if (list2.size() == 0) {
-						Joint joint = phase.getColliderJoint();
+						Joint joint = phase.getColliders().get(0).getFirst();
 							
 						OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0.0f), joint);
 						transformMatrix.translate(new Vec3f(-0.2f,0.4F,-0.4F));
@@ -209,7 +208,7 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
 			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			
-			if (this.getPhaseByTime(partialTicks).getColliderJoint() != Armatures.BIPED.armR) {
+			if (this.getPhaseByTime(partialTicks).getColliders().get(1).getFirst() != Armatures.BIPED.armR) {
 				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
 				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			}
