@@ -3,7 +3,9 @@ package reascer.wom.skill;
 import java.util.UUID;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPPlayAnimation;
 import yesman.epicfight.skill.Skill;
@@ -68,9 +70,19 @@ public class SatsujinPassive extends PassiveSkill {
 				ServerPlayer serverPlayer = (ServerPlayer) executer.getOriginal();
 				if (!container.getDataManager().getDataValue(SHEATH)) {
 					container.getDataManager().setDataSync(SHEATH, true, serverPlayer);
-					((ServerPlayerPatch) executer).modifyLivingMotionByCurrentItem();
-					SPPlayAnimation msg3 = new SPPlayAnimation(WOMAnimations.KATANA_SHEATHE, serverPlayer.getId(), 0.0F);
-					EpicFightNetworkManager.sendToAllPlayerTrackingThisEntityWithSelf(msg3, serverPlayer);
+					boolean flag = false;
+					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
+						flag = true;
+					} else {
+						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0) {
+							flag = true;
+						}
+					}
+					if (flag) {
+						((ServerPlayerPatch) executer).modifyLivingMotionByCurrentItem();
+						SPPlayAnimation msg3 = new SPPlayAnimation(WOMAnimations.KATANA_SHEATHE, serverPlayer.getId(), 0.0F);
+						EpicFightNetworkManager.sendToAllPlayerTrackingThisEntityWithSelf(msg3, serverPlayer);
+					}
 				}else {
 					((ServerPlayerPatch) executer).modifyLivingMotionByCurrentItem();
 				}

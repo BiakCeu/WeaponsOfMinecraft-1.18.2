@@ -1,10 +1,12 @@
-package reascer.wom.skill;
+package reascer.wom.skill.passive;
 
 import java.util.UUID;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.client.gui.BattleModeGui;
@@ -55,14 +57,11 @@ public class AdrenalineSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack matStackIn, float x, float y, float scale, int width, int height) {
-		matStackIn.pushPose();
-		matStackIn.scale(scale, scale, 1.0F);
-		matStackIn.translate(0, (float)gui.getSlidingProgression() * 1.0F / scale, 0);
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+		poseStack.pushPose();
+		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
-		float scaleMultiply = 1.0f / scale;
-		gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
-		matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
-		matStackIn.popPose();
+		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		poseStack.popPose();
 	}
 }

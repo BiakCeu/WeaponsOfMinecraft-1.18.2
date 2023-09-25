@@ -37,13 +37,14 @@ public class WOMColliders {
 	public static final Collider ENDER_BLASTER_CROSS = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0D, 0.6D);
 	public static final Collider KICK = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.6D, 0D);
 	public static final Collider KICK_HUGE = new MultiOBBCollider(4, 0.8D, 0.8D, 0.8D, 0D, 0.9D, 0D);
-	public static final Collider ENDER_DASH = new MultiOBBCollider(4, 1.0D, 1.0D, 1.0D, 0D, 1.0D, 1.0D);
+	public static final Collider ENDER_DASH = new OBBCollider(1.5D, 1.5D, 1.5D, 0D, 1.0D, -1.0D);
 	public static final Collider ENDER_TISHNAW = new MultiOBBCollider(4, 1.5D, 1.5D, 1.5D, 0D, 1.0D, 1.0D);
 	public static final Collider KNEE = new MultiOBBCollider(4, 0.8D, 0.8D, 0.8D, 0D, 0.6D, 0D);
 	public static final Collider ENDER_LASER = new MultiOBBCollider(4, 0.3D, 20.0D, 0.3D, 0.0D, -20.2D, 0.0D);
 	public static final Collider ENDER_SHOOT = new MultiOBBCollider(4, 0.3D, 3.0D, 0.3D, 0.0D, -3.1D, 0.0D);
-	public static final Collider ENDER_BULLET_DASH = new OBBCollider( 1.2D, 5.0D, 1.2D, 0.0D, -5.1D, 0.0D);
-	public static final Collider ENDER_BULLET_BACKANDFORTH = new OBBCollider( 2.5D, 10.0D, 2.5D, 0.0D, 1.0D, 0.0D);
+	public static final Collider ENDER_BULLET_DASH = new MultiOBBCollider(4, 1.2D, 5.0D, 1.2D, 0.0D, -5.1D, 0.0D);
+	public static final Collider ENDER_BULLET_BACKANDFORTH = new MultiOBBCollider(4, 2.5D, 10.0D, 2.5D, 0.0D, 1.0D, 0.0D);
+	public static final Collider ENDER_BULLET_ALl_DIRECTION = new MultiOBBCollider(4, 2.5D, 10.0D, 10.0D, 0.0D, 1.0D, 0.0D);
 	public static final Collider ENDER_BULLET_WIDE = new OBBCollider( 7.5D, 1.5D, 5D, 0.0D, 0.75D, -5D);
 	public static final Collider ENDER_PISTOLERO = new OBBCollider( 2.5D, 2D, 2.5D, 0.0D, -1.5D, 0.0D);
 	
@@ -64,5 +65,9 @@ public class WOMColliders {
 	public static final Collider GESETZ = new MultiOBBCollider(5, 0.4D, 0.6D, 1.0D, 0D, 0D, 0.4D);
 	public static final Collider GESETZ_KRUMMEN = new MultiOBBCollider(5, 0.4D, 0.6D, 1.6D, 0D, 0D, 0.0D);
 	public static final Collider GESETZ_INSET_LARGE = new MultiOBBCollider(5, 0.9D, 0.6D, 1.0D, 0.3D, 0D, 0.4D);
+	
+	public static final Collider MOONLESS = new MultiOBBCollider(4, 0.2D, 1.5D, 0.4D, 0.0D, 1.0D, 0.2D);
+	public static final Collider MOONLESS_BYPASS = new MultiOBBCollider(4, 0.2D, 1.8D, 0.7D, 0.0D, 1.0D, 0.3D);
+	public static final Collider LUNAR_ECHO = new OBBCollider( 6.0D, 6.0D, 6.0D, 0.0D, 0.0D, -6.0D);
 	
 }

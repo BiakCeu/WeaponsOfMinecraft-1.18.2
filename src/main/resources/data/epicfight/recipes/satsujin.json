@@ -1,7 +1,7 @@
 {
     "type": "minecraft:smithing",
     "base": {
-        "item": "epicfight:katana"
+        "item": "epicfight:uchigatana"
     },
     "addition": {
         "item" : "epicfight:demon_seal"

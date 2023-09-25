@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -38,6 +39,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.animation.BasicMultipleAttackAnimation;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.main.WeaponOfMinecraft;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
@@ -226,14 +228,12 @@ public class TormentPassiveSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack matStackIn, float x, float y, float scale, int width, int height) {
-		matStackIn.pushPose();
-		matStackIn.scale(scale, scale, 1.0F);
-		matStackIn.translate(0, (float)gui.getSlidingProgression() * 1.0F / scale, 0);
-		RenderSystem.setShaderTexture(0, container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill().getSkillTexture());
-		float scaleMultiply = 1.0f / scale;
-		gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
-		matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+		poseStack.pushPose();
+		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
+		RenderSystem.setShaderTexture(0, WOMSkills.TRUE_BERSERK.getSkillTexture());
+		
+		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		int charge = 0;
 		if (container.getDataManager().getDataValue(SAVED_CHARGE) > 0) {
 			charge = (container.getDataManager().getDataValue(SAVED_CHARGE)+10)/30;
@@ -242,12 +242,12 @@ public class TormentPassiveSkill extends PassiveSkill {
 		}
 			
 		if (container.getDataManager().getDataValue(CHARGED)) {
-			gui.font.drawShadow(matStackIn, String.valueOf(charge), ((float)width - x+8), ((float)height - y+4), 16777215);
-			gui.font.drawShadow(matStackIn, "x3", ((float)width - x+5), ((float)height - y+13), 16777215);
+			gui.font.drawShadow(poseStack, String.valueOf(charge), x+8, y+4, 16777215);
+			gui.font.drawShadow(poseStack, "x3", x+5, y+13, 16777215);
 		} else {
-			gui.font.drawShadow(matStackIn, String.valueOf(charge), ((float)width - x+8), ((float)height - y+6), 16777215);
+			gui.font.drawShadow(poseStack, String.valueOf(charge), x+8, y+6, 16777215);
 		}
-		matStackIn.popPose();
+		poseStack.popPose();
 	}
 	
 	@Override

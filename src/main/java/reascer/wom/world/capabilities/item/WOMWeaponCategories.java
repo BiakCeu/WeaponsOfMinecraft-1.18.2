@@ -3,7 +3,7 @@ package reascer.wom.world.capabilities.item;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 public enum WOMWeaponCategories implements WeaponCategory {
-	AGONY,TORMENT,RUINE,ENDERBLASTER,STAFF,GREATAXE,ANTITHEUS;
+	AGONY,TORMENT,RUINE,ENDERBLASTER,STAFF,GREATAXE,ANTITHEUS,MOONLESS;
 	
 	final int id;
 	

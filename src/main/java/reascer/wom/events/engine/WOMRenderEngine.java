@@ -15,5 +15,6 @@ public class WOMRenderEngine {
 	public static void registerRenderer(PatchedRenderersEvent.Add event) {
 		event.addItemRenderer(WOMItems.SATSUJIN.get(), new RenderSatsujin());
 		event.addItemRenderer(WOMItems.GESETZ.get(), new RenderGesetz());
+		event.addItemRenderer(WOMItems.MOONLESS.get(), new RenderMoonless());
 	}
 }

@@ -43,6 +43,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
+import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.HurtEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -88,6 +89,8 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		container.getDataManager().registerData(PARRYING);
 		container.getDataManager().registerData(CHARGE);
 		container.getDataManager().setData(PARRYING, false);
+		
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, GuardSkill.EVENT_UUID,1);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
@@ -153,6 +156,10 @@ public class PerfectBulwarkSkill extends GuardSkill {
 					animation = WOMAnimations.HERRSCHER_GUARD_PARRY;
 				}
 				
+				if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {
+					animation = WOMAnimations.MOONLESS_GUARD_HIT_1;
+				}
+				
 				if(!event.getPlayerPatch().consumeStamina(3)){
 					event.getPlayerPatch().setStamina(0);
 				}
@@ -211,24 +218,26 @@ public class PerfectBulwarkSkill extends GuardSkill {
 							container.getExecuter().getOriginal().getZ() - 0.2D, 
 							30, 0.6D, 0.8D, 0.6D, 0.05);
 				}
+				float impact = 0.5F;
+				float knockback = 0.25F;
 				
-				
-				float impact = 0.1F;
-				float knockback = 0.01F;
-				
-				if (event.getDamageSource() instanceof EpicFightDamageSource) {
+				if (event.getDamageSource() instanceof EpicFightDamageSource epicfightDamageSource) {
+					if (epicfightDamageSource.hasTag(SourceTags.GUARD_PUNCTURE)) {
+						return;
+					}
+					
 					impact = ((EpicFightDamageSource)event.getDamageSource()).getImpact();
-					knockback += Math.min(impact * 0.02F, 1.0F);
+					knockback += Math.min(impact * 0.1F, 1.0F);
 				}
 				
 				this.guard(container, itemCapability, event, knockback, impact, false);
 			}
-		}, 1);
+		}, 0);
 	}
 	
 	@Override
 	public void onRemoved(SkillContainer container) {
-		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID,1);
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID,0);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_STOP_EVENT, EVENT_UUID);
@@ -287,6 +296,23 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			
 			if (itemCapability.getWeaponCollider() == WOMColliders.HERSCHER && itemCapability.getStyle(playerpatch) == Styles.OCHS) {
 				return WOMAnimations.HERRSCHER_GUARD_HIT;
+			}
+			
+			if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {
+				switch (new Random().nextInt() % 3) {
+				case 0: {
+					return WOMAnimations.MOONLESS_GUARD_HIT_1;
+				}
+				case 1: {
+					return WOMAnimations.MOONLESS_GUARD_HIT_2;
+				}
+				case 2: {
+					return WOMAnimations.MOONLESS_GUARD_HIT_3;
+				}
+				
+				default:
+					return WOMAnimations.MOONLESS_GUARD_HIT_1;
+				}
 			}
 		}
 		

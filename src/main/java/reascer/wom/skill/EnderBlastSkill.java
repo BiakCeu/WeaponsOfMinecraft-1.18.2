@@ -20,6 +20,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -325,7 +326,13 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 			} else {
 				container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				if (container.getExecuter().getSkill(this).getStack() < this.getMaxStack() && container.getExecuter().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
-					container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
+					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
+						container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
+					} else {
+						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0) {
+							container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
+						}
+					}
 				}
 				
 			}

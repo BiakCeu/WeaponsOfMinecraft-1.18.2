@@ -216,6 +216,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							event.getPlayerPatch().getOriginal().heal(WitherCatharsis*0.2f);
 							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + ((event.getTarget().getEffect(MobEffects.WITHER).getAmplifier())*20*3), event.getPlayerPatch().getOriginal());
 							if (container.getDataManager().getDataValue(TIMER) > 666*20) {
+								DamageSource selfdamage = new IndirectEpicFightDamageSource("demon_fee", event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
+								event.getPlayerPatch().getOriginal().hurt(selfdamage, event.getPlayerPatch().getOriginal().getHealth());
 								container.getDataManager().setDataSync(TIMER, 667*20, event.getPlayerPatch().getOriginal());
 							}
 							event.getTarget().removeEffect(MobEffects.WITHER);
@@ -741,16 +743,21 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								container.getDataManager().getDataValue(BLACKHOLE_Y),
 								container.getDataManager().getDataValue(BLACKHOLE_Z));
 						
-						AABB box = AABB.ofSize(blackhole_pos,20, 20, 20);
+						AABB box = AABB.ofSize(blackhole_pos,50, 50, 50);
 						
 						List<Entity> list = container.getExecuter().getOriginal().level.getEntities(container.getExecuter().getOriginal(),box);
 						
 						for (Entity entity : list) {
-							double power = -0.20;
+							double distance_to_target = Math.sqrt(Math.pow(blackhole_pos.x() - entity.getX(), 2) + Math.pow(blackhole_pos.z() - entity.getZ(), 2) + Math.pow(blackhole_pos.y() - entity.getY(), 2));
+							double power = -1.00 / (0.4 + (distance_to_target*0.2));
 							double d1 = blackhole_pos.x() - entity.getX();
 							double d2 = blackhole_pos.y()-1 - entity.getY();
 							double d0;
-
+							
+							if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 2 != 0) {
+								power = 0;
+							}
+							
 							if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 1) {
 								power = 1.0;
 								d2 = blackhole_pos.y()-1.1 - entity.getY();
@@ -770,7 +777,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							Vec3 vec3 = entity.getDeltaMovement();
 							Vec3 vec31 = (new Vec3(d1, d2, d0)).normalize().scale(power);
 							
-							if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 10 == 0 && entity instanceof LivingEntity) {
+							if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 10 == 0 && entity instanceof LivingEntity && distance_to_target <= 10) {
 								LivingEntity target = (LivingEntity) entity;
 								IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("demon_fee", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.HOLD);
 								int chance = Math.abs(new Random().nextInt()) % 100;
@@ -829,7 +836,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
 					}
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,5, 0,true,false,false));
-					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,5, 0,true,false,false));
+					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,5, 1,true,false,false));
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
 						if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
 							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, (ServerPlayer) container.getExecuter().getOriginal());					
@@ -837,6 +844,47 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					}
 					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)));
 				} else {
+					
+					int n = 40; // set the number of particles to emit
+					double r = 0.4; // set the radius of the disk to 1
+					double t = 0.01; // set the thickness of the disk to 0.1
+					
+					for (int i = 0; i < n; i++) {
+						double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+						double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+						
+						// calculate the emission direction in Cartesian coordinates using the polar coordinates
+						double x = r * Math.cos(phi) * Math.cos(theta);
+						double y = r * Math.cos(phi) * Math.sin(theta);
+						double z = r * Math.sin(phi);
+						
+						// create a Vector3f object to represent the emission direction
+						Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
+						
+						// rotate the direction vector to align with the forward vector
+						OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+						OpenMatrix4f.transform3v(rotation, direction, direction);
+						
+						// emit the particle in the calculated direction, with some random velocity added
+						container.getExecuter().getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								(container.getExecuter().getOriginal().getX()),
+								(container.getExecuter().getOriginal().getY()),
+								(container.getExecuter().getOriginal().getZ()),
+								(float)(direction.x),
+								(float)(direction.y),
+								(float)(direction.z));
+					}
+					
+					for (int i = 0; i < 24; i++) {
+						container.getExecuter().getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								(container.getExecuter().getOriginal().getX()) + ((new Random().nextFloat() - 0.5F)),
+								(container.getExecuter().getOriginal().getY()) + 0.2F,
+								(container.getExecuter().getOriginal().getZ()) + ((new Random().nextFloat() - 0.5F)),
+								0,
+								((new Random().nextFloat()) * 1.5F),
+								0);
+					}
+					
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
 						if (container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
 							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, (ServerPlayer) container.getExecuter().getOriginal());					

@@ -6,10 +6,10 @@ import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class PainRetributionSkill extends PainAnticipationSkill {
+public class LatentRetributionSkill extends PainAnticipationSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("44fd425a-043d-11ed-b939-0242ac120002");
 	
-	public PainRetributionSkill(Builder<? extends Skill> builder) {
+	public LatentRetributionSkill(Builder<? extends Skill> builder) {
 		super(builder);
 		maxtimer = 80;
 		maxduree = 80;
@@ -22,7 +22,7 @@ public class PainRetributionSkill extends PainAnticipationSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(ACTIVE)) {
 				float attackDamage = event.getDamage();
-				event.setDamage(attackDamage * 1.2f);
+				event.setDamage(attackDamage * 1.4f);
 			}
 		});
 	}

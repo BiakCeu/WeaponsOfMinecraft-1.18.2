@@ -20,6 +20,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -62,6 +63,8 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 			WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_2, 
 			WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_3,
 			WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_4,
+			WOMAnimations.ENDERBLASTER_TWOHAND_EVADE_LEFT,
+			WOMAnimations.ENDERBLASTER_TWOHAND_EVADE_RIGHT,
 			WOMAnimations.ENDERBLASTER_TWOHAND_PISTOLERO,
 			WOMAnimations.ENDERBLASTER_TWOHAND_AIRSHOOT);
 	}
@@ -164,12 +167,12 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		
 		if (vertic == 0) {
 			if (horizon == 0) {
-				animation = -2;
+				animation = -3;
 			} else {
-				animation = horizon >= 0 ? 1 : 2;
+				animation = horizon >= 0 ? 0 : 1;
 			}
 		} else {
-			animation = vertic <= 0 ? -2 : 0;
+			animation = vertic <= 0 ? -3 : -3;
 		}
 		
 		CPExecuteSkill packet = new CPExecuteSkill(executer.getSkill(this).getSlotId());
@@ -195,10 +198,15 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, cooldown+40, executer.getOriginal());
 				double_cost = true;
 			} else {
-				int animation = this.getAnimationInCondition(executer);
-				executer.playAnimationSynchronized(this.attackAnimations[animation], 0);
-				if (animation == 1 || animation == 3) {
-					double_cost = true;
+				if (i != -3) {
+					executer.playAnimationSynchronized(this.attackAnimations[i+4], 0);
+					executer.getSkill(this).getDataManager().setDataSync(COMBO, executer.getSkill(this).getDataManager().getDataValue(COMBO)-1, executer.getOriginal());
+				} else {
+					int animation = this.getAnimationInCondition(executer);
+					executer.playAnimationSynchronized(this.attackAnimations[animation], 0);
+					if (animation == 1 || animation == 3) {
+						double_cost = true;
+					}
 				}
 				if (executer.getSkill(this).getDataManager().getDataValue(COMBO) < 3) {
 					if (executer.getSkill(this).getDataManager().getDataValue(COMBO) == 1) {
@@ -325,9 +333,14 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 			} else {
 				container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				if (container.getExecuter().getSkill(this).getStack() < this.getMaxStack() && container.getExecuter().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
-					container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_RELOAD, 0);
+					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
+						container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_RELOAD, 0);
+					} else {
+						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0) {
+							container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_RELOAD, 0);
+						}
+					}
 				}
-				
 			}
 		}
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {

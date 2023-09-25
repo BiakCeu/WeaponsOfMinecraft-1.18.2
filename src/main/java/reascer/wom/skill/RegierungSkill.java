@@ -92,7 +92,6 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			this.setMaxDurationSynchronize(((ServerPlayerPatch)container.getExecuter()), this.maxDuration + (200 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal())));
 			this.maxDuration += (200 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal()));
 		}
 		
@@ -200,7 +199,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					}
 					case 6: {
 						animation = WOMAnimations.HERRSCHER_BEFREIUNG;
-						convert = -0.45f;
+						convert = -0.25f;
 						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +20);
 						break;
 					}

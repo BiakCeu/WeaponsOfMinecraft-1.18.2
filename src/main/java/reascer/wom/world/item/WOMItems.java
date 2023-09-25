@@ -23,6 +23,8 @@ public class WOMItems {
 	public static final RegistryObject<Item> HERRSCHER = ITEMS.register("herrscher", () -> new HerscherItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.RARE).defaultDurability(1582).durability(1582)));
 	public static final RegistryObject<Item> GESETZ = ITEMS.register("gesetz", () -> new MagneticShieldItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.RARE).defaultDurability(4157).durability(4157)));
 	public static final RegistryObject<Item> GESETZ_HANDLE = ITEMS.register("gesetz_handle", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MOONLESS = ITEMS.register("moonless", () -> new MoonlessItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MOONLESS_HANDLE = ITEMS.register("moonless_handle", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<Item> IRON_GREATAXE = ITEMS.register("iron_greataxe", () -> new GreataxeItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS), Tiers.IRON));
 	public static final RegistryObject<Item> GOLDEN_GREATAXE = ITEMS.register("golden_greataxe", () -> new GreataxeItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS), Tiers.GOLD));

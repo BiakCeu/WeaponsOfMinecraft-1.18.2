@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -46,7 +47,7 @@ public class PainAnticipationSkill extends PassiveSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(TIMER) == 0 || container.getDataManager().getDataValue(ACTIVE)) {
                 event.getDamageSource().setStunType(StunType.NONE);
-                event.setAmount(event.getAmount()*0.8f);
+                event.setAmount(event.getAmount()*0.6f);
                 event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 		    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 1.0F);
 				((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
@@ -87,17 +88,14 @@ public class PainAnticipationSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack matStackIn, float x, float y, float scale, int width, int height) {
-		matStackIn.pushPose();
-		matStackIn.scale(scale, scale, 1.0F);
-		matStackIn.translate(0, (float)gui.getSlidingProgression() * 1.0F / scale, 0);
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+		poseStack.pushPose();
+		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
-		float scaleMultiply = 1.0f / scale;
 		if (container.getDataManager().getDataValue(ACTIVE)) {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
-			matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
-			gui.font.drawShadow(matStackIn, String.valueOf((container.getDataManager().getDataValue(DUREE)/20)+1), ((float)width - x+7), ((float)height - y+13), 16777215);
+			GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+			gui.font.drawShadow(poseStack, String.valueOf((container.getDataManager().getDataValue(DUREE)/20)+1), x+7, y+13, 16777215);
 		} else {
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
 				RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
@@ -105,14 +103,12 @@ public class PainAnticipationSkill extends PassiveSkill {
 
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			}
-			gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
-			matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
+			GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				gui.font.drawShadow(matStackIn, String.valueOf((container.getDataManager().getDataValue(TIMER)/20)+1), ((float)width - x+7), ((float)height - y+13), 16777215);
+				gui.font.drawShadow(poseStack, String.valueOf((container.getDataManager().getDataValue(TIMER)/20)+1), x+7, y+13, 16777215);
 			}
 		}
-		
-		matStackIn.popPose();
+		poseStack.popPose();
 	}
 	
 	@Override

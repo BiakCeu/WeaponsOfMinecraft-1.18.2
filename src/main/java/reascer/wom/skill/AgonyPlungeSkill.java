@@ -103,7 +103,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null && !executer.getOriginal().isCreative()) {
 			this.setStackSynchronize(executer, 0);
 		}
-		executer.getSkill(this).deactivate();
+		executer.getSkill(this).activate();
 	}
 	
 	@Override

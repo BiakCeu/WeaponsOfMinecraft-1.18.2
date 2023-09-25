@@ -1,11 +1,13 @@
 package reascer.wom.skill;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -27,13 +29,17 @@ import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class heartShieldSkill extends PassiveSkill {
+public class HeartShieldSkill extends PassiveSkill {
 	public static final SkillDataKey<Integer> MAX_SHIELD = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Integer> RECOVERY_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Integer> RECOVERY_RATE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
 	private static final UUID EVENT_UUID = UUID.fromString("42580b91-53a6-4d7f-92b4-487aa585cd0b");
-	public heartShieldSkill(Builder<? extends Skill> builder) {
+	
+	private float recovery_delay;
+	private float recovery_rate;
+	
+	public HeartShieldSkill(Builder<? extends Skill> builder) {
 		super(builder);
 	}
 	
@@ -45,7 +51,11 @@ public class heartShieldSkill extends PassiveSkill {
 		container.getDataManager().registerData(RECOVERY_RATE);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			int projectil_protection = 0;
+			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
+				projectil_protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, ArmorPiece);
+			}
+			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100 / (1 + (projectil_protection/4)), ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 		});
 	}
 	
@@ -64,42 +74,52 @@ public class heartShieldSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack matStackIn, float x, float y, float scale, int width, int height) {
-		matStackIn.pushPose();
-		matStackIn.scale(scale, scale, 1.0F);
-		matStackIn.translate(0, (float)gui.getSlidingProgression() * 1.0F / scale, 0);
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+		poseStack.pushPose();
+		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
-		float scaleMultiply = 1.0f / scale;
 		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 		} else {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
-		gui.drawTexturedModalRectFixCoord(matStackIn.last().pose(), (width - x) * scaleMultiply, (height - y) * scaleMultiply, 0, 0, 255, 255);
-		matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
+		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
-			gui.font.drawShadow(matStackIn, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), ((float)width - x+7), ((float)height - y+13), 16777215);
+			gui.font.drawShadow(poseStack, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), x+7, y+13, 16777215);
 		}
-		matStackIn.popPose();
+		poseStack.popPose();
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public List<Object> getTooltipArgsOfScreen(List<Object> list) {
+		list.add(String.format("%.1f", this.recovery_delay));
+		list.add(String.format("%.1f", this.recovery_rate));
+		return list;
 	}
 	
 	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if (!container.getExecuter().isLogicalClient()) {
+			int projectil_protection = 0;
+			int fire_protection = 0;
+			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
+				fire_protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_PROTECTION, ArmorPiece);
+				projectil_protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, ArmorPiece);
+			}
+			recovery_delay = (100 / (1 + (projectil_protection/4)))/20f;
+			recovery_rate = (40 / (1 + (fire_protection/4)))/20f;
+			container.getDataManager().setDataSync(MAX_SHIELD, 20, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 			if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
 				container.getDataManager().setDataSync(RECOVERY_COOLDOWN, container.getDataManager().getDataValue(RECOVERY_COOLDOWN) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(MAX_SHIELD, (int) container.getExecuter().getOriginal().getMaxHealth()/3, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 			} else {
 				if (container.getExecuter().getOriginal().getAbsorptionAmount() < container.getDataManager().getDataValue(MAX_SHIELD)) {
 					if (container.getDataManager().getDataValue(RECOVERY_RATE) > 0) {
 						container.getDataManager().setDataSync(RECOVERY_RATE, container.getDataManager().getDataValue(RECOVERY_RATE) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					} else {
-						int thorn = 0;
-						for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-							thorn += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.THORNS, ArmorPiece);
-						}
-						container.getDataManager().setDataSync(RECOVERY_RATE, 40 / (1 + (thorn/4)) , ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						
+						container.getDataManager().setDataSync(RECOVERY_RATE, 40 / (1 + (fire_protection/4)) , ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 						if (container.getExecuter().getOriginal().getAbsorptionAmount()+1 >= container.getDataManager().getDataValue(MAX_SHIELD)) {
 							container.getExecuter().getOriginal().setAbsorptionAmount(container.getDataManager().getDataValue(MAX_SHIELD));
 						} else {

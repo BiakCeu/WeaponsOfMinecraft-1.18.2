@@ -23,10 +23,7 @@ import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.skill.SkillCategories;
-import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillSlots;
-import yesman.epicfight.skill.weaponinnate.LiechtenauerSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -37,78 +34,6 @@ import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 @Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class WOMWeaponCapabilityPresets {
-	public static final Function<Item, CapabilityItem.Builder> SWORD = (item) -> {
-		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.SWORD)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.SWORD ? Styles.TWO_HAND : Styles.ONE_HAND)
-			.collider(ColliderPreset.SWORD)
-			.hitSound(EpicFightSounds.BLADE_HIT)
-			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
-			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.SWEEPING_EDGE)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.SWORD_GUARD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
-			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.SWORD);
-		
-		if (item instanceof TieredItem) {
-			int harvestLevel = ((TieredItem)item).getTier().getLevel();
-			builder.addStyleAttibutes(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.IMPACT.get(), EpicFightAttributes.getImpactModifier(0.5D + 0.2D * harvestLevel)));
-			builder.addStyleAttibutes(CapabilityItem.Styles.COMMON, Pair.of(EpicFightAttributes.MAX_STRIKES.get(), EpicFightAttributes.getMaxStrikesModifier(1)));
-		}
-		
-		return builder;
-	};
-	
-	public static final Function<Item, CapabilityItem.Builder> GREATSWORD = (item) -> {
-		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.GREATSWORD)
-			.styleProvider((playerpatch) -> Styles.TWO_HAND)
-			.collider(WOMColliders.GREATSWORD)
-			.swingSound(EpicFightSounds.WHOOSH_BIG)
-			.hitSound(EpicFightSounds.BLADE_HIT)
-			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.GREATSWORD_TWOHAND_AUTO_1, WOMAnimations.GREATSWORD_TWOHAND_AUTO_2, WOMAnimations.GREATSWORD_TWOHAND_AUTO_3, Animations.GREATSWORD_DASH, Animations.GREATSWORD_AIR_SLASH)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.STEEL_WHIRLWIND)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_GREATSWORD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.JUMP, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_GREATSWORD)
-	    	.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.GREATSWORD_GUARD);
-		return builder;
-	};
-	
-	public static final Function<Item, CapabilityItem.Builder> TACHI = (item) -> {
-		CapabilityItem.Builder builder = WeaponCapability.builder()
-			.category(WeaponCategories.TACHI)
-			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WeaponCategories.TACHI ? Styles.TWO_HAND : Styles.ONE_HAND)
-			.collider(ColliderPreset.UCHIGATANA)
-			.hitSound(EpicFightSounds.BLADE_HIT)
-			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.TACHI_TWOHAND_AUTO_1, WOMAnimations.TACHI_TWOHAND_AUTO_2, WOMAnimations.TACHI_TWOHAND_AUTO_3, WOMAnimations.TACHI_TWOHAND_AUTO_4, Animations.TACHI_DASH, Animations.LONGSWORD_AIR_SLASH)
-			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
-			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.innateSkill(Styles.ONE_HAND,(itemstack) -> EpicFightSkills.RUSHING_TEMPO)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.DANCING_EDGE)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.IDLE, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.KNEEL, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.WALK, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.CHASE, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.RUN, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.SNEAK, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FLOAT, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.FALL, Animations.BIPED_HOLD_TACHI)
-			.livingMotionModifier(Styles.ONE_HAND, LivingMotions.BLOCK, Animations.LONGSWORD_GUARD)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, Animations.SWORD_DUAL_GUARD)
-			.weaponCombinationPredicator((entitypatch) -> EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == WeaponCategories.TACHI);
-		return builder;
-	};
-	
 	public static final Function<Item, CapabilityItem.Builder> STAFF = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 			.category(WeaponCategories.SPEAR)
@@ -210,8 +135,8 @@ public class WOMWeaponCapabilityPresets {
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.RUINE_AUTO_1, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.RUINE_AUTO_4, WOMAnimations.RUINE_DASH, WOMAnimations.RUINE_COMET)
 			.newStyleCombo(Styles.OCHS, WOMAnimations.RUINE_AUTO_1, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.RUINE_AUTO_4, WOMAnimations.RUINE_DASH, WOMAnimations.RUINE_COMET)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.PLUNDER_PERDITION)
-			.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.PLUNDER_PERDITION)
+			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.SOUL_SNATCH)
+			.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.SOUL_SNATCH)
 			.passiveSkill(WOMSkills.RUINE_PASSIVE)
 			.comboCancel((style) -> {
 				return false;
@@ -396,6 +321,29 @@ public class WOMWeaponCapabilityPresets {
 		return builder;
 	};
 	
+	public static final Function<Item, CapabilityItem.Builder> MOONLESS = (item) -> {
+		CapabilityItem.Builder builder = WeaponCapability.builder()
+				.category(WeaponCategories.TACHI)
+				.styleProvider((playerpatch) -> Styles.TWO_HAND)
+				.collider(WOMColliders.MOONLESS)
+				.hitSound(EpicFightSounds.BLADE_HIT)
+				.canBePlacedOffhand(false)
+				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_AUTO_3, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
+				.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
+				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.LUNAR_ECHO)
+				.passiveSkill(WOMSkills.LUNAR_ECLIPSE_PASSIVE)
+				.comboCancel((style) -> {
+					return false;
+				})
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.MOONLESS_IDLE)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.MOONLESS_WALK)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.MOONLESS_RUN)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.MOONLESS_RUN)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.MOONLESS_GUARD);
+		return builder;
+	};
+	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
 		event.getTypeEntry().put("staff", STAFF);
@@ -406,6 +354,7 @@ public class WOMWeaponCapabilityPresets {
 		event.getTypeEntry().put("ender_blaster", ENDER_BLASTER);
 		event.getTypeEntry().put("antitheus", ANTITHEUS);
 		event.getTypeEntry().put("herrscher", HERRSCHER);
+		event.getTypeEntry().put("moonless", MOONLESS);
 	}
 	
 }

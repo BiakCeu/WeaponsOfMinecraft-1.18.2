@@ -149,6 +149,10 @@ public class CounterAttack extends GuardSkill {
 						animation = WOMAnimations.HERRSCHER_GUARD_PARRY;
 					}
 					
+					if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {
+						animation = WOMAnimations.MOONLESS_GUARD_HIT_1;
+					}
+					
 					if(!event.getPlayerPatch().consumeStamina(3)){
 						event.getPlayerPatch().setStamina(0);
 					}
@@ -332,6 +336,8 @@ public class CounterAttack extends GuardSkill {
 				return WOMAnimations.KATANA_SHEATHED_DASH;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.RUINE) {
 				return WOMAnimations.RUINE_COUNTER;
+			} else if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {
+				return WOMAnimations.MOONLESS_BYPASS;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.STAFF) {
 				return Animations.GRASPING_SPIRAL_SECOND;
 			}
@@ -351,6 +357,23 @@ public class CounterAttack extends GuardSkill {
 			if (itemCapability.getWeaponCollider() == WOMColliders.KATANA) {
 				return WOMAnimations.KATANA_GUARD_HIT;
 			}			
+			
+			if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {
+				switch (new Random().nextInt() % 3) {
+				case 0: {
+					return WOMAnimations.MOONLESS_GUARD_HIT_1;
+				}
+				case 1: {
+					return WOMAnimations.MOONLESS_GUARD_HIT_2;
+				}
+				case 2: {
+					return WOMAnimations.MOONLESS_GUARD_HIT_3;
+				}
+				
+				default:
+					return WOMAnimations.MOONLESS_GUARD_HIT_1;
+				}
+			}
 			
 			if (itemCapability.getWeaponCollider() == WOMColliders.HERSCHER && itemCapability.getStyle(playerpatch) == Styles.OCHS) {
 				return WOMAnimations.HERRSCHER_GUARD_HIT;
