@@ -1,8 +1,9 @@
 {
     "type": "minecraft:smithing",
-    "base": {
-        "item": "epicfight:diamond_armbracelet"
-    },
+    "base": [
+		{ "item": "epicfight:diamond_armbracelet" },
+		{ "item": "minecraft:netherite_chestplate" }
+	],
     "addition": {
         "item" : "minecraft:netherite_ingot"
     },
