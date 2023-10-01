@@ -252,9 +252,10 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
 										float stunTime = (float) (source.getImpact() * 0.3f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
-											hitHurtableEntityPatch.setStunReductionOnHit();
+											StunType stun = (anti_stunlock > 0.3f ?StunType.LONG:StunType.KNOCKDOWN);
+											hitHurtableEntityPatch.setStunReductionOnHit(stun);
 											
-											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.3f ?StunType.LONG:StunType.KNOCKDOWN), stunTime);
+											hitHurtableEntityPatch.applyStun(stun, stunTime);
 											float impact = source.getImpact();
 											hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),source.getImpact() * 0.25f);
 										}
@@ -263,8 +264,9 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.FALL) {
 										float stunTime = (float) (source.getImpact() * 0.5f * (1.0F - ((LivingEntity) hitten).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
-											hitHurtableEntityPatch.setStunReductionOnHit();
-											hitHurtableEntityPatch.applyStun((anti_stunlock > 0.3f ? StunType.SHORT:StunType.KNOCKDOWN), stunTime);
+											StunType stun = (anti_stunlock > 0.3f ? StunType.SHORT:StunType.KNOCKDOWN);
+											hitHurtableEntityPatch.setStunReductionOnHit(stun);
+											hitHurtableEntityPatch.applyStun(stun, stunTime);
 											double power = (source.getImpact() / anti_stunlock) * 0.25f;
 											double d1 = entity.getX() - hitten.getX();
 											double d2 = entity.getY()-8 - hitten.getY();
