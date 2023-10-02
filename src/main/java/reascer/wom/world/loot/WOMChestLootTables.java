@@ -7,10 +7,10 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.item.WOMItems;
 
-@Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID)
+@Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID)
 public class WOMChestLootTables {
 	@SubscribeEvent
 	public static void modifyVanillaLootPools(final LootTableLoadEvent event) {

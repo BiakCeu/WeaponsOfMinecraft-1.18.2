@@ -265,7 +265,7 @@ public class CounterAttack extends GuardSkill {
 				int timing = (playerentity.tickCount - container.getDataManager().getDataValue(LAST_ACTIVE));
 					//container.getExecuter().getOriginal().sendMessage(new TextComponent("timming : " + timing), UUID.randomUUID());
 				
-				boolean successParrying = playerentity.tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 4;
+				boolean successParrying = timing < 10;
 				
 				float penalty = container.getDataManager().getDataValue(PENALTY);
 				event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
@@ -298,12 +298,12 @@ public class CounterAttack extends GuardSkill {
 				
 				BlockType blockType = successParrying ? BlockType.ADVANCED_GUARD : enoughStamina ? BlockType.GUARD : BlockType.GUARD_BREAK;
 				StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
-				float convert = timing <= 1 ? -0.15F : timing < 3 ? 0.00f : 0.15f;
+				float convert = timing <= 2 ? -0.15F : timing < 5 ? 0.00f : 0.15f;
 				if (animation == Animations.RUSHING_TEMPO2) {
-					 convert = timing <= 1 ? -0.10F : timing < 3 ? 0.00f : 0.15f;
+					 convert = timing <= 2 ? -0.10F : timing < 5 ? 0.00f : 0.15f;
 				}
 				if (animation == Animations.SWEEPING_EDGE) {
-					 convert = timing <= 1 ? -0.10F : timing < 3 ? 0.00f : 0.15f;
+					 convert = timing <= 2 ? -0.10F : timing < 5 ? 0.00f : 0.15f;
 				}
 				if (animation != null) {
 					event.getPlayerPatch().playAnimationSynchronized(animation, convert);

@@ -9,6 +9,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -152,5 +154,22 @@ public class EnderObscurisSkill extends DodgeSkill {
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
 		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		poseStack.popPose();
+	}
+	
+	@Override
+	public void updateContainer(SkillContainer container) {
+		super.updateContainer(container);
+		if(!container.getExecuter().isLogicalClient()) {
+			if (container.getDataManager().getDataValue(TARGET_ID) != null) {
+				Entity target = container.getExecuter().getOriginal().level.getEntity(container.getDataManager().getDataValue(TARGET_ID));
+				if (target != null) {
+					if (target instanceof LivingEntity) {
+						if (((LivingEntity)target).isDeadOrDying()) {
+							container.getDataManager().setDataSync(TARGET_ID, -1, (ServerPlayer)container.getExecuter().getOriginal());
+						}
+					}
+				}
+			}
+		}
 	}
 }

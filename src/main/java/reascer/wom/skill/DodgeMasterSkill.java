@@ -118,7 +118,7 @@ public class DodgeMasterSkill extends DodgeSkill {
 				executer.setStamina(0);
 			}
 		}
-		executer.getSkill(this).getDataManager().setDataSync(TIMER, 8,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(TIMER, 14,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(DODGE, false, executer.getOriginal());
 	}
 	
@@ -148,8 +148,8 @@ public class DodgeMasterSkill extends DodgeSkill {
 				if (((ServerPlayerPatch) container.getExecuter()).getStamina() > 0) {
 					if (container.getDataManager().getDataValue(TIMER) < 7 && container.getDataManager().getDataValue(DODGE)) {
 						container.getExecuter().playAnimationSynchronized(this.animations[Math.abs((new Random().nextInt() % 2)+2)], 0);
-						container.getDataManager().setDataSync(TIMER, 12,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						if(!container.getExecuter().consumeStamina(3)){
+						container.getDataManager().setDataSync(TIMER, 15,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						if(!container.getExecuter().consumeStamina(2)){
 							container.getExecuter().setStamina(0);
 						}
 					}

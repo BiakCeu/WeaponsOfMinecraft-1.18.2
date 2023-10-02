@@ -1,15 +1,15 @@
 {
 	"textures":
 	[
-		"epicfight:antitheus_cut1",
-		"epicfight:antitheus_cut2",
-		"epicfight:antitheus_cut3",
-		"epicfight:antitheus_cut4",
-		"epicfight:antitheus_cut5",
-		"epicfight:antitheus_cut6",
-		"epicfight:antitheus_cut7",
-		"epicfight:antitheus_cut8",
-		"epicfight:antitheus_cut9",
-		"epicfight:antitheus_cut10"
+		"wom:antitheus_cut1",
+		"wom:antitheus_cut2",
+		"wom:antitheus_cut3",
+		"wom:antitheus_cut4",
+		"wom:antitheus_cut5",
+		"wom:antitheus_cut6",
+		"wom:antitheus_cut7",
+		"wom:antitheus_cut8",
+		"wom:antitheus_cut9",
+		"wom:antitheus_cut10"
 	]
 }

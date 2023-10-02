@@ -6,9 +6,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.gameasset.WOMSounds;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 
-@Mod.EventBusSubscriber(modid=WeaponOfMinecraft.MODID, bus=EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid=WeaponsOfMinecraft.MODID, bus=EventBusSubscriber.Bus.MOD)
 public class WOMModBusEvents {
     @SubscribeEvent
 	public static void onSoundRegistry(final RegistryEvent.Register<SoundEvent> event) {

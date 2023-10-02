@@ -40,7 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.animation.BasicMultipleAttackAnimation;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.AnimationPlayer;

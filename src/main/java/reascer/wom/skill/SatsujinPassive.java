@@ -3,9 +3,10 @@ package reascer.wom.skill;
 import java.util.UUID;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPPlayAnimation;
 import yesman.epicfight.skill.Skill;
@@ -32,8 +33,28 @@ public class SatsujinPassive extends PassiveSkill {
 		container.getDataManager().registerData(SHEATH);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getSkill().setConsumptionSynchronize(event.getPlayerPatch(), 0.0F);
-			container.getSkill().setStackSynchronize(event.getPlayerPatch(), 0);
+			StaticAnimation[] resetAnimations = {
+					WOMAnimations.KATANA_AUTO_1,
+					WOMAnimations.KATANA_AUTO_2,
+					WOMAnimations.KATANA_AUTO_3,
+					WOMAnimations.KATANA_DASH,
+					WOMAnimations.HERRSCHER_AUSROTTUNG,
+					WOMAnimations.KATANA_SHEATHED_AUTO_1,
+					WOMAnimations.KATANA_SHEATHED_AUTO_2,
+					WOMAnimations.KATANA_SHEATHED_AUTO_3,
+					WOMAnimations.KATANA_GUARD,
+					WOMAnimations.KATANA_GUARD_HIT,
+					Animations.BIPED_HIT_SHORT,
+					Animations.BIPED_HIT_LONG};
+			
+			for (StaticAnimation staticAnimation : resetAnimations) {
+				if (event.getAnimation() == staticAnimation) {
+					container.getSkill().setConsumptionSynchronize(event.getPlayerPatch(), 0.0F);
+					container.getSkill().setStackSynchronize(event.getPlayerPatch(), 0);
+				}
+			}
+			
+			
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID, (event) -> {

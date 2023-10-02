@@ -3,8 +3,8 @@
 	{
 		"two_hand":
 		{
-			"impact":1.9,
-			"max_strikes":3
+			"impact":0.9,
+			"max_strikes":2
 		}
 	},
 	"type":"agony"

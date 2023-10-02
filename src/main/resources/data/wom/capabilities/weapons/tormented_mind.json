@@ -4,8 +4,8 @@
 		"common":
 		{
 			"armor_negation":50.0,
-			"impact":1.6,
-			"max_strikes":3
+			"impact":2.8,
+			"max_strikes":4
 		}
 	},
 	"type":"torment"

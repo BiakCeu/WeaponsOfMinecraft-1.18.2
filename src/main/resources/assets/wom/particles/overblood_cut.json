@@ -1,11 +1,11 @@
 {
 	"textures":
 	[
-		"epicfight:overblood_cut1",
-		"epicfight:overblood_cut2",
-		"epicfight:overblood_cut3",
-		"epicfight:overblood_cut4",
-		"epicfight:overblood_cut5",
-		"epicfight:overblood_cut6"
+		"wom:overblood_cut1",
+		"wom:overblood_cut2",
+		"wom:overblood_cut3",
+		"wom:overblood_cut4",
+		"wom:overblood_cut5",
+		"wom:overblood_cut6"
 	]
 }

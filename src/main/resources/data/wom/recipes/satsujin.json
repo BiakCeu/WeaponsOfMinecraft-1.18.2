@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "epicfight:uchigatana"
+    },
+    "addition": {
+        "item" : "wom:demon_seal"
+    },
+    "result": {
+        "item": "wom:satsujin"
+    }
+}

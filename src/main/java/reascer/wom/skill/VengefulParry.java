@@ -309,6 +309,9 @@ public class VengefulParry extends GuardSkill {
 				container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5 , 10, true,false,false));
 			}
 			container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
+			if (container.getDataManager().getDataValue(TIMER) == 0) {
+				container.getExecuter().getOriginal().stopUsingItem();
+			}
 		}
 		if (container.getDataManager().getDataValue(VENGENCE_DURATION) > 0) {
 			if (container.getDataManager().getDataValue(VENGENCE_DURATION) == 1) {

@@ -321,6 +321,9 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if(!container.getExecuter().isLogicalClient()) {
+			if (container.getDataManager().getDataValue(RELOAD_COOLDOWN) == null) {
+				container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			}
 			if (container.getDataManager().getDataValue(RELOAD_COOLDOWN) > 0) {
 				container.getDataManager().setDataSync(RELOAD_COOLDOWN, container.getDataManager().getDataValue(RELOAD_COOLDOWN)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			} else {
@@ -329,7 +332,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
 					} else {
-						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0) {
+						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0 || container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == null) {
 							container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
 						}
 					}

@@ -1,17 +1,17 @@
 {
 	"textures":
 	[
-		"epicfight:enderbullet_blast0000",
-		"epicfight:enderbullet_blast0001",
-		"epicfight:enderbullet_blast0002",
-		"epicfight:enderbullet_blast0003",
-		"epicfight:enderbullet_blast0004",
-		"epicfight:enderbullet_blast0005",
-		"epicfight:enderbullet_blast0006",
-		"epicfight:enderbullet_blast0007",
-		"epicfight:enderbullet_blast0008",
-		"epicfight:enderbullet_blast0009",
-		"epicfight:enderbullet_blast0010",
-		"epicfight:enderbullet_blast0011"
+		"wom:enderbullet_blast0000",
+		"wom:enderbullet_blast0001",
+		"wom:enderbullet_blast0002",
+		"wom:enderbullet_blast0003",
+		"wom:enderbullet_blast0004",
+		"wom:enderbullet_blast0005",
+		"wom:enderbullet_blast0006",
+		"wom:enderbullet_blast0007",
+		"wom:enderbullet_blast0008",
+		"wom:enderbullet_blast0009",
+		"wom:enderbullet_blast0010",
+		"wom:enderbullet_blast0011"
 	]
 }

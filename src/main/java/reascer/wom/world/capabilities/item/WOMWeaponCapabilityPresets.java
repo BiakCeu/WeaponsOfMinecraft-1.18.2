@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.skill.SatsujinPassive;
 import reascer.wom.skill.SoulSnatchSkill;
 import reascer.wom.world.item.WOMItems;
@@ -32,7 +32,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
-@Mod.EventBusSubscriber(modid = WeaponOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
 public class WOMWeaponCapabilityPresets {
 	public static final Function<Item, CapabilityItem.Builder> STAFF = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()

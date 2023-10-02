@@ -24,9 +24,9 @@ repositories {
         }
     }
 }
-version = '1.7'
+version = '1.7.8.1'
 group = 'com.reascer.wom'
-archivesBaseName = 'WeaponsOfMinecraft'
+archivesBaseName = 'WeaponsOfMiracles'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -47,7 +47,7 @@ minecraft {
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'official', version: '1.18.2'
-
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
@@ -146,6 +146,9 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+	flatDir {
+		dir 'libs'
+	}
     maven {
         url "https://cursemaven.com"
         content {
@@ -161,7 +164,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.2.10'
     // EpicFight-18.3.2.jar
     //implementation fg.deobf("curse.maven:efm-405076:4018756")
-    //implementation fg.deobf("yesman:epicfight:18.3.2")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:4778609")
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency

@@ -24,6 +24,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.world.item.EpicFightItemTier;
 import yesman.epicfight.world.item.WeaponItem;
@@ -39,7 +40,7 @@ public class AgonySpearItem extends WeaponItem {
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
 			this.tooltipExpand.add(new TextComponent(""));
-			this.tooltipExpand.add(new TranslatableComponent("item." + EpicFightMod.MODID + ".agony.tooltip"));
+			this.tooltipExpand.add(new TranslatableComponent("item." + WeaponsOfMinecraft.MODID + ".agony.tooltip"));
 		}
 		
 		this.attackDamage = 5.0F;

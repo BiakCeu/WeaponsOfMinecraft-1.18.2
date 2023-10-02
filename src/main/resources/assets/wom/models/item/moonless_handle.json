@@ -1,0 +1,65 @@
+{
+	"loader": "forge:separate-perspective",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "wom:models/item/obj/moonless_handle.obj",
+  		"flip-v": true,
+		"materialLibraryOverride": "moonless_handle.mtl",
+		"display":
+  		{
+    		"thirdperson_righthand":
+    		{
+      			"translation": [-6, 5, 11],
+      			"rotation": [90, 180, 0],
+      			"scale": [0.8, 0.8, 0.8]
+    		},
+    		"firstperson_righthand":
+    		{
+      			"translation": [13,-6,-0],
+      			"rotation": [75,0,0],
+      			"scale": [1, 1, 1]
+    		},
+			"thirdperson_lefthand":
+    		{
+      			"translation": [6, 5, 11],
+      			"rotation": [90, 180, 0],
+      			"scale": [0.8, 0.8, 0.8]
+    		},
+    		"firstperson_lefthand":
+    		{
+      			"translation": [13,-6,-0],
+      			"rotation": [75,0,0],
+      			"scale": [1, 1, 1]
+    		}
+  		}
+	},
+	"perspectives":
+	{
+		"ground":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "wom:item/moonless"
+			}
+		},
+		"gui":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "wom:item/moonless"
+			},
+			"gui_light": "front"
+		},
+		"fixed":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "wom:item/moonless"
+			}
+		}
+	}
+}

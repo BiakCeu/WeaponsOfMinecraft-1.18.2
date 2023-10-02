@@ -51,11 +51,11 @@ public class HeartShieldSkill extends PassiveSkill {
 		container.getDataManager().registerData(RECOVERY_RATE);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			int projectil_protection = 0;
+			int protection = 0;
 			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-				projectil_protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, ArmorPiece);
+				protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, ArmorPiece);
 			}
-			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100 / (1 + (projectil_protection/4)), ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100 / (1 + (protection/4)), ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 		});
 	}
 	
@@ -102,14 +102,12 @@ public class HeartShieldSkill extends PassiveSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if (!container.getExecuter().isLogicalClient()) {
-			int projectil_protection = 0;
-			int fire_protection = 0;
+			int protection = 0;
 			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-				fire_protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_PROTECTION, ArmorPiece);
-				projectil_protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, ArmorPiece);
+				protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, ArmorPiece);
 			}
-			recovery_delay = (100 / (1 + (projectil_protection/4)))/20f;
-			recovery_rate = (40 / (1 + (fire_protection/4)))/20f;
+			recovery_delay = (100 / (1 + (protection/4)))/20f;
+			recovery_rate = (40 / (1 + (protection/4)))/20f;
 			container.getDataManager().setDataSync(MAX_SHIELD, 20, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 			if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
 				container.getDataManager().setDataSync(RECOVERY_COOLDOWN, container.getDataManager().getDataValue(RECOVERY_COOLDOWN) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
@@ -119,7 +117,7 @@ public class HeartShieldSkill extends PassiveSkill {
 						container.getDataManager().setDataSync(RECOVERY_RATE, container.getDataManager().getDataValue(RECOVERY_RATE) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					} else {
 						
-						container.getDataManager().setDataSync(RECOVERY_RATE, 40 / (1 + (fire_protection/4)) , ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(RECOVERY_RATE, 40 / (1 + (protection/4)) , ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 						if (container.getExecuter().getOriginal().getAbsorptionAmount()+1 >= container.getDataManager().getDataValue(MAX_SHIELD)) {
 							container.getExecuter().getOriginal().setAbsorptionAmount(container.getDataManager().getDataValue(MAX_SHIELD));
 						} else {

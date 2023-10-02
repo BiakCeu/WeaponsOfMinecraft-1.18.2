@@ -14,9 +14,9 @@ import yesman.epicfight.particle.EpicFightParticles;
 public class KatanaSheathedHitParticle extends NoRenderParticle {
 	public KatanaSheathedHitParticle(ClientLevel world, double x, double y, double z, double width, double height, double _null) {
 		super(world, x, y, z);
-		this.x = x + (this.random.nextDouble() - 0.5D) * width;
-		this.y = y + (this.random.nextDouble() + height) * 0.5;
-		this.z = z + (this.random.nextDouble() - 0.5D) * width;
+		this.x = x + (this.random.nextDouble() - 0.5D) * width * 1.5f;
+		this.y = y + ((this.random.nextDouble() * height ) * 0.8f) + (height*0.2f);
+		this.z = z + (this.random.nextDouble() - 0.5D) * width * 1.5f;
 		this.level.addParticle(WOMParticles.KATANA_SHEATHED_CUT.get(), this.x, this.y, this.z, 0.0D, 0.0D, 0.0D);
 		double d = 0.2F;
 		

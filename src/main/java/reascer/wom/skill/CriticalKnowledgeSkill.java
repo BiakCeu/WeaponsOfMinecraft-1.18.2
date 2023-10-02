@@ -27,25 +27,25 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 	public CriticalKnowledgeSkill(Builder<? extends Skill> builder) {
 		super(builder);
 		critRate = 20f;
-		critDamage = 100f;
+		critDamage = 60f;
 	}
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
 			int fire = 0;
-			int projectile = 0;
+			int blast = 0;
 			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
 				fire += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_PROTECTION, ArmorPiece);
-				projectile += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, ArmorPiece);
+				blast += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLAST_PROTECTION, ArmorPiece);
 			}
 			critRate = ((fire/16f)*80f)+20f;
-			critDamage = ( 1 + (0.15f * projectile)) * 100;
+			critDamage = ( 1 + (0.15f * blast)) * 100;
 					
 			int chance = Math.abs(new Random().nextInt()) % 100;
 			//container.getExecuter().getOriginal().sendMessage(new TextComponent("chance: " + chance + " | thorn: " + thorn + " | Critchance: " + (((thorn/12f)*90f)+5f)), UUID.randomUUID());
 			if (chance < critRate) {
-				event.getTarget().hurt((DamageSource) event.getDamageSource(), event.getAttackDamage() * ( 1 + (0.15f * projectile)));
+				event.getTarget().hurt((DamageSource) event.getDamageSource(), event.getAttackDamage() * ( 1 + (0.15f * blast)));
 				if(!event.getPlayerPatch().isLogicalClient()) {
 					ServerPlayerPatch executer = (ServerPlayerPatch) event.getPlayerPatch();
 					event.getTarget().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 1.5f, 0.5f);

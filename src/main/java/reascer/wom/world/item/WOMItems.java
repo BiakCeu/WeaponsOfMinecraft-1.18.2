@@ -8,10 +8,11 @@ import net.minecraft.world.item.Tiers;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.main.EpicFightMod;
 
 public class WOMItems {
-	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, EpicFightMod.MODID);
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, WeaponsOfMinecraft.MODID);
 	
 	public static final RegistryObject<Item> AGONY = ITEMS.register("agony", () -> new AgonySpearItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> TORMENTED_MIND = ITEMS.register("tormented_mind", () -> new TormentedMindItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.RARE)));

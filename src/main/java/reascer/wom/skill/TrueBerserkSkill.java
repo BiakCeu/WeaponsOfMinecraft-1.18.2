@@ -36,7 +36,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.model.Armature;
@@ -167,7 +167,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
 		if (playerpatch.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponOfMinecraft.MODID, "textures/gui/overlay/true_berserk.png"));
+			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponsOfMinecraft.MODID, "textures/gui/overlay/true_berserk.png"));
 			GlStateManager._enableBlend();
 			GlStateManager._disableDepthTest();
 			GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

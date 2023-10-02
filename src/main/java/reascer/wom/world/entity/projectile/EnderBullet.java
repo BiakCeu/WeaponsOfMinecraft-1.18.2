@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -127,13 +128,15 @@ public class EnderBullet extends AbstractHurtingProjectile {
             
             entity.invulnerableTime = prevInvulTime;
             if (flag) {
-            	ServerPlayerPatch PlayerPatch = EpicFightCapabilities.getEntityPatch(entity1, ServerPlayerPatch.class);
-            	 if (entity instanceof LivingEntity) {
-            		 PlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(PlayerPatch,(LivingEntity) entity, damage, (entity1damage) * (1 +(EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, livingentity) / 4))));
-            	 }
-            	if (entity.isAlive()) {
-                  this.doEnchantDamageEffects(livingentity, entity);
-               }
+            	if (entity1 instanceof Player) {
+	        		 ServerPlayerPatch PlayerPatch = EpicFightCapabilities.getEntityPatch(entity1, ServerPlayerPatch.class);
+	               	 if (entity instanceof LivingEntity) {
+	               		 PlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(PlayerPatch,(LivingEntity) entity, damage, (entity1damage) * (1 +(EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, livingentity) / 4))));
+	               	 }
+	               	 if (entity.isAlive()) {
+	                     this.doEnchantDamageEffects(livingentity, entity);
+	                 }
+            	}
             }
          } else {
             flag = entity.hurt(DamageSource.MAGIC, 6.0F);

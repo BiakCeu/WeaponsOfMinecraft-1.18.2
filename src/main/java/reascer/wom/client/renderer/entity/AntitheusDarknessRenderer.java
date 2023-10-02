@@ -19,13 +19,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.client.model.AntitheusDarknessModel;
 import reascer.wom.client.model.EnderBlastModel;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.entity.projectile.AntitheusDarkness;
 import reascer.wom.world.entity.projectile.EnderBullet;
 
 @OnlyIn(Dist.CLIENT)
 public class AntitheusDarknessRenderer extends EntityRenderer<AntitheusDarkness> {
-   private final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(WeaponOfMinecraft.MODID,"textures/item/ruine_texture.png");
+   private final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(WeaponsOfMinecraft.MODID,"textures/item/ruine_texture.png");
    private final Model model;
 
    public AntitheusDarknessRenderer(EntityRendererProvider.Context p_174449_) {

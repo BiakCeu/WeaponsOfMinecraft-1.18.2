@@ -33,7 +33,7 @@ import reascer.wom.client.particle.RuinePlunderSwordParticle;
 import reascer.wom.client.particle.WOMGroundSlamParticle;
 import reascer.wom.client.renderer.entity.AntitheusDarknessRenderer;
 import reascer.wom.client.renderer.entity.EnderBlastRenderer;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.particle.WOMParticles;
 import reascer.wom.world.entity.projectile.EnderBullet;
 import reascer.wom.world.entity.projectile.WOMEntities;
@@ -45,7 +45,7 @@ import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.entity.EpicFightEntities;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid=WeaponOfMinecraft.MODID, value=Dist.CLIENT, bus=EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid=WeaponsOfMinecraft.MODID, value=Dist.CLIENT, bus=EventBusSubscriber.Bus.MOD)
 public class WOMClientModBusEvent {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onParticleRegistry(final ParticleFactoryRegisterEvent event) {

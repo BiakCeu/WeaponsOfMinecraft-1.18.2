@@ -3,7 +3,7 @@ package reascer.wom.gameasset;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 
 public class WOMSounds {
 	public static final SoundEvent ENDERBLASTER_RELOAD = registerSound("sfx.enderblaster_reload");
@@ -11,7 +11,7 @@ public class WOMSounds {
 	public static final SoundEvent ANTITHEUS_BLACKKHOLE_CHARGEUP = registerSound("sfx.antitheus_blackhole_chargeup");
 	
 	private static SoundEvent registerSound(String name) {
-		ResourceLocation res = new ResourceLocation(WeaponOfMinecraft.MODID, name);
+		ResourceLocation res = new ResourceLocation(WeaponsOfMinecraft.MODID, name);
 		SoundEvent soundEvent = new SoundEvent(res).setRegistryName(name);
 		return soundEvent;
 	}

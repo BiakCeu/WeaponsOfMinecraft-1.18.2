@@ -1,7 +1,0 @@
-{
-    "parent": "epicfight:item/dagger",
-    "textures":
-    {
-        "layer0" : "epicfight:item/iron_dagger"
-    }
-}

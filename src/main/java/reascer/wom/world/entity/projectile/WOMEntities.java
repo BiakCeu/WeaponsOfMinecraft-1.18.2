@@ -9,11 +9,11 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import reascer.wom.main.WeaponOfMinecraft;
+import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.main.EpicFightMod;
 
 public class WOMEntities {
-	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, WeaponOfMinecraft.MODID);
+	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, WeaponsOfMinecraft.MODID);
 	
 	public static final RegistryObject<EntityType<EnderBullet>> ENDERBLAST = ENTITIES.register("enderblast", () ->
 		EntityType.Builder.<EnderBullet>of(EnderBullet::new, MobCategory.MISC)

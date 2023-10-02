@@ -193,7 +193,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 						entity.hasImpulse = true;
 						Vec3 vec3 = entity.getDeltaMovement();
 						Vec3 vec31 = (new Vec3(d1, d2, d0)).normalize().scale(power);
-						IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("Perfect_bulkwark_shockwave", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.LONG);
+						IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("perfect_bulkwark_shockwave", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.LONG);
 						damage.setImpact(3.0f);
 						LivingEntity target = (LivingEntity) entity;
 						target.hurt(damage,10);

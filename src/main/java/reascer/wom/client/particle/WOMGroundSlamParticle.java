@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -60,10 +61,11 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 			Particle smokeParticle = mc.particleEngine.createParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + positionVec.x * 0.5D, y + dz * 1.5, z + positionVec.z * 0.5D, 0, 0, 0); 
 			smokeParticle.setParticleSpeed(moveVec.x * 0.08D, moveVec.y * Math.random() * 0.08D, moveVec.z * 0.08D);
 			smokeParticle.scale((float) (dz*2f));
-			
-			mc.particleEngine.add(blockParticle);
-			mc.particleEngine.add(blockParticle2);
-			mc.particleEngine.add(smokeParticle);
+			if (!blockstate.is(Blocks.WATER)) {
+				mc.particleEngine.add(blockParticle);
+				mc.particleEngine.add(blockParticle2);
+				mc.particleEngine.add(smokeParticle);
+			}
 		}
 	}
 	

@@ -24,9 +24,14 @@ import reascer.wom.world.entity.projectile.WOMEntities;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.JointTransform;
+import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.Pose;
+import yesman.epicfight.api.animation.TransformSheet;
+import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
+import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
+import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -47,6 +52,52 @@ import yesman.epicfight.world.damagesource.StunType;
 public class AntitheusShootAttackAnimation extends AttackAnimation {
 	public AntitheusShootAttackAnimation(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
 		this(convertTime, antic, antic, contact, recovery, collider, colliderJoint, path, armature);
+		this.newTimePair(0, Float.MAX_VALUE);
+		this.addStateRemoveOld(EntityState.TURNING_LOCKED, false);
+		
+		this.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, MoveCoordFunctions.TRACE_LOC_TARGET);
+		this.addProperty(ActionAnimationProperty.COORD_SET_TICK, (self, entitypatch, transformSheet) -> {
+			LivingEntity attackTarget = entitypatch.getTarget();
+			
+			if (!self.getRealAnimation().getProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false) && attackTarget != null) {
+				TransformSheet transform = self.getTransfroms().get("Root").copyAll();
+				Keyframe[] keyframes = transform.getKeyframes();
+				int startFrame = 0;
+				int endFrame = transform.getKeyframes().length - 1;
+				Vec3f keyLast = keyframes[endFrame].transform().translation();
+				Vec3 pos = entitypatch.getOriginal().getEyePosition();
+				Vec3 targetpos = attackTarget.position();
+				float horizontalDistance = Math.max((float)targetpos.subtract(pos).horizontalDistance()*1.75f - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);
+				Vec3f worldPosition = new Vec3f(keyLast.x, 0.0F, -horizontalDistance);
+				float scale = Math.min(worldPosition.length() / keyLast.length(), 2.0F);
+				
+				for (int i = startFrame; i <= endFrame; i++) {
+					Vec3f translation = keyframes[i].transform().translation();
+					translation.z *= scale;
+				}
+				
+				transformSheet.readFrom(transform);
+			} else {
+				transformSheet.readFrom(self.getTransfroms().get("Root"));
+			}
+		});
+		
+		this.addProperty(StaticAnimationProperty.POSE_MODIFIER, (self, pose, entitypatch, time, partialticks ) -> {
+			if (self instanceof AttackAnimation) {
+				float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
+				
+				JointTransform armR = pose.getOrDefaultTransform("Arm_R");
+				armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				
+				if (((AttackAnimation) self).getPhaseByTime(1).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
+					JointTransform armL = pose.getOrDefaultTransform("Arm_L");
+					armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				}
+				
+				JointTransform chest = pose.getOrDefaultTransform("Chest");
+				chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);	
+			}
+		});
 	}
 	
 	public AntitheusShootAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
@@ -186,7 +237,7 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
 										float stunTime = (float) (0.83f * (1.0F - ((LivingEntity) entity).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
-											hitHurtableEntityPatch.setStunReductionOnHit();
+											hitHurtableEntityPatch.setStunReductionOnHit(StunType.NONE);
 											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
 											hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),3 * 0.25f);
 										}
@@ -208,7 +259,7 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
 			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			
-			if (this.getPhaseByTime(partialTicks).getColliders().get(1).getFirst() != Armatures.BIPED.armR) {
+			if (this.getPhaseByTime(partialTicks).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
 				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			}

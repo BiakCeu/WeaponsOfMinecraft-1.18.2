@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import javax.lang.model.element.ExecutableElement;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -371,8 +373,17 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			return super.canExecute(executer);
 		} else {
 			ItemStack itemstack = executer.getOriginal().getMainHandItem();
-			
-			return EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null;
+			if (EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null) {
+				return true;
+			} else if (executer.getOriginal().getVehicle() == null &&
+					executer.getSkill(EpicFightSkills.HYPERVITALITY) != null &&
+					executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null)
+			{
+				executer.getOriginal().setHealth(1);
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 	
@@ -659,7 +670,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							}
 
 							float ressource = container.getExecuter().getSkill(this).getResource();
-							float ressource_after_consumption = ressource + ((66.6f * (1f - sweeping_edge/6f)/2) * target.getEffect(MobEffects.WITHER).getAmplifier());
+							float ressource_after_consumption = ressource + ((66.6f * (1f - sweeping_edge/6f)*2) * target.getEffect(MobEffects.WITHER).getAmplifier());
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
 							container.getExecuter().getOriginal().heal(WitherCatharsis*0.4f);
 							target.removeEffect(MobEffects.WITHER);

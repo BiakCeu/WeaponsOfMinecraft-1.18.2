@@ -1,13 +1,13 @@
 {
 	"textures":
 	[
-		"epicfight:katana_sheathed_cut1",
-		"epicfight:katana_sheathed_cut2",
-		"epicfight:katana_sheathed_cut3",
-		"epicfight:katana_sheathed_cut4",
-		"epicfight:katana_sheathed_cut5",
-		"epicfight:katana_sheathed_cut6",
-		"epicfight:katana_sheathed_cut7",
-		"epicfight:katana_sheathed_cut8"
+		"wom:katana_sheathed_cut1",
+		"wom:katana_sheathed_cut2",
+		"wom:katana_sheathed_cut3",
+		"wom:katana_sheathed_cut4",
+		"wom:katana_sheathed_cut5",
+		"wom:katana_sheathed_cut6",
+		"wom:katana_sheathed_cut7",
+		"wom:katana_sheathed_cut8"
 	]
 }

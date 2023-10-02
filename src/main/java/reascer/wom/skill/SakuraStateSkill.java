@@ -1,7 +1,5 @@
 package reascer.wom.skill;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
@@ -16,36 +14,24 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.crafting.ConditionalAdvancement;
 import reascer.wom.gameasset.WOMAnimations;
-import reascer.wom.main.WeaponOfMinecraft;
-import reascer.wom.particle.WOMParticles;
+import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
-import yesman.epicfight.world.damagesource.StunType;
-import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
-import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("1a56d169-416a-4206-ba3d-e7100d55d603");
@@ -58,10 +44,6 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	public static final SkillDataKey<Integer> FREQUENCY = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Integer> ATTACKS = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Float> DAMAGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	
-	private List<Integer> timedSlashEntities = new ArrayList<Integer>();
-	private List<Integer> AttackedSlashEntities = new ArrayList<Integer>();
-	private List<Integer> prevTimedSlashEntities = new ArrayList<Integer>();
 	
 	public SakuraStateSkill(ConditionalWeaponInnateSkill.Builder builder) {
 		super(builder);
@@ -91,23 +73,35 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 					WOMAnimations.KATANA_FATAL_DRAW_SECOND};
 			
 			if (event.getAnimation() == WOMAnimations.KATANA_SHEATHED_DASH) {
-				this.resetTimedSlashes(container, serverPlayer);
+				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
+				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
+				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
+				container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+				container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
 			}
 			
 			if (event.getAnimation() == WOMAnimations.KATANA_FATAL_DRAW_DASH) {
-				this.resetTimedSlashes(container, serverPlayer);
-				if (container.getExecuter().getStamina() > 0) {
-					container.getDataManager().setDataSync(TIMER, 30,serverPlayer);
-				}
+				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
+				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
+				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
+				container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+				container.getDataManager().setDataSync(TIMER, 40,serverPlayer);
 			}
 			
 			for (StaticAnimation staticAnimation : resetAnimations) {
 				if (event.getAnimation() == staticAnimation) {
-					if (container.getExecuter().getStamina() > 0) {
-						container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
-					}
+					container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
+					container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
+					container.getDataManager().setDataSync(ATTACKS,0,serverPlayer);
+					container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
+					
 					if (staticAnimation != WOMAnimations.KATANA_FATAL_DRAW) {
 						container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+					}
+					if (staticAnimation == WOMAnimations.KATANA_FATAL_DRAW ||
+						staticAnimation == WOMAnimations.KATANA_FATAL_DRAW_SECOND	) {
+						container.getDataManager().setDataSync(FREQUENCY, 0,serverPlayer);
+						container.getDataManager().setDataSync(TIMER, 0,serverPlayer);
 					}
 				}
 			}
@@ -119,33 +113,46 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
+			if (event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW) ||
+				event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_SECOND)) {
+				
+			}
 			if (event.getDamageSource().cast().getMsgId() != "timed_katana_slashes") {
 				if (container.getExecuter().getStamina() > 0) {
 					if(container.getDataManager().getDataValue(TIMEDSLASH)){
-						timedSlashEntities.add(event.getTarget().getId());
-						/*
-						if (prevTimedSlashEntities.size() > 0) {
-							for (Integer e : prevTimedSlashEntities) {
-								if (e == event.getTarget().getId()) {
-									timedSlashEntities.add(event.getTarget().getId());
-								}
+						boolean tsa = false;
+						for (String tag : event.getTarget().getTags()) {
+							if (tag.contains("timed_katana_slashes:")) {
+								int attacks = Integer.valueOf(tag.split(":")[3]);
+								event.getTarget().removeTag(tag);
+								event.getTarget().addTag("timed_katana_slashes:"+
+										container.getDataManager().getDataValue(TIMER)+":"+
+										(container.getDataManager().getDataValue(FREQUENCY)-1)+":"+
+										(attacks + container.getDataManager().getDataValue(ATTACKS))+":"+
+										0+":"+
+										container.getDataManager().getDataValue(DAMAGE)+":"+
+										event.getPlayerPatch().getOriginal().getId()+":"+
+										(attacks + container.getDataManager().getDataValue(ATTACKS))
+										);
+								tsa = true;
+								break;
 							}
 						}
-						*/
+						if (!tsa) {
+							event.getTarget().addTag("timed_katana_slashes:"+
+									container.getDataManager().getDataValue(TIMER)+":"+
+									container.getDataManager().getDataValue(FREQUENCY)+":"+
+									container.getDataManager().getDataValue(ATTACKS)+":"+
+									1+":"+
+									container.getDataManager().getDataValue(DAMAGE)+":"+
+									event.getPlayerPatch().getOriginal().getId()+":"+
+									container.getDataManager().getDataValue(ATTACKS)
+							);
+						}
 					}
 				}
 			}
 		});
-	}
-
-	protected void resetTimedSlashes(SkillContainer container, ServerPlayer serverPlayer) {
-		container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
-		container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
-		container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
-		container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
-		if (container.getExecuter().getStamina() > 0) {
-			container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
-		}
 	}
 	
 	@Override
@@ -193,7 +200,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
 		if (playerpatch.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponOfMinecraft.MODID, "textures/gui/overlay/katana_eternity.png"));
+			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponsOfMinecraft.MODID, "textures/gui/overlay/katana_eternity.png"));
 			GlStateManager._enableBlend();
 			GlStateManager._disableDepthTest();
 			GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -221,46 +228,5 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 				}
 			}
 		}
-		if(!container.getExecuter().isLogicalClient()) {
-			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
-					if (container.getDataManager().getDataValue(TIMER) == 0) {
-						AttackedSlashEntities = new ArrayList<Integer>(timedSlashEntities);
-						timedSlashEntities.clear();
-					}
-			} else {
-				if (container.getDataManager().getDataValue(FREQUENCY) > 0) {
-					container.getDataManager().setData(FREQUENCY, container.getDataManager().getDataValue(FREQUENCY)-1);
-				} else {
-					if (container.getDataManager().getDataValue(ATTACKS) > 0) {
-						container.getDataManager().setData(ATTACKS, container.getDataManager().getDataValue(ATTACKS)-1);
-						container.getDataManager().setData(FREQUENCY, 1);
-						for (Integer entityID : AttackedSlashEntities) {
-							Entity e = container.getExecuter().getOriginal().getLevel().getEntity(entityID);
-							if (e != null) {
-								if(e.isAlive()) {
-									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_katana_slashes", container.getExecuter().getOriginal(),WOMAnimations.KATANA_SHEATHED_DASH);
-									epicFightDamageSource.setImpact(2.0f);
-									epicFightDamageSource.setStunType(StunType.HOLD);
-									epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
-									DamageSource damage = epicFightDamageSource;
-									e.invulnerableTime = 0;
-									if (e.hurt(damage,(float) Math.max(1.0f, container.getDataManager().getDataValue(DAMAGE) * 0.25f))) {
-										container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(((ServerPlayerPatch)container.getExecuter()), (LivingEntity) e, epicFightDamageSource, (float) Math.max(1.0f, container.getDataManager().getDataValue(DAMAGE) * 0.25f)));
-										e.playSound(EpicFightSounds.BLADE_HIT, 1, 1);
-										WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) container.getExecuter().getOriginal().level), null, null, e, container.getExecuter().getOriginal());
-									}
-								}
-							}
-						}
-					} else {
-						if (AttackedSlashEntities.size() > 0) {
-							AttackedSlashEntities.clear();
-						}
-					}
-				}
-			}
-		}
-	
 	}
 }

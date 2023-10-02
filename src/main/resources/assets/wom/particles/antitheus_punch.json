@@ -1,18 +1,18 @@
 {
 	"textures":
 	[
-		"epicfight:antitheus_punch0001",
-		"epicfight:antitheus_punch0002",
-		"epicfight:antitheus_punch0003",
-		"epicfight:antitheus_punch0004",
-		"epicfight:antitheus_punch0005",
-		"epicfight:antitheus_punch0006",
-		"epicfight:antitheus_punch0007",
-		"epicfight:antitheus_punch0008",
-		"epicfight:antitheus_punch0009",
-		"epicfight:antitheus_punch0010",
-		"epicfight:antitheus_punch0011",
-		"epicfight:antitheus_punch0012",
-		"epicfight:antitheus_punch0013"
+		"wom:antitheus_punch0001",
+		"wom:antitheus_punch0002",
+		"wom:antitheus_punch0003",
+		"wom:antitheus_punch0004",
+		"wom:antitheus_punch0005",
+		"wom:antitheus_punch0006",
+		"wom:antitheus_punch0007",
+		"wom:antitheus_punch0008",
+		"wom:antitheus_punch0009",
+		"wom:antitheus_punch0010",
+		"wom:antitheus_punch0011",
+		"wom:antitheus_punch0012",
+		"wom:antitheus_punch0013"
 	]
 }

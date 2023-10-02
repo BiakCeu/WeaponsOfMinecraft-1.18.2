@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "wom:demon_seal"
+    },
+    "addition": {
+        "item" : "minecraft:nether_star"
+    },
+    "result": {
+        "item": "wom:antitheus"
+    }
+}
