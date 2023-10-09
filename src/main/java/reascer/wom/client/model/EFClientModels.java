@@ -1,5 +1,6 @@
 package reascer.wom.client.model;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -7,7 +8,7 @@ import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.api.client.model.Mesh.RawMesh;
 import yesman.epicfight.api.forgeevent.ModelBuildEvent;
 
-@Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class EFClientModels{
 	public static RawMesh RUINE_PLUNDER_SWORD;
 	public static RawMesh ENDER_BULLET;

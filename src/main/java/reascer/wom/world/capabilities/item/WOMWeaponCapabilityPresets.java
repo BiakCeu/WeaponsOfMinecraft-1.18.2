@@ -23,6 +23,7 @@ import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
+import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -40,8 +41,9 @@ public class WOMWeaponCapabilityPresets {
 			.styleProvider((playerpatch) -> Styles.TWO_HAND)
 			.collider(WOMColliders.STAFF)
 			.hitSound(EpicFightSounds.BLUNT_HIT)
+			.hitParticle(EpicFightParticles.HIT_BLUNT.get())
 			.canBePlacedOffhand(false)
-			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.STAFF_AUTO_1, WOMAnimations.STAFF_AUTO_2, WOMAnimations.STAFF_AUTO_3, WOMAnimations.STAFF_DASH, Animations.SPEAR_TWOHAND_AIR_SLASH)
+			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.STAFF_AUTO_1, WOMAnimations.STAFF_AUTO_2, WOMAnimations.STAFF_AUTO_3, WOMAnimations.STAFF_DASH, WOMAnimations.STAFF_KINKONG)
 			.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
 			.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.CHARYBDIS)
 			.comboCancel((style) -> {
@@ -193,7 +195,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_RUN_UCHIGATANA)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_RUN_UCHIGATANA)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FALL, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.IDLE, WOMAnimations.KATANA_SHEATHED_IDLE)
@@ -202,7 +204,7 @@ public class WOMWeaponCapabilityPresets {
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.CHASE,  WOMAnimations.KATANA_SHEATHED_RUN)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.RUN,  WOMAnimations.KATANA_SHEATHED_RUN)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.SNEAK,  WOMAnimations.KATANA_SHEATHED_IDLE)
-			.livingMotionModifier(Styles.SHEATH, LivingMotions.SWIM,  WOMAnimations.KATANA_SHEATHED_RUN)
+			.livingMotionModifier(Styles.SHEATH, LivingMotions.SWIM,  WOMAnimations.KATANA_SHEATHED_IDLE)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.FLOAT,  WOMAnimations.KATANA_SHEATHED_IDLE)
 			.livingMotionModifier(Styles.SHEATH, LivingMotions.FALL, WOMAnimations.KATANA_SHEATHED_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.KATANA_GUARD);

@@ -145,6 +145,7 @@ public class WOMAnimations {
 	public static StaticAnimation STAFF_AUTO_2;
 	public static StaticAnimation STAFF_AUTO_3;
 	public static StaticAnimation STAFF_DASH;
+	public static StaticAnimation STAFF_KINKONG;
 	public static StaticAnimation STAFF_CHARYBDIS;
 	public static StaticAnimation STAFF_IDLE;
 	public static StaticAnimation STAFF_RUN;
@@ -289,6 +290,7 @@ public class WOMAnimations {
 	public static StaticAnimation ANTITHEUS_SHOOT;
 	public static StaticAnimation ANTITHEUS_PULL;
 	public static StaticAnimation ANTITHEUS_ASCENSION;
+	public static StaticAnimation ANTITHEUS_LAPSE;
 	public static StaticAnimation ANTITHEUS_ASCENDED_AUTO_1;
 	public static StaticAnimation ANTITHEUS_ASCENDED_AUTO_2;
 	public static StaticAnimation ANTITHEUS_ASCENDED_AUTO_3;
@@ -1306,7 +1308,7 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.0F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						ServerPlayerPatch serverPlayerPatch = ((ServerPlayerPatch)entitypatch); 
-						if(!serverPlayerPatch.consumeStamina(8)){
+						if(!serverPlayerPatch.consumeStamina(4)){
 							serverPlayerPatch.setStamina(0f);
 						}
 					}
@@ -2626,7 +2628,7 @@ public class WOMAnimations {
 						   TimeStampedEvent.create(0.5F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD_BOTH, Side.SERVER));
 		
-		STAFF_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_1", biped,
+		STAFF_AUTO_1 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/staff_auto_1", biped,
 				new Phase(0.0F, 0.1F, 0.19F, 0.2F, 0.2F, biped.toolR, null),
 				new Phase(0.2F, 0.25F, 0.34F, 0.35F, 0.35F, biped.toolR, null),
 				new Phase(0.35F, 0.4F, 0.49F, 0.50F, 0.50F, biped.toolR, null),
@@ -2642,9 +2644,9 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.20F),3)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,3)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,3)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F);
 		
-		STAFF_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_2", biped,
+		STAFF_AUTO_2 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/staff_auto_2", biped,
 				new Phase(0.0F, 0.15F, 0.25F, 0.35F, 0.35F, biped.toolR, WOMColliders.STAFF_EXTENTION),
 				new Phase(0.35F, 0.35F, 0.45F, 0.55F, 0.55F, biped.toolR, WOMColliders.STAFF_EXTENTION),
 				new Phase(0.55F, 0.55F, 0.65F, 0.65F, Float.MAX_VALUE, biped.toolR, WOMColliders.STAFF_EXTENTION))
@@ -2657,11 +2659,11 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,2)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 2)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F);
 		
-		STAFF_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_auto_3", biped,
+		STAFF_AUTO_3 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/staff_auto_3", biped,
 				new Phase(0.0F, 0.15F, 0.45F, 0.50F, 0.50F, biped.toolR, null),
-				new Phase(0.50F, 0.55F, 0.85F, 0.85F, Float.MAX_VALUE, biped.toolR, null))
+				new Phase(0.50F, 0.55F, 0.85F, 1.5F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.95F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
@@ -2670,7 +2672,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.80F),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.0F)
 				.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, (self, entitypatch, transformSheet) -> {
 					LivingEntity attackTarget = entitypatch.getTarget();
 					
@@ -2724,16 +2726,47 @@ public class WOMAnimations {
 		STAFF_DASH = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_dash", biped,
 				new Phase(0.0F, 0.15F, 0.19F, 0.2F, 0.2F, biped.toolR, WOMColliders.STAFF_EXTENTION),
 				new Phase(0.2F, 0.25F, 0.40F, 0.50F, Float.MAX_VALUE, biped.toolR, WOMColliders.STAFF_EXTENTION))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.40F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.50F))
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.85F),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.40F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.50F),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,1)
 				.addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.3F);
+		
+		STAFF_KINKONG = new BasicMultipleAttackAnimation(0.05F, "biped/combat/staff_kingkong", biped,
+				new Phase(0.0F, 0.35F, 0.45F, 0.95F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.40F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.6F))
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.AIR_BURST)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.NEUTRALIZE_MOBS)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 4.0F)
+				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.3F, 0.6F))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.6F && elapsedTime < 0.85F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						
+						while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+					}
+					
+					return 1.0F;
+				});
 		
 		STAFF_CHARYBDIS = new SpecialAttackAnimation(0.1F, "biped/skill/staff_charybdisandscylla", biped,
 				new Phase(0.0F, 0.1F, 0.14F, 0.15F, 0.15F, biped.toolR, WOMColliders.STAFF_CHARYBDIS),
@@ -3048,6 +3081,111 @@ public class WOMAnimations {
 								0,
 								((new Random().nextFloat()) * 1.5F),
 								0);
+					}
+					Level level = entitypatch.getOriginal().level;
+					
+					Vec3 floorPos = ReuseableEvents.getfloor(entitypatch, self,new Vec3f(0,0.0F,0.0F),Armatures.BIPED.rootJoint);
+					Vec3 weaponEdge = new Vec3(floorPos.x ,floorPos.y, floorPos.z);
+					
+					LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 4.00f,true,true);
+				}, Side.CLIENT));
+		
+		ANTITHEUS_LAPSE = new SpecialAttackAnimation(0.1f, "biped/skill/antitheus_lapse", biped,
+				new Phase(0.0f, 0.65f, 0.75f, 0.80f, 0.80f, biped.rootJoint, WOMColliders.PLUNDER_PERDITION),
+				new Phase(0.80f, 1.30f, 1.4f, 1.45f, 1.45f, biped.rootJoint, WOMColliders.PLUNDER_PERDITION),
+				new Phase(1.45f, 1.75f, 1.85f, 2.30f, Float.MAX_VALUE, biped.rootJoint, WOMColliders.PLUNDER_PERDITION))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.0F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(4.0F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
+				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_PUNCH_HIT)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, SoundEvents.WITHER_HURT)	
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.0F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(4.0F),1)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20),1)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, SoundEvents.WITHER_HURT,1)	
+				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_PUNCH_HIT)	
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F),2)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20),2)
+				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.ANTITHEUS_PUNCH_HIT,2)	
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
+				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 1.0F)
+				.addEvents(TimeStampedEvent.create(0.2F, (entitypatch, self, params) -> {
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 1.0F, 0.5F);
+				}, Side.CLIENT),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
+					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, false, (ServerPlayer)entitypatch.getOriginal());
+					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, (ServerPlayer)entitypatch.getOriginal());
+					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ACTIVE, false, (ServerPlayer)entitypatch.getOriginal());
+					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
+					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0F, 2.0F);
+				}, Side.SERVER),TimeStampedEvent.create(2.25F, (entitypatch, self, params) -> {
+					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+				}, Side.SERVER),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
+					
+					float target_x = (float) entitypatch.getOriginal().getX();
+					float target_y = (float) entitypatch.getOriginal().getY()+0.2f;
+					float target_z = (float) entitypatch.getOriginal().getZ();
+					
+					int n = 80; // set the number of particles to emit
+					double r = 0.6; // set the radius of the disk to 1
+					double t = 0.05; // set the thickness of the disk to 0.1
+					
+					
+					for (int i = 0; i < n*2; i++) {
+						double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+						double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+						
+						// calculate the emission direction in Cartesian coordinates using the polar coordinates
+						double x = r * Math.cos(phi) * Math.cos(theta);
+						double y = r * Math.cos(phi) * Math.sin(theta);
+						double z = r * Math.sin(phi);
+						
+						// create a Vector3f object to represent the emission direction
+						Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
+						
+						// rotate the direction vector to align with the forward vector
+						OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+						OpenMatrix4f.transform3v(rotation, direction, direction);
+						
+						// emit the particle in the calculated direction, with some random velocity added
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								(target_x),
+								(target_y),
+								(target_z),
+								(float)(direction.x),
+								(float)(direction.y),
+								(float)(direction.z));
+					}
+					
+					for (int i = 0; i < n; i++) {
+						double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+						double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+						
+						// calculate the emission direction in Cartesian coordinates using the polar coordinates
+						double x = r * Math.cos(phi) * Math.cos(theta);
+						double y = r * Math.cos(phi) * Math.sin(theta);
+						double z = r * Math.sin(phi);
+						
+						// create a Vector3f object to represent the emission direction
+						Vec3f direction = new Vec3f(
+								(float)x *(new Random().nextFloat()+0.5f)*0.8f,
+								(float)y *(new Random().nextFloat()+0.5f)*0.8f,
+								(float)z *(new Random().nextFloat()+0.5f)*0.8f);
+						
+						// rotate the direction vector to align with the forward vector
+						OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+						OpenMatrix4f.transform3v(rotation, direction, direction);
+						
+						// emit the particle in the calculated direction, with some random velocity added
+						entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+								(target_x),
+								(target_y),
+								(target_z),
+								(float)(direction.x),
+								(float)(direction.y),
+								(float)(direction.z));
 					}
 					Level level = entitypatch.getOriginal().level;
 					

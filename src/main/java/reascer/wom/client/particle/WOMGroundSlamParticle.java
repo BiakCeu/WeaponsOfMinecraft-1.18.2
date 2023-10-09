@@ -11,14 +11,12 @@ import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.world.level.block.FractureBlock;
 import yesman.epicfight.world.level.block.FractureBlockState;
 
 @OnlyIn(Dist.CLIENT)
@@ -27,6 +25,10 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 		super(level, x, y, z, dx, dy, dz);
 		
 		BlockPos blockpos = new BlockPos(x, y, z);
+		if (y < 0) {
+			y = y-1;
+			blockpos = new BlockPos(x, y, z);
+		}
 		BlockState blockstate = level.getBlockState(blockpos.below());
 		Minecraft mc = Minecraft.getInstance();
 		

@@ -31,6 +31,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.particle.WOMParticles;
 import reascer.wom.world.item.WOMItems;
@@ -95,11 +96,13 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("61ec318a-10f6-11ed-861d-0242ac120002");
 	
 	private StaticAnimation activateAnimation;
+	private StaticAnimation deactivateAnimation;
 	
 	public DemonicAscensionSkill(Builder builder) {
 		super(builder);
 
 		this.activateAnimation = WOMAnimations.ANTITHEUS_ASCENSION;
+		this.deactivateAnimation = WOMAnimations.ANTITHEUS_LAPSE;
 	}
 	
 	@Override
@@ -178,14 +181,15 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					    			SoundEvents.WITHER_SKELETON_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 0.5F);
 						}
 						event.getTarget().playSound(SoundEvents.WITHER_HURT, 1.5f, 0.5f);
-						float WitherCatharsis = (float) ((event.getTarget().getEffect(MobEffects.WITHER).getDuration()/20) * event.getTarget().getEffect(MobEffects.WITHER).getAmplifier());
+						int wither_lvl = event.getTarget().getEffect(MobEffects.WITHER).getAmplifier()+1;
+						float WitherCatharsis = (float) ((event.getTarget().getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
 						//container.getExecuter().getOriginal().sendMessage(new TextComponent("Damage dealt: " + WitherCatharsis + " on " + event.getTarget().getMaxHealth() + "/" + event.getTarget().getHealth()), UUID.randomUUID());
 						//container.getExecuter().getOriginal().sendMessage(new TextComponent("Catarsis healing: " + WitherCatharsis/2 + " on " + event.getPlayerPatch().getOriginal().getMaxHealth() + "/" + event.getPlayerPatch().getOriginal().getHealth()), UUID.randomUUID());
 						DamageSource damage = new IndirectEpicFightDamageSource("demon_fee", event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal(), StunType.NONE);
 						event.getTarget().hurt(damage, WitherCatharsis*0.5f);
 						event.getPlayerPatch().getOriginal().heal(WitherCatharsis*0.5f);
 						container.getDataManager().setDataSync(WITHERAFTEREFFECT,2,event.getPlayerPatch().getOriginal());
-						container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + ((event.getTarget().getEffect(MobEffects.WITHER).getAmplifier())*20*3), event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + (wither_lvl*20*2), event.getPlayerPatch().getOriginal());
 						event.getTarget().removeEffect(MobEffects.WITHER); 
 					}
 				}
@@ -212,11 +216,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							
 							//container.getExecuter().getOriginal().sendMessage(new TextComponent("Damage dealt: " + WitherCatharsis + " on " + event.getTarget().getMaxHealth() + "/" + event.getTarget().getHealth()), UUID.randomUUID());
 							//container.getExecuter().getOriginal().sendMessage(new TextComponent("Catarsis healing: " + WitherCatharsis/2 + " on " + event.getPlayerPatch().getOriginal().getMaxHealth() + "/" + event.getPlayerPatch().getOriginal().getHealth()), UUID.randomUUID());
-							float WitherCatharsis = (float) ((event.getTarget().getEffect(MobEffects.WITHER).getDuration()/20) * event.getTarget().getEffect(MobEffects.WITHER).getAmplifier());
+							int wither_lvl = event.getTarget().getEffect(MobEffects.WITHER).getAmplifier()+1;
+							float WitherCatharsis = (float) ((event.getTarget().getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
 							DamageSource damage = new IndirectEpicFightDamageSource("demon_fee", event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal(), StunType.NONE);
 							event.getTarget().hurt(damage, WitherCatharsis*0.8f);
 							event.getPlayerPatch().getOriginal().heal(WitherCatharsis*0.2f);
-							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + ((event.getTarget().getEffect(MobEffects.WITHER).getAmplifier())*20*3), event.getPlayerPatch().getOriginal());
+							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + (wither_lvl*20*2), event.getPlayerPatch().getOriginal());
 							if (container.getDataManager().getDataValue(TIMER) > 666*20) {
 								DamageSource selfdamage = new IndirectEpicFightDamageSource("demon_fee", event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
 								event.getPlayerPatch().getOriginal().hurt(selfdamage, event.getPlayerPatch().getOriginal().getHealth());
@@ -240,7 +245,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			if (event.getAnimation() != WOMAnimations.ANTITHEUS_SHOOT && event.getAnimation() != WOMAnimations.ANTITHEUS_PULL) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_SHOOT) && event.getAnimation().equals(WOMAnimations.ANTITHEUS_PULL)) {
 				container.getDataManager().setDataSync(ZOOM, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
@@ -249,7 +254,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_DEATHFALL) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_DEATHFALL)) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
 				if (!container.getExecuter().getOriginal().isCreative()) {
 					/*
@@ -263,22 +268,22 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,2,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_1) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_1)) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_2) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_2)) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3)) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_BLINK) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLINK)) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,false,event.getPlayerPatch().getOriginal());
 				if (!container.getExecuter().getOriginal().isCreative()) {
 					/*
@@ -292,7 +297,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,container.getDataManager().getDataValue(WITHERAFTEREFFECT)+4,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENSION) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENSION)) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS,false,event.getPlayerPatch().getOriginal());
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
 			}
@@ -326,15 +331,13 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(this).isActivated()) { 
+			executer.playAnimationSynchronized(this.deactivateAnimation, 0);
 			cancelOnServer(executer, args);
-			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
-			this.setDurationSynchronize(executer, 0);
-			this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
 			executer.getSkill(this).deactivate();
 			executer.modifyLivingMotionByCurrentItem();
 		} else {
 			executer.playAnimationSynchronized(this.activateAnimation, 0);
-			executer.getSkill(this).getDataManager().setData(TIMER, (20*20) * (1 + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3)));
+			executer.getSkill(this).getDataManager().setData(TIMER, (int)((20*20) * (1 + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/2f))));
 			executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
 			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
 			executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false, executer.getOriginal());
@@ -358,13 +361,48 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		super.cancelOnServer(executer, args);
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
+		executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, true, executer.getOriginal());
 		if (executer.getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
 			executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());
 		}
-		executer.getOriginal().removeEffect(EpicFightMobEffects.STUN_IMMUNITY.get());
+		if (!executer.getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
+			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());					
+			}
+		}
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
 		this.setDurationSynchronize(executer, 0);
 		executer.modifyLivingMotionByCurrentItem();
+	}
+	
+	@Override
+	public boolean resourcePredicate(PlayerPatch<?> playerpatch) {
+		float consumption = this.getDefaultConsumeptionAmount(playerpatch);
+		
+		SkillConsumeEvent event = new SkillConsumeEvent(playerpatch, this, this.resource, consumption, false);
+		playerpatch.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
+		
+		if (event.isCanceled()) {
+			return false;
+		}
+		
+		if (event.getResourceType().predicate.canExecute(this, playerpatch, event.getAmount())) {
+			return true;
+		} else {
+			if (playerpatch.getSkill(EpicFightSkills.HYPERVITALITY) != null &&
+					playerpatch.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null) {
+				if (playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).getStack() > 0) {
+					playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).setMaxDuration(event.getSkill().getMaxDuration());
+					playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).activate();
+					playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).setMaxResource(120);
+					DamageSource damage = new IndirectEpicFightDamageSource("demon_fee", event.getPlayerPatch().getOriginal(), event.getPlayerPatch().getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
+					playerpatch.getOriginal().hurt(damage, playerpatch.getOriginal().getHealth()-1);
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 	@Override
@@ -373,17 +411,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			return super.canExecute(executer);
 		} else {
 			ItemStack itemstack = executer.getOriginal().getMainHandItem();
-			if (EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null) {
-				return true;
-			} else if (executer.getOriginal().getVehicle() == null &&
-					executer.getSkill(EpicFightSkills.HYPERVITALITY) != null &&
-					executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null)
-			{
-				executer.getOriginal().setHealth(1);
-				return true;
-			} else {
-				return false;
-			}
+			return EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null;
 		}
 	}
 	
@@ -651,7 +679,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						if (target.hasEffect(MobEffects.WITHER)) {
 							damage.setImpact(6f);
 							damage.addTag(SourceTags.WEAPON_INNATE);
-							WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * target.getEffect(MobEffects.WITHER).getAmplifier());
+							int wither_lvl = target.getEffect(MobEffects.WITHER).getAmplifier()+1;
+							WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
 							((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL, 
 									target.getX(), 
 									target.getY() + 1.2D, 
@@ -670,7 +699,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							}
 
 							float ressource = container.getExecuter().getSkill(this).getResource();
-							float ressource_after_consumption = ressource + ((66.6f * (1f - sweeping_edge/6f)*2) * target.getEffect(MobEffects.WITHER).getAmplifier());
+							float ressource_after_consumption = ressource + (66.6f * (target.getEffect(MobEffects.WITHER).getAmplifier()+1));
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
 							container.getExecuter().getOriginal().heal(WitherCatharsis*0.4f);
 							target.removeEffect(MobEffects.WITHER);
@@ -810,8 +839,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								float WitherCatharsis = 0;
 								if (target.hasEffect(MobEffects.WITHER)) {
 									damage.setImpact(2.5f);
-									WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * target.getEffect(MobEffects.WITHER).getAmplifier());
-									
+									int wither_lvl = target.getEffect(MobEffects.WITHER).getAmplifier()+1;
+									WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
 									((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL, 
 											target.getX(), 
 											target.getY() + 1.2D, 
@@ -819,15 +848,13 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 											48, 0.0D, 0.0D, 0.0D, 0.05D);
 									container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							    			SoundEvents.WITHER_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 0.5F);
-									if (target.getEffect(MobEffects.WITHER).getAmplifier() == 2) {
-										((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL_FIRE_FLAME, 
+									((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL_FIRE_FLAME, 
 												target.getX(), 
 												target.getY() + 1.2D, 
 												target.getZ(), 
-												24, 0.0D, 0.0D, 0.0D, 0.05D);
-										container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+												(target.getEffect(MobEffects.WITHER).getAmplifier()+1)*4, 0.0D, 0.0D, 0.0D, 0.05D);
+									container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 								    			SoundEvents.WITHER_SKELETON_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 0.5F);
-									}
 									target.removeEffect(MobEffects.WITHER);
 								}
 								target.hurt(damage,4 + (WitherCatharsis));
@@ -854,56 +881,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						}
 					}
 					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)));
-				} else {
-					
-					int n = 40; // set the number of particles to emit
-					double r = 0.4; // set the radius of the disk to 1
-					double t = 0.01; // set the thickness of the disk to 0.1
-					
-					for (int i = 0; i < n; i++) {
-						double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
-						double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
-						
-						// calculate the emission direction in Cartesian coordinates using the polar coordinates
-						double x = r * Math.cos(phi) * Math.cos(theta);
-						double y = r * Math.cos(phi) * Math.sin(theta);
-						double z = r * Math.sin(phi);
-						
-						// create a Vector3f object to represent the emission direction
-						Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
-						
-						// rotate the direction vector to align with the forward vector
-						OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
-						OpenMatrix4f.transform3v(rotation, direction, direction);
-						
-						// emit the particle in the calculated direction, with some random velocity added
-						container.getExecuter().getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
-								(container.getExecuter().getOriginal().getX()),
-								(container.getExecuter().getOriginal().getY()),
-								(container.getExecuter().getOriginal().getZ()),
-								(float)(direction.x),
-								(float)(direction.y),
-								(float)(direction.z));
+					if (container.getDataManager().getDataValue(TIMER) == 0) {
+						container.getExecuter().playAnimationSynchronized(this.deactivateAnimation, 0);
+						cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
+						container.deactivate();
+						((ServerPlayerPatch)container.getExecuter()).modifyLivingMotionByCurrentItem();
 					}
-					
-					for (int i = 0; i < 24; i++) {
-						container.getExecuter().getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
-								(container.getExecuter().getOriginal().getX()) + ((new Random().nextFloat() - 0.5F)),
-								(container.getExecuter().getOriginal().getY()) + 0.2F,
-								(container.getExecuter().getOriginal().getZ()) + ((new Random().nextFloat() - 0.5F)),
-								0,
-								((new Random().nextFloat()) * 1.5F),
-								0);
-					}
-					
-					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
-						if (container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
-							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, (ServerPlayer) container.getExecuter().getOriginal());					
-						}
-					}
-					container.getSkill().cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
-					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(), 0);
-					container.deactivate();
 				}
 			}
 		} else {

@@ -149,26 +149,12 @@ public class WOMChestLootTables {
             		.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
             	.build());
     	}
+    	
     	if (event.getName().equals(BuiltInLootTables.DESERT_PYRAMID)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.MOONLESS.get()).setWeight(1))
     			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
     		.build());
-    	}
-    	if (event.getName().equals(BuiltInLootTables.SPAWN_BONUS_CHEST)) {
-    		event.getTable().addPool(LootPool.lootPool()
-    			.add(LootItem.lootTableItem(WOMItems.HERRSCHER.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(WOMItems.AGONY.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(WOMItems.TORMENTED_MIND.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(WOMItems.SATSUJIN.get()).setWeight(1))
-    		.build());
-    		
-    		event.getTable().addPool(LootPool.lootPool()
-        			.add(LootItem.lootTableItem(WOMItems.GESETZ.get()).setWeight(2))
-        			.add(LootItem.lootTableItem(WOMItems.HERRSCHER.get()).setWeight(1))
-        			.add(LootItem.lootTableItem(Items.AIR).setWeight(4))
-        	.build());
     	}
     }
 }

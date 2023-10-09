@@ -339,7 +339,7 @@ public class CounterAttack extends GuardSkill {
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {
 				return WOMAnimations.MOONLESS_BYPASS;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.STAFF) {
-				return Animations.GRASPING_SPIRAL_SECOND;
+				return WOMAnimations.STAFF_DASH;
 			}
 			
 			

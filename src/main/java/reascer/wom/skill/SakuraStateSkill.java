@@ -72,7 +72,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 					WOMAnimations.KATANA_FATAL_DRAW,
 					WOMAnimations.KATANA_FATAL_DRAW_SECOND};
 			
-			if (event.getAnimation() == WOMAnimations.KATANA_SHEATHED_DASH) {
+			if (event.getAnimation().equals(WOMAnimations.KATANA_SHEATHED_DASH)) {
 				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
 				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
 				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
@@ -80,7 +80,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 				container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
 			}
 			
-			if (event.getAnimation() == WOMAnimations.KATANA_FATAL_DRAW_DASH) {
+			if (event.getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_DASH)) {
 				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
 				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
 				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
@@ -89,17 +89,17 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 			}
 			
 			for (StaticAnimation staticAnimation : resetAnimations) {
-				if (event.getAnimation() == staticAnimation) {
+				if (event.getAnimation().equals(staticAnimation)) {
 					container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
 					container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
 					container.getDataManager().setDataSync(ATTACKS,0,serverPlayer);
 					container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
 					
-					if (staticAnimation != WOMAnimations.KATANA_FATAL_DRAW) {
+					if (staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW)) {
 						container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
 					}
-					if (staticAnimation == WOMAnimations.KATANA_FATAL_DRAW ||
-						staticAnimation == WOMAnimations.KATANA_FATAL_DRAW_SECOND	) {
+					if (staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW) ||
+						staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW_SECOND)	) {
 						container.getDataManager().setDataSync(FREQUENCY, 0,serverPlayer);
 						container.getDataManager().setDataSync(TIMER, 0,serverPlayer);
 					}
@@ -113,9 +113,22 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			if (event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW) ||
+			if (event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_SHEATHED_DASH) ||
+				event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_SHEATHED_COUNTER) ||
+				event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_DASH) ||
+				event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW) ||
 				event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_SECOND)) {
-				
+				for (String tag : event.getTarget().getTags()) {
+					if (tag.contains("anti_stunlock:")) {
+						String replaceTag = tag.split(":")[0] +":"+ Float.valueOf(tag.split(":")[1])*1.3 ;
+						for (int i = 2; i < tag.split(":").length; i++) {
+							replaceTag = replaceTag.concat(":"+tag.split(":")[i]);
+						}
+						event.getTarget().removeTag(tag);
+						event.getTarget().addTag(replaceTag);
+						break;
+					}
+				}
 			}
 			if (event.getDamageSource().cast().getMsgId() != "timed_katana_slashes") {
 				if (container.getExecuter().getStamina() > 0) {

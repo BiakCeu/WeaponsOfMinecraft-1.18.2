@@ -14,6 +14,10 @@
 		{
 			"livingmotion":"walk",
 			"type":"upper_joints"
+		},
+		{
+			"livingmotion":"swim",
+			"type":"arms"
 		}
 	]
 }

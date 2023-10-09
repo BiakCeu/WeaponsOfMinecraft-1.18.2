@@ -48,7 +48,7 @@ public class SatsujinPassive extends PassiveSkill {
 					Animations.BIPED_HIT_LONG};
 			
 			for (StaticAnimation staticAnimation : resetAnimations) {
-				if (event.getAnimation() == staticAnimation) {
+				if (event.getAnimation().equals(staticAnimation)) {
 					container.getSkill().setConsumptionSynchronize(event.getPlayerPatch(), 0.0F);
 					container.getSkill().setStackSynchronize(event.getPlayerPatch(), 0);
 				}

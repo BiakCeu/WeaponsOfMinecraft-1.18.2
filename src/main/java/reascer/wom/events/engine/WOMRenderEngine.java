@@ -9,7 +9,7 @@ import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.client.forgeevent.PatchedRenderersEvent;
 
-@Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID , bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class WOMRenderEngine {
 	
 	@SubscribeEvent

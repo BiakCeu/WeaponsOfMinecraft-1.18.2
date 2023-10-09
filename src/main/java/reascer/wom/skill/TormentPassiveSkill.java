@@ -1,78 +1,59 @@
 package reascer.wom.skill;
 
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.animation.BasicMultipleAttackAnimation;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
-import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
-import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
-import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
-import yesman.epicfight.api.model.Armature;
+import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.gui.BattleModeGui;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.skill.Skill.ActivateType;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
-import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
-import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
-import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
-import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.level.block.FractureBlockState;
 
 public class TormentPassiveSkill extends PassiveSkill {
 	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -252,6 +233,44 @@ public class TormentPassiveSkill extends PassiveSkill {
 	
 	@Override
 	public void updateContainer(SkillContainer container) {
+		if(container.getExecuter().isLogicalClient()) {
+			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN)) {
+				PlayerPatch<?> entitypatch = container.getExecuter();
+				float interpolation = 0.0F;
+				OpenMatrix4f transformMatrix;
+				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
+				transformMatrix.translate(new Vec3f(0,-0.0F,-1.2F));
+				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
+				
+				float dpx = transformMatrix.m30 + (float) entitypatch.getOriginal().getX();
+				float dpy = transformMatrix.m31 + (float) entitypatch.getOriginal().getY();
+				float dpz = transformMatrix.m32 + (float) entitypatch.getOriginal().getZ();
+				BlockState blockstate = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+				BlockPos blockpos = new BlockPos(new Vec3(dpx,dpy,dpz));
+				while ((blockstate.getBlock() instanceof BushBlock || blockstate.isAir()) && !blockstate.is(Blocks.VOID_AIR)) {
+					dpy--;
+					blockstate = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+				}
+				
+				while (blockstate instanceof FractureBlockState) {
+					blockpos = new BlockPos(dpx, dpy--, dpz);
+					blockstate = entitypatch.getOriginal().level.getBlockState(blockpos.below());
+				}
+				if ((transformMatrix.m31 + entitypatch.getOriginal().getY()) < dpy+1.50f) {
+					for (int i = 0; i < 2; i++) {
+						entitypatch.getOriginal().level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
+								(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+								(transformMatrix.m31 + entitypatch.getOriginal().getY())-0.2f,
+								(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+								(new Random().nextFloat() - 0.5F)*0.005f,
+								(new Random().nextFloat()) * 0.02f,
+								(new Random().nextFloat() - 0.5F)*0.005f);
+					}
+				}
+			}
+		}
+		
 		if (container.getDataManager().getDataValue(CHARGED)) {
 			PlayerPatch<?> entitypatch = container.getExecuter();
 			int numberOf = 2;

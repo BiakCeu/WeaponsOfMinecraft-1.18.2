@@ -61,7 +61,12 @@ public class MeditationSkill extends PassiveSkill {
 			if (container.getDataManager().getDataValue(ACTIVE) && container.getDataManager().getDataValue(DUREE) == 0 &&
 				!event.getAnimation().equals(WOMAnimations.MEDITATION_SITING) &&
 				!event.getAnimation().equals(WOMAnimations.MEDITATION_BREATHING)) {
-				container.getDataManager().setDataSync(DUREE, container.getDataManager().getDataValue(TIMER)*6,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(STAGE) != 0) {
+					container.getDataManager().setDataSync(ACTIVE, true,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(DUREE, container.getDataManager().getDataValue(TIMER)*6,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				} else {
+					container.getDataManager().setDataSync(ACTIVE, false,event.getPlayerPatch().getOriginal());
+				}
 				container.getDataManager().setDataSync(TIMER, 0,event.getPlayerPatch().getOriginal());
 				((ServerPlayerPatch) container.getExecuter()).modifyLivingMotionByCurrentItem();
 			}
@@ -216,6 +221,8 @@ public class MeditationSkill extends PassiveSkill {
 								container.getExecuter().getOriginal().getY() + 0.5D, 
 								container.getExecuter().getOriginal().getZ(), 
 								1, 0.6D, 0.6D, 0.6D, 0.05);
+					} else {
+						container.getDataManager().setDataSync(STAGE, 0,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					}
 				}
 			}
@@ -241,7 +248,13 @@ public class MeditationSkill extends PassiveSkill {
 					}
 				}
 				if (container.getExecuter().getOriginal().walkDist != container.getExecuter().getOriginal().walkDistO) {
-					container.getDataManager().setDataSync(DUREE, container.getDataManager().getDataValue(TIMER)*6,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					if (container.getDataManager().getDataValue(STAGE) != 0) {
+						container.getDataManager().setDataSync(ACTIVE, true,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(DUREE, container.getDataManager().getDataValue(TIMER)*6,((ServerPlayerPatch) container.getExecuter()).getOriginal());	
+					} else {
+						container.getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					}
+					
 					container.getDataManager().setDataSync(TIMER, 0,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					((ServerPlayerPatch) container.getExecuter()).modifyLivingMotionByCurrentItem();
 				}

@@ -25,6 +25,7 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 public class DemonMarkPassiveSkill extends PassiveSkill {
 	public static final SkillDataKey<Boolean> CATHARSIS = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> PARTICLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Boolean> LAPSE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> WITHERCURSE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> BLINK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> BASIC_ATTACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
@@ -39,6 +40,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
 		container.getDataManager().registerData(CATHARSIS);
+		container.getDataManager().registerData(LAPSE);
 		container.getDataManager().registerData(PARTICLE);
 		container.getDataManager().registerData(WITHERCURSE);
 		container.getDataManager().registerData(BLINK);
@@ -54,10 +56,11 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
 					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
 						if (event.getTarget().hasEffect(MobEffects.WITHER)) {
+							int power = event.getTarget().getEffect(MobEffects.WITHER).getAmplifier();
 							event.getTarget().removeEffect(MobEffects.WITHER);
-							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 2, false, true));
+							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, ++power, false, true));
 						} else {
-							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 1, false, true));
+							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 0, false, true));
 						}
 					}
 				}
@@ -75,31 +78,31 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				container.getDataManager().setDataSync(BLINK,false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_BLINK) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLINK)) {
 				container.getDataManager().setDataSync(BLINK,true,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_DEATHFALL) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_DEATHFALL)) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_1) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_1)) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_2) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_2)) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3)) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_SHOOT) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_SHOOT)) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (event.getAnimation() == WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE) {
+			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE)) {
 				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
 			}
 		});
@@ -357,6 +360,26 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				interpolation += partialScale;
 			}
 			
+		} else if (container.getDataManager().getDataValue(LAPSE)) {
+			PlayerPatch<?> entitypatch = container.getExecuter();
+			int numberOf = 5;
+			float partialScale = 1.0F / (numberOf - 1);
+			float interpolation = 0.0F;
+			OpenMatrix4f transformMatrix;
+			interpolation = 0.0F;
+			for (int i = 0; i < numberOf; i++) {
+				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.chest);
+				transformMatrix.translate(new Vec3f(0,0.0F,0F));
+				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.05f),
+					(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.05f),
+					(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.05f),
+					0,
+					(new Random().nextFloat())*0.02f,
+					0);
+				interpolation += partialScale;
+			}
 		} else {
 			PlayerPatch<?> entitypatch = container.getExecuter();
 			int numberOf = 7;

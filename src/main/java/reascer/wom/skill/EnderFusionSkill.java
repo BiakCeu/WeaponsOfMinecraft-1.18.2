@@ -222,7 +222,8 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		if (!executer.getOriginal().isCreative()) {
 			float ressource = executer.getSkill(this).getResource();
 			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND));
-			float consumption = ((24f * (double_cost?2f:1f)) * (1f - sweeping_edge/12f));
+			sweeping_edge = 1/((sweeping_edge/6)+1);
+			float consumption = ((24f * (double_cost?2f:1f)) * sweeping_edge);
 			if (ressource - consumption < 0.0f) {
 				consumption = -consumption;
 				consumption += ressource;

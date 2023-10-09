@@ -36,7 +36,7 @@ public class SatsujinItem extends WeaponItem {
 	private double attackSpeed;
 	
 	public SatsujinItem(Item.Properties build) {
-		super(EpicFightItemTier.UCHIGATANA, 0, -1.8F, build.defaultDurability(6666));
+		super(EpicFightItemTier.UCHIGATANA, 0, -1.8F, build.defaultDurability(1666));
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
 			this.tooltipExpand.add(new TextComponent(""));

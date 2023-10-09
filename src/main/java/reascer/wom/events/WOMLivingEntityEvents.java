@@ -125,12 +125,12 @@ public class WOMLivingEntityEvents {
 			float distance_from_zero = (float) Math.sqrt(Math.pow(event.getX(), 2) + Math.pow(event.getZ(), 2));
 			if (distance_from_zero / 1000 > 1 && !(event.getEntityLiving() instanceof Player) && !event.getEntityLiving().getTags().contains("wom-stronger-mob") && event.getEntityLiving().level.getGameRules().getBoolean(WOMGamerules.SPAWN_STONGER_MOB_OVER_DISTANCE)) {
 				AttributeInstance entity_max_health = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
-				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.pow(1.5f, (distance_from_zero / 1000)), Operation.MULTIPLY_TOTAL);
+				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.round(Math.pow(1.5D, (distance_from_zero / 1000))-1) , Operation.MULTIPLY_TOTAL);
 				if (entity_max_health != null) {
 					entity_max_health.addPermanentModifier(boosted_health);
 				}
 				AttributeInstance entity_attack_damage = event.getEntityLiving().getAttribute(Attributes.ATTACK_DAMAGE);
-				AttributeModifier boosted_damage = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_damage", Math.pow(1.2f, (distance_from_zero / 1000)), Operation.MULTIPLY_TOTAL);
+				AttributeModifier boosted_damage = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_damage", Math.round(Math.pow(1.2D, (distance_from_zero / 1000))-1), Operation.MULTIPLY_TOTAL);
 				if (entity_attack_damage != null) {
 					entity_attack_damage.addPermanentModifier(boosted_damage);
 				}
@@ -199,6 +199,9 @@ public class WOMLivingEntityEvents {
 					}
 					break;
 				}
+			}
+			if (event.getEntityLiving().getHealth() > event.getEntityLiving().getMaxHealth()) {
+				event.getEntityLiving().setHealth(event.getEntityLiving().getMaxHealth());
 			}
 		}
 		for (String tag : event.getEntityLiving().getTags()) {
