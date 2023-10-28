@@ -24,7 +24,7 @@ public class GreataxeItem extends WeaponItem {
 	
 	public GreataxeItem(Item.Properties build, Tier tier) {
 		super(tier, 0, 0.0F, build);
-		this.attackDamage = 7.0F + tier.getAttackDamageBonus();
+		this.attackDamage = 17.0F + tier.getAttackDamageBonus();
 		this.attackSpeed = -2.75F - (0.05F * tier.getLevel());
 	}
 	
