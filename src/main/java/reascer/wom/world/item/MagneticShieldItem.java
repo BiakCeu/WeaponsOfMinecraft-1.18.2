@@ -43,9 +43,9 @@ public class MagneticShieldItem extends ShieldItem {
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".gesetz.tooltip"));
 		}
 
-		this.bonusArmor = 4.0F;
-		this.armorThougness = 1.5F;
-		this.attackDamage = 3.0F;
+		this.bonusArmor = 6.0F;
+		this.armorThougness = 3.5F;
+		this.attackDamage = 5.0F;
 		this.attackSpeed = -2.5F;
    }
    
