@@ -40,7 +40,7 @@ public class HerscherItem extends WeaponItem {
 			this.tooltipExpand.add(Component.literal(""));
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".herrscher.tooltip"));
 		}
-		this.attackDamage = 5.0F;
+		this.attackDamage = 15.0F;
 		this.attackSpeed = -2.25F;
 	}
 	
