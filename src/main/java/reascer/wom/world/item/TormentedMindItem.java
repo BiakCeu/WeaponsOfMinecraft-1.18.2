@@ -40,7 +40,7 @@ public class TormentedMindItem extends WeaponItem {
 			this.tooltipExpand.add(Component.literal(""));
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".tormented_mind.tooltip"));
 		}
-		this.attackDamage = 8.0F;
+		this.attackDamage = 14.0F;
 		this.attackSpeed = -2.7F;
 	}
 	
