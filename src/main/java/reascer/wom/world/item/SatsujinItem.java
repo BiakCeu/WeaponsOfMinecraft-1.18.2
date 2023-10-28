@@ -41,7 +41,7 @@ public class SatsujinItem extends WeaponItem {
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".satsujin.tooltip"));
 		}
 		
-		this.attackDamage = 6.0F;
+		this.attackDamage = 16.0F;
 		this.attackSpeed = -1.8F;
 	}
 	
