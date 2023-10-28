@@ -42,7 +42,7 @@ public class EnderBlasterItem extends WeaponItem {
 			this.tooltipExpand.add(Component.literal(""));
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".ender_blaster.tooltip"));
 		}
-		this.attackDamage = 6F;
+		this.attackDamage = 14F;
 		this.attackSpeed = -2.0F;
 	}
 	
