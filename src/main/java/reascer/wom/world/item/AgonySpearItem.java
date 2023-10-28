@@ -41,7 +41,7 @@ public class AgonySpearItem extends WeaponItem {
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".agony.tooltip"));
 		}
 		
-		this.attackDamage = 5.0F;
+		this.attackDamage = 15.0F;
 		this.attackSpeed = -2.0F;
 	}
 	
