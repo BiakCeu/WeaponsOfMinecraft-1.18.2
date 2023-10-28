@@ -39,7 +39,7 @@ public class AntitheusItem extends WeaponItem {
 			this.tooltipExpand.add(Component.literal(""));
 			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".antitheus.tooltip"));
 		}
-		this.attackDamage = 7.0F;
+		this.attackDamage = 17.0F;
 		this.attackSpeed = -2.1F;
 	}
 	
